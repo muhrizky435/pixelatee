@@ -52,12 +52,12 @@ export function NavBar({ backgroundColor, textColor }: NavBarProps) {
           </NavLink>
         </li>
         <li>
-          <NavLink to={"/portfolios"} className={({ isActive }) => (isActive ? "font-semibold" : "hover:text-tertiary transition-colors")}>
-            Portofolio
+          <NavLink to={"/product"} className={({ isActive }) => (isActive ? "font-semibold" : "hover:text-tertiary transition-colors")}>
+            Produk
           </NavLink>
         </li>
         <li>
-          <NavLink to={"/contacts"} className={({ isActive }) => (isActive ? "font-semibold" : "hover:text-tertiary transition-colors")}>
+          <NavLink to={"/contact"} className={({ isActive }) => (isActive ? "font-semibold" : "hover:text-tertiary transition-colors")}>
             Kontak
           </NavLink>
         </li>

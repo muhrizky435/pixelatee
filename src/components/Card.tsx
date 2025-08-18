@@ -58,3 +58,48 @@ export function PortfolioCard({ title = "Insert Title here", image = "bg-slate-2
     </div>
   );
 }
+
+type ProductCardProps = {
+  id: string | number;
+  client?: string;
+  title: string;
+  description?: string;
+  image?: string;
+};
+
+export function ProductCard({
+  id,
+  client = "Client X",
+  title = "Product X",
+  description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  image = "/img/placeholder.png",
+}: ProductCardProps) {
+  return (
+    <div className="bg-white shadow-md rounded-md overflow-hidden flex flex-col">
+      {/* Thumbnail */}
+      <div className="w-full h-48 bg-gray-300 flex items-center justify-center">
+        <img
+          src={image}
+          alt={title}
+          className="h-full w-full object-cover"
+        />
+      </div>
+
+      {/* Content */}
+      <div className="p-4 flex flex-col gap-2 text-left">
+        <p className="text-sm text-black-500">
+          <span className="font-medium">{client}</span>
+        </p>
+        <h3 className="text-blue-600 font-semibold text-lg">{title}</h3>
+        <p className="text-gray-500 text-sm">{description}</p>
+        
+        <Link
+          to={`detail/${id}`}
+          className="mt-2 text-sm text-black-600 font-medium flex items-center gap-1 hover:underline"
+        >
+          Lihat Selengkapnya <HiArrowRight />
+        </Link>
+      </div>
+    </div>
+  );
+}
