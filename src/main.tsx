@@ -5,6 +5,7 @@ import "./index.css";
 
 import Home from "./routes/Home";
 import About from "./routes/About";
+import Service from "./routes/Service";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -12,7 +13,7 @@ createRoot(document.getElementById("root")!).render(
       <Routes>
         <Route index path="/" element={<Home />} />
         <Route path="about" element={<About />} />
-        <Route path="service" element={<h1>Service</h1>} />
+        <Route path="services" element={<Service />} />
         <Route path="product" element={<h1>Blog</h1>} />
         <Route path="contact" element={<h1>Contact</h1>} />
       </Routes>
