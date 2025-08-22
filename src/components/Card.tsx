@@ -1,60 +1,112 @@
 import { HiArrowRight } from "react-icons/hi";
-import { Link } from "react-router";
-import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
+import {
+  Monitor,
+  MonitorCog,
+  ShieldCheck,
+  Code,
+  Database,
+  Smartphone,
+} from "lucide-react";
 
-export function ServiceCard() {
+const services = [
+  {
+    id: 1,
+    icon: <Monitor className="w-10 h-10 text-white" />,
+    title: "Tech Consulting",
+    desc: "Solusi IT inovatif untuk mendukung transformasi digital bisnis Anda.",
+    color: "bg-green-500",
+  },
+  {
+    id: 2,
+    icon: <MonitorCog className="w-10 h-10 text-white" />,
+    title: "IT support & Maintenance",
+    desc: "Layanan IT support, Maintenance, dan aman untuk kebutuhan modern.",
+    color: "bg-blue-500",
+  },
+  {
+    id: 3,
+    icon: <ShieldCheck className="w-10 h-10 text-white" />,
+    title: "Secure Link Technologies",
+    desc: "Perlindungan data dan sistem dengan keamanan berlapis.",
+    color: "bg-yellow-500",
+  },
+  {
+    id: 4,
+    icon: <Code className="w-10 h-10 text-white" />,
+    title: "Custom Software Development",
+    desc: "Pengembangan aplikasi sesuai kebutuhan spesifik bisnis Anda.",
+    color: "bg-purple-500",
+  },
+  {
+    id: 5,
+    icon: <Database className="w-10 h-10 text-white" />,
+    title: "Data Management",
+    desc: "Pengelolaan data yang efisien, aman, dan mudah diakses.",
+    color: "bg-red-500",
+  },
+  {
+    id: 6,
+    icon: <Smartphone className="w-10 h-10 text-white" />,
+    title: "Mobile App Solutions",
+    desc: "Aplikasi mobile modern untuk meningkatkan pengalaman pelanggan.",
+    color: "bg-indigo-500",
+  },
+];
+
+export const ServiceCard = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-5">
-      {/* Card 1 */}
-      <div className="relative md:col-start-1 md:col-end-3 h-[24rem] md:h-[32rem] bg-[url('/img/pexels-cottonbro-5990271.jpg')] bg-cover bg-center">
-        {/* Overlay gradient biru */}
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-800/70 via-blue-800/20 to-transparent" />
-        <div className="relative h-full p-10 flex items-end">
-          <h4 className="text-3xl font-semibold text-white">Tech Consulting</h4>
+    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-6xl px-2 md:px-10">
+      {services.map((service) => (
+        <div
+          key={service.id}
+          className="flex flex-col items-center p-6 rounded-2xl bg-white shadow-md hover:shadow-xl 
+                     transition-transform transform hover:-translate-y-2 duration-300 border border-[#06B6D4]"
+        >
+          <div
+            className={`${service.color} p-4 rounded-xl mb-4 flex items-center justify-center shadow-md`}
+          >
+            {service.icon}
+          </div>
+          <h4 className="text-lg font-semibold text-tertiary text-center">
+            {service.title}
+          </h4>
+          <p className="text-gray-500 text-sm text-center mt-2 leading-relaxed">
+            {service.desc}
+          </p>
         </div>
-      </div>
-
-      {/* Card 2 */}
-      <div className="relative h-[24rem] bg-[url('/img/pexels-luis-gomes-166706-546819.jpg')] bg-cover bg-center">
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-800/70 via-blue-800/20 to-transparent" />
-        <div className="relative h-full p-10 flex items-end">
-          <h4 className="text-3xl font-semibold text-white">Software Development</h4>
-        </div>
-      </div>
-
-      {/* Card 3 */}
-      <div className="relative h-[24rem] bg-[url('/img/pexels-cottonbro-6804086.jpg')] bg-cover bg-center">
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-800/70 via-blue-800/20 to-transparent" />
-        <div className="relative h-full p-10 flex items-end">
-          <h4 className="text-3xl font-semibold text-white">IT Support & Maintenance</h4>
-        </div>
-      </div>
+      ))}
     </div>
   );
-}
+};
 
 type PortfolioCardProps = {
   title: string;
   image: string;
 };
 
-export function PortfolioCard({ title = "Insert Title here", image = "bg-slate-200" }: PortfolioCardProps) {
+export function PortfolioCard({
+  title = "Insert Title here",
+  image = "bg-slate-200",
+}: PortfolioCardProps) {
   return (
-    <div className="grid grid-cols-1 w-full">
-      <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] lg:grid-cols-[400px_1fr] grid-rows-[20rem] bg-tertiary">
-        <div className="overflow-hidden">
-          <div className={`${image} bg-cover hover:scale-105 transition-all h-full bg-center`}></div>
-        </div>
-        <div className="flex flex-col justify-between gap-10 py-10 md:py-10 ps-10 pe-15 text-white">
-          <div className="flex flex-col gap-3 md:gap-10">
-            <h6 className="font-semibold">Client X</h6>
-            <h3 className="text-2xl md:text-2xl lg:text-3xl">{title}</h3>
-          </div>
-          <Link to={"#"} className="flex items-center gap-2">
-            Baca Selengkapnya
-            <HiArrowRight className="hidden md:block" />
-          </Link>
-        </div>
+    <div className="group relative bg-tertiary/5 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-500">
+      {/* Image */}
+      <div
+        className={`${image} h-64 md:h-72 bg-cover bg-center group-hover:scale-105 transition-transform duration-500`}
+      ></div>
+
+      {/* Content */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 flex flex-col justify-end">
+        <h3 className="text-xl md:text-2xl font-bold text-white drop-shadow-lg">
+          {title}
+        </h3>
+        <Link
+          to={"#"}
+          className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white transition-colors"
+        >
+          Baca Selengkapnya <HiArrowRight className="hidden md:block" />
+        </Link>
       </div>
     </div>
   );
@@ -82,24 +134,24 @@ export function ProductCard({
   };
 
   return (
-    <div
-      className="bg-white shadow-md rounded-md overflow-hidden flex flex-col cursor-pointer hover:shadow-lg transition"
-      onClick={handleClick} // sekarang seluruh card bisa di-klik
-    >
+    <div className="bg-white shadow-md rounded-xl overflow-hidden flex flex-col hover:shadow-lg transition duration-300">
       {/* Thumbnail */}
-      <div className="w-full h-48 bg-gray-300 flex items-center justify-center">
+      <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
         <img src={image} alt={title} className="h-full w-full object-cover" />
       </div>
 
       {/* Content */}
       <div className="p-4 flex flex-col gap-2 text-left">
-        <p className="text-sm text-black-500">
+        <p className="text-sm text-gray-500">
           <span className="font-medium">{client}</span>
         </p>
         <h3 className="text-blue-600 font-semibold text-lg">{title}</h3>
         <p className="text-gray-500 text-sm">{description}</p>
 
-        <div className="mt-2 text-sm text-black-600 font-medium flex items-center gap-1">
+        <Link
+          to={`detail/${id}`}
+          className="mt-2 text-sm text-blue-600 font-medium flex items-center gap-1 hover:underline"
+        >
           Lihat Selengkapnya <HiArrowRight />
         </div>
       </div>
