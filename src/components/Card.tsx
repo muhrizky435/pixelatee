@@ -1,5 +1,6 @@
 import { HiArrowRight } from "react-icons/hi";
 import { Link } from "react-router";
+import { useNavigate } from "react-router";
 
 export function ServiceCard() {
   return (
@@ -74,15 +75,20 @@ export function ProductCard({
   description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   image = "/img/placeholder.png",
 }: ProductCardProps) {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/detail/${id}`);
+  };
+
   return (
-    <div className="bg-white shadow-md rounded-md overflow-hidden flex flex-col">
+    <div
+      className="bg-white shadow-md rounded-md overflow-hidden flex flex-col cursor-pointer hover:shadow-lg transition"
+      onClick={handleClick} // sekarang seluruh card bisa di-klik
+    >
       {/* Thumbnail */}
       <div className="w-full h-48 bg-gray-300 flex items-center justify-center">
-        <img
-          src={image}
-          alt={title}
-          className="h-full w-full object-cover"
-        />
+        <img src={image} alt={title} className="h-full w-full object-cover" />
       </div>
 
       {/* Content */}
@@ -92,13 +98,10 @@ export function ProductCard({
         </p>
         <h3 className="text-blue-600 font-semibold text-lg">{title}</h3>
         <p className="text-gray-500 text-sm">{description}</p>
-        
-        <Link
-          to={`detail/${id}`}
-          className="mt-2 text-sm text-black-600 font-medium flex items-center gap-1 hover:underline"
-        >
+
+        <div className="mt-2 text-sm text-black-600 font-medium flex items-center gap-1">
           Lihat Selengkapnya <HiArrowRight />
-        </Link>
+        </div>
       </div>
     </div>
   );

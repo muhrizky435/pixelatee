@@ -12,10 +12,13 @@ import {
   FaBell,
   FaUserCircle,
 } from "react-icons/fa";
+import { useLocation, useNavigate } from "react-router";
 
 export default function NavBarCMS({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [dateTime, setDateTime] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -34,6 +37,18 @@ export default function NavBarCMS({ children }: { children: React.ReactNode }) {
     return () => clearInterval(interval);
   }, []);
 
+  // daftar menu biar lebih rapi
+  const menus = [
+    { path: "/dashboard", icon: <FaHome size={20} />, label: "Dashboard" },
+    { path: "/about", icon: <FaInfoCircle size={20} />, label: "Tentang Pixelatee" },
+    { path: "/blog", icon: <FaBlog size={20} />, label: "Blog" },
+    { path: "/clientCMS", icon: <FaHandshake size={20} />, label: "Klien" },
+    { path: "/serviceCMS", icon: <FaHandHolding size={20} />, label: "Layanan" },
+    { path: "/productCMS", icon: <FaBox size={20} />, label: "Produk" },
+    { path: "/contactCMS", icon: <FaEnvelope size={20} />, label: "Kontak/Pesan Masuk" },
+    { path: "/settings", icon: <FaCogs size={20} />, label: "Pengaturan" },
+  ];
+
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
@@ -44,30 +59,18 @@ export default function NavBarCMS({ children }: { children: React.ReactNode }) {
               <img src="/Logotype.svg" alt="Pixelatee Logo" className="w-40" />
             </div>
             <Menu>
-              <MenuItem icon={<FaHome size={20} />} href="/dashboard" className="text-blue-500">
-                Dashboard
-              </MenuItem>
-              <MenuItem icon={<FaInfoCircle size={20} />} href="/about" className="text-blue-500">
-                Tentang Pixelatee
-              </MenuItem>
-              <MenuItem icon={<FaBlog size={20} />} href="/blog" className="text-blue-500">
-                Blog
-              </MenuItem>
-              <MenuItem icon={<FaHandshake size={20} />} href="/clients" className="text-blue-500">
-                Klien
-              </MenuItem>
-              <MenuItem icon={<FaHandHolding size={20} />} href="/serviceCMS" className="text-blue-500">
-                Layanan
-              </MenuItem>
-              <MenuItem icon={<FaBox size={20} />} href="/productCMS" className="text-blue-500">
-                Produk
-              </MenuItem>
-              <MenuItem icon={<FaEnvelope size={20} />} href="/contactCMS" className="text-blue-500">
-                Kontak/Pesan Masuk
-              </MenuItem>
-              <MenuItem icon={<FaCogs size={20} />} href="/settings" className="text-blue-500">
-                Pengaturan
-              </MenuItem>
+              {menus.map((menu) => (
+                <MenuItem
+                  key={menu.path}
+                  icon={menu.icon}
+                  onClick={() => navigate(menu.path)}
+                  className={`text-blue-500 ${
+                    location.pathname === menu.path ? "font-bold" : ""
+                  }`}
+                >
+                  {menu.label}
+                </MenuItem>
+              ))}
             </Menu>
           </Sidebar>
         </aside>

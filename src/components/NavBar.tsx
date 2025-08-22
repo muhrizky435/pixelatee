@@ -47,6 +47,11 @@ export function NavBar({ backgroundColor, textColor }: NavBarProps) {
           </NavLink>
         </li>
         <li>
+          <NavLink to={"/blog"} className={({ isActive }) => (isActive ? "font-semibold" : "hover:text-tertiary transition-colors")}>
+            Blog
+          </NavLink>
+        </li>
+        <li>
           <NavLink to={"/services"} className={({ isActive }) => (isActive ? "font-semibold" : "hover:text-tertiary transition-colors")}>
             Layanan
           </NavLink>
