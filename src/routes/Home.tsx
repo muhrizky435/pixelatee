@@ -138,12 +138,12 @@ export default function Home() {
         </div>
 
         {/* Portfolios Section */}
-        <div className="flex flex-col justify-center items-center py-20 gap-14 px-6 md:px-12 bg-gradient-to-b from-gray-50 to-white">
+        <div className="flex flex-col justify-center items-center py-6 gap-14 px-12 md:px-20 bg-gradient-to-b from-gray-50 to-white">
           {/* Heading */}
           <div className="max-w-3xl text-center flex flex-col gap-6">
             {/* Title */}
             <h3 className="text-3xl md:text-4xl font-bold text-tertiary tracking-wide relative">
-              Layanan Terbaik Kami
+              PortoFolio Kami
               <span className="block mt-2 mx-auto w-16 h-1 rounded-full bg-gradient-to-r from-primary via-secondary to-tertiary"></span>
             </h3>
             <p className="text-quaternary leading-8 text-lg md:text-lg">
@@ -175,12 +175,12 @@ export default function Home() {
           </div>
 
           {/* CTA */}
-          <Link
-            to={"#"}
-            className="mt-6 px-8 py-4 rounded-2xl border border-tertiary text-tertiary font-semibold flex items-center gap-3 hover:bg-tertiary hover:text-white transition-all shadow-xl hover:shadow-tertiary/40"
-          >
-            Lihat Selengkapnya <HiArrowRight className="text-lg" />
-          </Link>
+            <Link
+              to={"#"}
+              className="mt-2 px-4 py-2 rounded-2xl border border-[#06b6d4] text-[#06b6d4] font-semibold flex items-center gap-3 hover:bg-tertiary hover:text-white transition-all shadow-xl hover:shadow-tertiary/40"
+            >
+              Lihat Selengkapnya <HiArrowRight className="text-lg" />
+            </Link>
         </div>
       </main>
       <Footer />
