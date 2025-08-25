@@ -54,6 +54,8 @@ const services = [
   },
 ];
 
+
+
 export const ServiceCard = () => {
   return (
     <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-6xl px-2 md:px-10">
