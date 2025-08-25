@@ -1,4 +1,4 @@
-import NavBarCMS from "../components/NavBarCMS";
+import NavBarCMS from "../../components/NavBarCMS";
 import { FaSearch, FaEllipsisV } from "react-icons/fa";
 import { useState } from "react";
 import { useNavigate } from "react-router";

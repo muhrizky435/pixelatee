@@ -1,4 +1,4 @@
-import NavBarCMS from "../components/NavBarCMS";
+import NavBarCMS from "../../components/NavBarCMS";
 import { FaSearch, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router";
 

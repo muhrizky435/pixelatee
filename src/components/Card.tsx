@@ -8,6 +8,7 @@ import {
   Database,
   Smartphone,
 } from "lucide-react";
+import React from "react";
 
 const services = [
   {
@@ -54,8 +55,6 @@ const services = [
   },
 ];
 
-
-
 export const ServiceCard = () => {
   return (
     <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-6xl px-2 md:px-10">
@@ -84,6 +83,7 @@ export const ServiceCard = () => {
 
 type PortfolioCardProps = {
   title: string;
+  /** className untuk background image, contoh: "bg-[url('/img/hero.jpg')]" */
   image: string;
 };
 
@@ -96,7 +96,7 @@ export function PortfolioCard({
       {/* Image */}
       <div
         className={`${image} h-64 md:h-72 bg-cover bg-center group-hover:scale-105 transition-transform duration-500`}
-      ></div>
+      />
 
       {/* Content */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 flex flex-col justify-end">
@@ -104,7 +104,7 @@ export function PortfolioCard({
           {title}
         </h3>
         <Link
-          to={"#"}
+          to="#"
           className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white transition-colors"
         >
           Baca Selengkapnya <HiArrowRight className="hidden md:block" />
@@ -129,12 +129,6 @@ export function ProductCard({
   description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   image = "/img/placeholder.png",
 }: ProductCardProps) {
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    navigate(`/detail/${id}`);
-  };
-
   return (
     <div className="bg-white shadow-md rounded-xl overflow-hidden flex flex-col hover:shadow-lg transition duration-300">
       {/* Thumbnail */}
@@ -151,11 +145,11 @@ export function ProductCard({
         <p className="text-gray-500 text-sm">{description}</p>
 
         <Link
-          to={`detail/${id}`}
+          to={`/detail/${id}`}
           className="mt-2 text-sm text-blue-600 font-medium flex items-center gap-1 hover:underline"
         >
           Lihat Selengkapnya <HiArrowRight />
-        </div>
+        </Link>
       </div>
     </div>
   );

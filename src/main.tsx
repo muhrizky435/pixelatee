@@ -10,13 +10,13 @@ import Product from "./routes/Product";
 import Contact from "./routes/Contact";
 import DetailProduct from "./routes/DetailProduct";
 import Auth from "./routes/Auth";
-import ContactCMS from "./routes/ContactCMS";
-import ProductCMS from "./routes/ProductCMS";
-import ServiceCMS from "./routes/ServiceCMS";
-import DetailContactCMS from "./routes/DetailContactCMS";
-import DetailProductCMS from "./routes/DetailProductCMS";
-import DetailServiceCMS from "./routes/DetailServiceCMS";
-import ClientCMS from "./routes/ClientCMS";
+import ContactCMS from "./routes/admin/ContactCMS";
+import ProductCMS from "./routes/admin/ProductCMS";
+import ServiceCMS from "./routes/admin/ServiceCMS";
+import DetailContactCMS from "./routes/admin/DetailContactCMS";
+import DetailProductCMS from "./routes/admin/DetailProductCMS";
+import DetailServiceCMS from "./routes/admin/DetailServiceCMS";
+import ClientCMS from "./routes/admin/ClientCMS";
 import Blog from "./routes/Blog";
 
 createRoot(document.getElementById("root")!).render(

@@ -1,9 +1,9 @@
-import NavBarCMS from "../components/NavBarCMS";
+import NavBarCMS from "../../components/NavBarCMS";
 import { FaSearch, FaEllipsisV } from "react-icons/fa";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
-export default function ServiceCMS() {
+export default function ProductCMS() {
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const [modalType, setModalType] = useState<null | "tambah" | "edit" | "hapus">(null);
   const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
@@ -23,11 +23,10 @@ export default function ServiceCMS() {
     setSelectedProduct(null);
   };
 
-
   return (
     <NavBarCMS>
       <div className="bg-[#eaf0fb] min-h-screen p-6">
-        <div className="mb-4 text-sm text-blue-600 font-medium">/ Layanan</div>
+        <div className="mb-4 text-sm text-blue-600 font-medium">/ Produk</div>
 
         <div className="mb-6">
           <div className="relative w-full mb-3">
@@ -38,15 +37,17 @@ export default function ServiceCMS() {
             />
             <FaSearch className="absolute left-3 top-2.5 text-gray-400" />
           </div>
-          <button className="bg-blue-600 text-white w-full py-2 rounded-lg font-medium hover:bg-blue-700"
-          onClick={() => openModal("tambah")}>
-            Tambah Data Layanan
+          <button
+            className="bg-blue-600 text-white w-full py-2 rounded-lg font-medium hover:bg-blue-700"
+            onClick={() => openModal("tambah")}
+          >
+            Tambah Data Produk
           </button>
         </div>
 
-        <h2 className="text-xl font-bold text-blue-700 mb-4">Daftar Layanan</h2>
+        <h2 className="text-xl font-bold text-blue-700 mb-4">Daftar Produk</h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
           {Array(5)
             .fill(0)
             .map((_, i) => (
@@ -58,19 +59,17 @@ export default function ServiceCMS() {
                   src="/img/pexels-rabbit-wang-25128698-11768811.jpg"
                   alt="Product"
                   className="rounded-t-lg w-full h-40 object-cover"
-                  onClick={() => navigate(`/detailServiceCMS/${i}`)}
+                  onClick={() => navigate(`/detailProductCMS/${i}`)}
                 />
 
-                {/* Content */}
-                <div className="p-4" onClick={() => navigate(`/detailServiceCMS/${i}`)}>
-                  <h3 className="font-bold">Lorem Ipsum</h3>
+                <div className="p-4" onClick={() => navigate(`/detailProductCMS/${i}`)}>
+                  <h3 className="font-bold">Product X</h3>
                   <p className="text-sm text-gray-600">
                     Nisi sit amet, dignissim sapien. Sed tortor erat,
                     consectetur in libero vel...
                   </p>
                 </div>
 
-                {/* Action Menu */}
                 <div className="absolute top-2 right-2">
                   <button
                     className="p-2 rounded-full hover:bg-gray-100"
@@ -82,16 +81,22 @@ export default function ServiceCMS() {
                   {openDropdown === i && (
                     <div className="absolute right-0 mt-2 w-28 bg-white border rounded-lg shadow-md z-10">
                       <ul className="text-sm">
-                        <li className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
-                        onClick={() => navigate(`/detailServiceCMS/${i}`)}>
+                        <li
+                          className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                          onClick={() => navigate(`/detailProductCMS/${i}`)}
+                        >
                           Detail
                         </li>
-                        <li className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
-                        onClick={() => openModal("edit", i)}>
+                        <li
+                          className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                          onClick={() => openModal("edit", i)}
+                        >
                           Edit
                         </li>
-                        <li className="px-4 py-2 text-red-500 hover:bg-blue-100 cursor-pointer"
-                        onClick={() => openModal("hapus", i)}>
+                        <li
+                          className="px-4 py-2 text-red-500 hover:bg-blue-100 cursor-pointer"
+                          onClick={() => openModal("hapus", i)}
+                        >
                           Hapus
                         </li>
                       </ul>
@@ -101,8 +106,6 @@ export default function ServiceCMS() {
               </div>
             ))}
         </div>
-
-        {/* Footer Link */}
         <div className="flex justify-end mt-4">
           <a
             href="#"
@@ -122,7 +125,7 @@ export default function ServiceCMS() {
             </div>
             <div className="p-6 text-center">
               <p className="text-gray-700 mb-6 font-bold">
-                Layanan <span className="font-bold">{selectedProduct}</span> akan dihapus.
+                Produk <span className="font-bold">{selectedProduct}</span> akan dihapus.
               </p>
               <div className="flex justify-center gap-4">
                 <button
@@ -145,12 +148,16 @@ export default function ServiceCMS() {
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg w-[550px]">
             <div className="bg-blue-600 text-white px-4 py-2 rounded-t-lg font-bold text-lg">
-              {modalType === "tambah" ? "Tambah Produk" : "Edit Layanan"}
+              {modalType === "tambah" ? "Tambah Produk" : "Edit Produk"}
             </div>
             <div className="p-6 space-y-4">
-              <div className="gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Nama Layanan</label>
+                  <label className="block text-sm font-medium mb-1">Nama Client</label>
+                  <input type="text" className="border rounded-lg p-2 w-full" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Nama Produk</label>
                   <input type="text" className="border rounded-lg p-2 w-full" />
                 </div>
               </div>
