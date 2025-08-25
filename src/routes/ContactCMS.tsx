@@ -1,7 +1,14 @@
 import NavBarCMS from "../components/NavBarCMS";
 import { FaSearch, FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router";
 
 export default function ContactCMS() {
+
+  const navigate = useNavigate();
+  const handleRowClick = (id: number) => {
+    navigate(`/detailContactCMS/${id}`);
+  };
+
   return (
     <NavBarCMS>
       <div className="mb-4 text-sm text-blue-600">/ Pesan Masuk</div>
@@ -29,32 +36,36 @@ export default function ContactCMS() {
               <th className="p-3 font-medium">Message</th>
             </tr>
           </thead>
-          <tbody>
+           <tbody>
             {Array(10)
-              .fill(0)
-              .map((_, i) => (
-                <tr
-                  key={i}
-                  className="border-b hover:bg-blue-50 transition-colors group"
+            .fill(0)
+            .map((_, i) => (
+              <tr
+                key={i}
+                onClick={() => handleRowClick(i)}
+                className="border-b hover:bg-blue-50 transition-colors group cursor-pointer"
+              >
+                <td className="p-3">Lorem Ipsum {i + 1}</td>
+                <td className="p-3">
+                  Nisi sit amet, dignissim sapien. Sed tortor erat…
+                </td>
+                <td className="p-3">
+                  Nisi sit amet, dignissim sapien. Sed tortor erat, consectetur
+                  in libero vel…
+                </td>
+                <td
+                  className="p-3 text-center"
+                  onClick={(e) => e.stopPropagation()} // biar tombol delete tidak ikut trigger klik baris
                 >
-                  <td className="p-3">Lorem Ipsum</td>
-                  <td className="p-3">
-                    Nisi sit amet, dignissim sapien. Sed tortor erat…
-                  </td>
-                  <td className="p-3">
-                    Nisi sit amet, dignissim sapien. Sed tortor erat, consectetur
-                    in libero vel…
-                  </td>
-                  <td className="p-3 text-center">
-                    <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button>
-                        <FaTrash className="text-grey-500" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
+                  <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button>
+                      <FaTrash className="text-gray-500" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+        </tbody>
         </table>
 
         {/* Pagination */}

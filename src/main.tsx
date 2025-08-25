@@ -13,6 +13,11 @@ import Auth from "./routes/Auth";
 import ContactCMS from "./routes/ContactCMS";
 import ProductCMS from "./routes/ProductCMS";
 import ServiceCMS from "./routes/ServiceCMS";
+import DetailContactCMS from "./routes/DetailContactCMS";
+import DetailProductCMS from "./routes/DetailProductCMS";
+import DetailServiceCMS from "./routes/DetailServiceCMS";
+import ClientCMS from "./routes/ClientCMS";
+import Blog from "./routes/Blog";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -20,14 +25,20 @@ createRoot(document.getElementById("root")!).render(
       <Routes>
         <Route index path="/" element={<Home />} />
         <Route path="about" element={<About />} />
+        <Route path="blog" element={<Blog />} />
         <Route path="services" element={<Service />} />
         <Route path="product" element={<Product />} />
         <Route path="contact" element={<Contact />} />
         <Route path="detail/:id" element={<DetailProduct />} />
+
         <Route path="auth" element={<Auth />} />
         <Route path="contactCMS" element={<ContactCMS />} />
         <Route path="productCMS" element={<ProductCMS />} />
         <Route path="serviceCMS" element={<ServiceCMS />} />
+        <Route path="detailContactCMS/:id" element={<DetailContactCMS />} />
+        <Route path="detailProductCMS/:id" element={<DetailProductCMS />} />
+        <Route path="detailServiceCMS/:id" element={<DetailServiceCMS />} />
+        <Route path="clientCMS" element={<ClientCMS />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

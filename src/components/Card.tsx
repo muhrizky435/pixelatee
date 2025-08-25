@@ -129,6 +129,12 @@ export function ProductCard({
   description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   image = "/img/placeholder.png",
 }: ProductCardProps) {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/detail/${id}`);
+  };
+
   return (
     <div className="bg-white shadow-md rounded-xl overflow-hidden flex flex-col hover:shadow-lg transition duration-300">
       {/* Thumbnail */}
@@ -149,7 +155,7 @@ export function ProductCard({
           className="mt-2 text-sm text-blue-600 font-medium flex items-center gap-1 hover:underline"
         >
           Lihat Selengkapnya <HiArrowRight />
-        </Link>
+        </div>
       </div>
     </div>
   );

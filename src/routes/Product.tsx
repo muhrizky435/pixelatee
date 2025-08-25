@@ -2,8 +2,10 @@ import { NavBar } from "../components/NavBar";
 import { Footer } from "../components/Footer";
 import { ProductCard } from "../components/Card";
 import { FaUsers, FaBoxOpen, FaHandshake } from "react-icons/fa";
+  
 
 export default function Product() {
+
   return (
     <div className="font-default">
       {/* Navbar */}
