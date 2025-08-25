@@ -16,8 +16,7 @@ const blogs = [
     date: "25 Agustus, 2025",
     excerpt:
       "Teknologi informasi menjadi tulang punggung bisnis modern, memungkinkan mereka beroperasi secara efisien dan efektif.",
-    image:
-      "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
+    image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
     slug: "revolusi-pengalaman-digital",
   },
   {
@@ -27,8 +26,7 @@ const blogs = [
     date: "25 Agustus, 2025",
     excerpt:
       "Mencakup penggunaan komputer, jaringan, dan teknologi digital lain untuk menyimpan, mengambil, serta mengirim data.",
-    image:
-      "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
+    image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
     slug: "mempersiapkan-bisnis-masa-depan",
   },
   {
@@ -38,8 +36,7 @@ const blogs = [
     date: "25 Agustus, 2025",
     excerpt:
       "Teknologi modern memungkinkan bisnis berkembang pesat, beradaptasi, dan tetap kompetitif di era digital.",
-    image:
-      "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
+    image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
     slug: "memimpin-revolusi-digital",
   },
 ];
@@ -117,7 +114,7 @@ export default function Home() {
           </h3>
 
           {/* Content */}
-          <p className="max-w-3xl text-center text-quaternary leading-8 text-lg">
+          <p className="max-w-3xl text-center text-gray-600 leading-8 text-lg">
             Kami adalah tim kreatif yang berfokus pada{" "}
             <span className="text-blue-300 font-semibold">desain digital</span>{" "}
             dan{" "}
@@ -168,7 +165,7 @@ export default function Home() {
             <span className="block mt-2 mx-auto w-16 h-1 rounded-full bg-gradient-to-r from-primary via-secondary to-tertiary"></span>
           </h3>
 
-          <p className="text-center text-quaternary max-w-3xl leading-8 text-lg">
+          <p className="text-center text-gray-600 max-w-3xl leading-8 text-lg">
             Layanan terbaik kami hadir dengan standar kualitas tinggi,
             mengutamakan kepercayaan dan kepuasan setiap mitra.
           </p>
@@ -185,7 +182,7 @@ export default function Home() {
               PortoFolio Kami
               <span className="block mt-2 mx-auto w-16 h-1 rounded-full bg-gradient-to-r from-primary via-secondary to-tertiary"></span>
             </h3>
-            <p className="text-quaternary leading-8 text-lg md:text-lg">
+            <p className="text-gray-600 leading-8 text-lg md:text-lg">
               Kami telah dipercaya berbagai klien untuk mengembangkan solusi IT
               yang <span className="font-semibold text-blue-300">inovatif</span>
               , <span className="font-semibold text-secondary">modern</span>,
@@ -224,7 +221,7 @@ export default function Home() {
         {/* end section */}
 
         {/* Section Contact */}
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 px-12 py-8 md:px-20">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 px-12 py-16 md:px-20">
           {/* Left Side - Form */}
           <div className="flex flex-col justify-center">
             {/* Title */}
@@ -260,13 +257,39 @@ export default function Home() {
                 />
 
                 {/* form pilih bidang */}
-                <select className="w-full rounded-full border border-[#06b6d4] px-4 py-3 focus:ring-2 focus:ring-blue-200 outline-none">
-                  <option disabled>Pilih Bidang</option>
-                  <option>Website Development</option>
-                  <option>Mobile App</option>
-                  <option>UI/UX Design</option>
-                  <option>Digital Marketing</option>
-                </select>
+                <div className="relative w-full">
+                  <select
+                    className="w-full appearance-none rounded-xl border-2 border-cyan-400 bg-white px-5 py-3 pr-10 
+                             text-gray-700 font-medium shadow-md hover:border-cyan-500 hover:shadow-lg
+                            focus:border-cyan-600 focus:ring-4 focus:ring-cyan-100 outline-none transition-all duration-300"
+                    defaultValue=""
+                  >
+                    <option value="" disabled>
+                      Pilih Bidang
+                    </option>
+                    <option>🌐 Website Development</option>
+                    <option>📱 Mobile App</option>
+                    <option>🎨 UI/UX Design</option>
+                    <option>🚀 Digital Marketing</option>
+                  </select>
+
+                  {/* custom icon panah */}
+                  <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                    <svg
+                      className="h-5 w-5 text-cyan-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </div>
+                </div>
               </div>
 
               {/* Message */}
@@ -296,7 +319,7 @@ export default function Home() {
         {/* End Section Contact */}
 
         {/* Blog Section */}
-        <section className="py-16 bg-[#f7f9ff]">
+        <section className="pt-8 pb-16 bg-[#f7f9ff]">
           <div className="max-w-7xl mx-auto px-6 lg:px-12">
             {/* Heading */}
             <div className="text-center mb-12">
@@ -306,7 +329,8 @@ export default function Home() {
                 <span className="font-semibold text-blue-300">
                   Mengubah Tantangan
                 </span>{" "}
-                Menjadi {" "} <span className="font-semibold text-secondary">Peluang</span>  
+                Menjadi{" "}
+                <span className="font-semibold text-secondary">Peluang</span>
                 <span className="block mt-2 mx-auto w-16 h-1 rounded-full bg-gradient-to-r from-primary via-secondary to-tertiary items-start"></span>
               </h3>
             </div>

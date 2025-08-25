@@ -57,13 +57,11 @@ const services = [
 
 export const ServiceCard = () => {
   return (
-    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-6xl px-2 md:px-10">
+    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-6xl px-2 pb-6 md:pb-2 md:px-10">
       {services.map((service) => (
         <div
           key={service.id}
-          className="flex flex-col items-center p-6 rounded-2xl bg-white shadow-md hover:shadow-xl 
-                     transition-transform transform hover:-translate-y-2 duration-300 border border-[#06B6D4]"
-        >
+          className="flex flex-col items-center p-6 rounded-2xl bg-white shadow-md hover:shadow-xl transition-transform transform hover:-translate-y-2 duration-300 border border-[#06B6D4]">
           <div
             className={`${service.color} p-4 rounded-xl mb-4 flex items-center justify-center shadow-md`}
           >
