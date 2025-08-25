@@ -6,11 +6,11 @@ export default function About() {
     <div className="font-default">
       {/* Navbar */}
       <header>
-        <NavBar backgroundColor="bg-primary" textColor="text-secondary" />
+        <NavBar textColor="text-secondary" />
       </header>
 
       {/* Konten Tentang Kami */}
-      <section className="flex flex-col items-center justify-center text-center px-6 py-16 max-w-5xl mx-auto">
+      <section className="flex flex-col items-center justify-center text-center px-6 pt-16 pb-4 max-w-7xl mx-auto">
         {/* Image */}
         <img
           src="/img/Logo.png"
@@ -18,64 +18,110 @@ export default function About() {
           className="w-28 h-28 mb-6 mt-12"
         />
 
-        {/* Judul */}
-        <h2 className="text-2xl font-semibold text-blue-500 mb-2">
-          Tentang Kami
-        </h2>
+        {/* Our About */}
+        <div className="relative flex flex-col justify-center items-center py-4 gap-8 px-8 md:px-2 bg-gradient-to-b from-white via-gray-50 to-white">
+          {/* Decorative background blur */}
+          <div className="absolute -top-10 -left-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 -right-10 w-60 h-60 bg-tertiary/20 rounded-full blur-3xl"></div>
 
-        {/* Divider */}
-        <div className="w-12 h-0.5 bg-blue-200 mb-6"></div>
+          {/* Title */}
+          <h3 className="text-3xl md:text-4xl font-bold text-tertiary tracking-wide relative">
+            Tentang Kami
+            <span className="block mt-2 mx-auto w-16 h-1 rounded-full bg-gradient-to-r from-primary via-secondary to-tertiary"></span>
+          </h3>
 
-        {/* Deskripsi */}
-        <p className="text-gray-500 leading-relaxed mb-4 text-justify lg:text-center">
-          One morning, when Gregor Samsa woke from troubled dreams, he found
-          himself transformed in his bed into a horrible vermin. He lay on his
-          armour-like back, and if he lifted his head a little he could see his
-          brown belly, slightly domed and divided by arches into stiff sections.
-          The bedding was hardly able to cover it and seemed ready to slide off
-          any moment. His many legs, pitifully thin compared with the size of
-          the rest of him, waved about helplessly as he looked.
-        </p>
-        <p className="text-gray-500 leading-relaxed text-justify lg:text-center">
-          Ut et urna auctor, placerat nisi sit amet, dignissim sapien. Sed
-          tortor erat, consectetur in libero vel, condimentum malesuada purus.
-          Fusce nulla purus, volutpat aliquet semper et, congue ut nibh. Nam ac
-          orci ut nibh bibendum efficitur id sit amet ipsum.
-        </p>
+          {/* Content */}
+          <p className="max-w-3xl text-center text-quaternary leading-8 text-lg">
+            Kami adalah tim kreatif yang berfokus pada{" "}
+            <span className="text-blue-300 font-semibold">desain digital</span>{" "}
+            dan{" "}
+            <span className="text-secondary font-semibold">
+              pengembangan teknologi
+            </span>
+            . Dengan pengalaman dalam membangun solusi yang inovatif, kami
+            percaya setiap ide dapat diwujudkan menjadi sesuatu yang berdampak
+            besar.
+          </p>
+
+          {/* Highlight box */}
+          <div className="mt-6 grid md:grid-cols-3 gap-6 w-full max-w-5xl">
+            <div className="p-6 bg-white border border-[#06B6D4] rounded-2xl shadow-md hover:shadow-xl transition-shadow">
+              <h4 className="text-xl font-semibold text-blue-300 mb-2">
+                Inovatif
+              </h4>
+              <p className="text-gray-600 text-sm">
+                Menciptakan ide-ide baru dengan pendekatan modern dan kreatif.
+              </p>
+            </div>
+            <div className="p-6 bg-white border border-[#06B6D4] rounded-2xl shadow-md hover:shadow-xl transition-shadow">
+              <h4 className="text-xl font-semibold text-secondary mb-2">
+                Kolaboratif
+              </h4>
+              <p className="text-gray-600 text-sm">
+                Kami bekerja sama sebagai tim untuk memberikan hasil terbaik.
+              </p>
+            </div>
+            <div className="p-6 bg-white border border-[#06B6D4] rounded-2xl shadow-md hover:shadow-xl transition-shadow">
+              <h4 className="text-xl font-semibold text-tertiary mb-2">
+                Berkelanjutan
+              </h4>
+              <p className="text-gray-600 text-sm">
+                Fokus pada solusi jangka panjang yang mendukung perkembangan
+                teknologi.
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
-      {/* Milestone */}
-      <section className="flex flex-col items-center justify-center text-center mb-6 px-6 py-4 max-w-5xl mx-auto">
-        {/* Judul */}
-        <h2 className="text-2xl font-semibold text-blue-500 mb-2">Milestone</h2>
+      {/* Visi Misi */}
+      <section className="px-2 pt-12 pb-20 max-w-6xl mx-auto text-center relative">
+        {/* Decorative gradient circle */}
+        <div className="absolute top-10 left-0 w-48 h-48 bg-primary/10 rounded-full blur-3xl -z-10"></div>
+        <div className="absolute bottom-0 right-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl -z-10"></div>
 
-        {/* Divider */}
-        <div className="w-12 h-0.5 bg-blue-200 mb-6"></div>
+        {/* Title */}
+        <h3 className="text-3xl md:text-4xl font-bold text-tertiary tracking-wide relative">
+          Visi & Misi
+          <span className="block mt-2 mx-auto w-20 h-1 rounded-full bg-gradient-to-r from-primary via-secondary to-tertiary"></span>
+        </h3>
 
-        {/* Deskripsi */}
-        <p className="text-gray-500 leading-relaxed mb-4 text-justify lg:text-center">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce laoreet
-          condimentum luctus. Etiam bibendum nisi sit amet convallis porta.
-          Suspendisse potenti. Praesent nec dignissim neque, in sodales nulla.
-          Phasellus a diam eget diam porta efficitur eu id mauris. Fusce nulla
-          purus, volutpat aliquet semper et, congue ut nibh. Nam ac orci ut nibh
-          bibendum efficitur id sit amet ipsum.
-        </p>
+        {/* Cards */}
+        <div className="grid md:grid-cols-2 gap-10 py-10 px-10 md:px-2">
+          {/* Visi */}
+          <div className="group p-8 bg-white shadow-md rounded-2xl border border-gray-100 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
+            <div className="flex flex-col items-center">
+              <h4 className="text-2xl font-semibold text-blue-400 mb-4">
+                Visi
+              </h4>
+            </div>
+            <p className="text-gray-600 leading-relaxed text-justify md:text-center">
+              Menjadi pelopor dalam menciptakan solusi digital dan teknologi
+              inovatif yang memberikan dampak positif dan berkelanjutan bagi
+              bisnis dan masyarakat.
+            </p>
+          </div>
 
-        {/* Image */}
-        <img
-          src=""
-          alt=""
-          className="border bg-gray-300 w-full h-45 max-w-3xl mb-4"
-        />
-
-        <p className="text-gray-500 leading-relaxed text-justify lg:text-center">
-          Ut et urna auctor, placerat nisi sit amet, dignissim sapien. Sed
-          tortor erat, consectetur in libero vel, condimentum malesuada purus.
-          Fusce nulla purus, volutpat aliquet semper et, congue ut nibh. Nam ac
-          orci ut nibh bibendum efficitur id sit amet ipsum.
-        </p>
+          {/* Misi */}
+          <div className="group p-8 bg-white shadow-md rounded-2xl border border-gray-100 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
+            <div className="flex flex-col items-center">
+              {/* Icon */}
+              <h4 className="text-2xl font-semibold text-secondary mb-4">
+                Misi
+              </h4>
+            </div>
+            <ul className="text-gray-600 space-y-3 text-left list-disc list-inside text-justify">
+              <li>Menghadirkan layanan kreatif berbasis teknologi.</li>
+              <li>Memberdayakan kolaborasi tim yang solid dan profesional.</li>
+              <li>Mendorong inovasi berkelanjutan untuk mendukung klien.</li>
+              <li>
+                Berkomitmen pada kualitas, kepercayaan, dan keberlanjutan.
+              </li>
+            </ul>
+          </div>
+        </div>
       </section>
+
       <Footer />
     </div>
   );
