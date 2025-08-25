@@ -7,7 +7,7 @@ export default function Service() {
     <div className="font-default">
       {/* Navbar */}
       <header>
-        <NavBar backgroundColor="bg-primary" textColor="text-secondary" />
+        <NavBar textColor="text-secondary" />
       </header>
 
       {/* Konten Utama */}
