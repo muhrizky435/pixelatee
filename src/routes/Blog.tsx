@@ -1,122 +1,130 @@
 import { NavBar } from "../components/NavBar";
 import { Footer } from "../components/Footer";
+import { useState } from "react";
+import { User, Calendar } from "lucide-react"; // pake lucide-react untuk ikon
 
 export default function Blog() {
+  const [category, setCategory] = useState("All");
+
+  // Dummy data
+  const blogs = [
+    {
+      id: 1,
+      title: "Revolution Digital Experiences",
+      category: "Teknologi",
+      desc: "Information Technology the backbone of modern businesses, enabling them to operate efficiently and effectively.",
+      image: "/img/pexels-luis-gomes-166706-546819.jpg",
+      author: "Br Simmons",
+      date: "26 Agustus, 2025",
+    },
+    {
+      id: 2,
+      title: "Future-Proofing Your Business",
+      category: "Inovasi",
+      desc: "It encompasses the use of computers, networks, and other digital technologies to store, retrieve, and transmit data.",
+      image: "/img/pexels-luis-gomes-166706-546819.jpg",
+      author: "Br Simmons",
+      date: "26 Juli, 2025",
+    },
+    {
+      id: 3,
+      title: "Leading the Digital Revolution",
+      category: "Gadget",
+      desc: "Information Technology the backbone of modern businesses, enabling them to operate efficiently and effectively.",
+      image: "/img/pexels-luis-gomes-166706-546819.jpg",
+      author: "Br Simmons",
+      date: "26 Agustus, 2025",
+    },
+  ];
+
+  // Filter berdasarkan kategori
+  const filteredBlogs =
+    category === "All"
+      ? blogs
+      : blogs.filter((blog) => blog.category === category);
+
   return (
-    <div className="font-default">
+    <div className="font-default bg-gray-50 min-h-screen">
       {/* Navbar */}
       <header>
-        <NavBar backgroundColor="bg-primary" textColor="text-secondary" />
+        <NavBar textColor="text-secondary" />
       </header>
 
-      {/* Hero Section */}
-      <section className="px-6 py-8 max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Gambar besar */}
-          <div className="lg:col-span-2">
-            <img
-              src="public/img/pexels-chanaka-906494.jpg"
-              alt="Hero utama"
-              className="w-full h-80 object-cover"
-            />
-            <p className="mt-2 text-white bg-opacity-50 inline-block px-2 py-1 rounded">
-              Lorem ipsum
-            </p>
-          </div>
-
-          {/* Dua gambar kecil */}
-          <div className="grid grid-rows-2 gap-4">
-            <div className="relative">
-              <img
-                src="public/img/pexels-chanaka-906494.jpg"
-                alt="Hero kanan atas"
-                className="w-full h-38 object-cover"
-              />
-              <p className="absolute bottom-2 left-2 text-white bg-opacity-50 px-2 py-1 rounded">
-                Lorem ipsum
-              </p>
-            </div>
-            <div className="relative">
-              <img
-                src="public/img/pexels-chanaka-906494.jpg"
-                alt="Hero kanan bawah"
-                className="w-full h-38 object-cover"
-              />
-              <p className="absolute bottom-2 left-2 text-white bg-opacity-50 px-2 py-1 rounded">
-                Lorem ipsum
-              </p>
-            </div>
-          </div>
+      {/* Heading Section */}
+      <section className="flex flex-col items-center text-center px-8 py-20 max-w-4xl mx-auto">
+        {/* Heading */}
+        <div className="text-center pt-8">
+          {/* Title */}
+          <h3 className="text-3xl md:text-2xl font-bold text-tertiary tracking-wide relative">
+            Blog & Berita <br></br>
+            <span className="font-semibold text-blue-300">
+              Mengubah Tantangan
+            </span>{" "}
+            Menjadi{" "}
+            <span className="font-semibold text-secondary">Peluang</span>
+            <span className="block mt-2 mx-auto w-16 h-1 rounded-full bg-gradient-to-r from-primary via-secondary to-tertiary items-start"></span>
+          </h3>
         </div>
       </section>
 
-      {/* Our Blog Section */}
-      <section className="flex flex-col items-center text-center px-6 py-12 max-w-4xl mx-auto">
-        <h2 className="text-2xl font-semibold text-blue-500 mb-2">Our Blog</h2>
-        <div className="w-12 h-0.5 bg-blue-200 mb-6"></div>
-        <p className="text-gray-500 leading-relaxed mb-4">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce laoreet
-          condimentum luctus. Etiam bibendum nisi sit amet convallis porta.
-          Suspendisse potenti. Praesent nec dignissim neque, in sodales nulla.
-        </p>
-      </section>
+      {/* Dropdown Filter */}
+      <div className="flex justify-center mb-12">
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="px-5 py-3 rounded-full shadow-md border border-gray-200 bg-white text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200 ease-in-out"
+        >
+          <option value="All">Semua Kategori</option>
+          <option value="Teknologi">Teknologi</option>
+          <option value="Inovasi">Inovasi</option>
+          <option value="Gadget">Gadget</option>
+        </select>
+      </div>
 
       {/* Blog Cards */}
-      <section className="px-6 pb-16 max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1 */}
-          <div className="bg-white shadow rounded-lg overflow-hidden">
-            <img src="/img/robot.jpg" alt="Artikel 1" className="w-full h-48 object-cover" />
-            <div className="p-4 text-left">
-              <p className="text-sm text-gray-400 mb-2">Uncategorized</p>
-              <h3 className="font-semibold text-lg mb-2">
-                Teknologi AI Kini Semakin Dekat dengan Kehidupan Sehari-hari
-              </h3>
-              <p className="text-gray-500 text-sm mb-4">
-                Perkembangan teknologi AI membawa banyak perubahan dalam kehidupan
-                sehari-hari, mulai dari pendidikan, bisnis, hingga kesehatan.
-              </p>
-              <a href="#" className="text-blue-500 text-sm font-medium hover:underline">
-                Lihat Selengkapnya →
-              </a>
-            </div>
-          </div>
+      <section className="px-12 md:px-16 pb-20 max-w-7xl">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {filteredBlogs.map((blog) => (
+            <div
+              key={blog.id}
+              className="bg-white rounded-2xl shadow-md hover:shadow-xl transition transform hover:-translate-y-2 overflow-hidden"
+            >
+              <img
+                src={blog.image}
+                alt={blog.title}
+                className="w-full h-56 object-cover"
+              />
+              <div className="p-6 text-left">
+                {/* Author & Date */}
+                <div className="flex items-center text-gray-400 text-sm mb-3 space-x-6">
+                  <span className="flex items-center gap-1 text-[#06b6d4]">
+                    <User size={16} /> {blog.author}
+                  </span>
+                  <span className="flex items-center gap-1 text-[#06b6d4] ">
+                    <Calendar size={16} /> {blog.date}
+                  </span>
+                </div>
 
-          {/* Card 2 */}
-          <div className="bg-white shadow rounded-lg overflow-hidden">
-            <img src="/img/google.jpg" alt="Artikel 2" className="w-full h-48 object-cover" />
-            <div className="p-4 text-left">
-              <p className="text-sm text-gray-400 mb-2">Uncategorized</p>
-              <h3 className="font-semibold text-lg mb-2">
-                Google UI Coba Mesin Pencari dengan Hasil AI Generated
-              </h3>
-              <p className="text-gray-500 text-sm mb-4">
-                Google mulai menguji mesin pencari yang menghasilkan jawaban dari
-                AI, membuat pencarian semakin cepat dan interaktif.
-              </p>
-              <a href="#" className="text-blue-500 text-sm font-medium hover:underline">
-                Lihat Selengkapnya →
-              </a>
-            </div>
-          </div>
+                {/* Title */}
+                <h3 className="font-semibold text-lg text-gray-800 mb-3 line-clamp-2">
+                  {blog.title}
+                </h3>
 
-          {/* Card 3 */}
-          <div className="bg-white shadow rounded-lg overflow-hidden">
-            <img src="/img/laptop.jpg" alt="Artikel 3" className="w-full h-48 object-cover" />
-            <div className="p-4 text-left">
-              <p className="text-sm text-gray-400 mb-2">Uncategorized</p>
-              <h3 className="font-semibold text-lg mb-2">
-                Laptop dengan Layar OLED Lipat Mulai Hadir di Pasaran
-              </h3>
-              <p className="text-gray-500 text-sm mb-4">
-                Perusahaan teknologi meluncurkan laptop dengan layar lipat OLED
-                pertama, menawarkan pengalaman kerja lebih fleksibel.
-              </p>
-              <a href="#" className="text-blue-500 text-sm font-medium hover:underline">
-                Lihat Selengkapnya →
-              </a>
+                {/* Description */}
+                <p className="text-gray-500 text-sm mb-6 line-clamp-3">
+                  {blog.desc}
+                </p>
+
+                {/* Read More Button */}
+                <a
+                  href="#"
+                  className="inline-block px-5 py-2 rounded-full border border-blue-600 text-blue-600 font-medium text-sm hover:bg-blue-600 hover:text-white transition"
+                >
+                  Baca Selengkapnya →
+                </a>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       </section>
 
