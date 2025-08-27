@@ -7,12 +7,12 @@ export default function Contact() {
   return (
     <>
       <NavBar />
-      <main className="max-w-7xl px-12 md:px-20 pt-30 pb-24 md:pt-32 font-default">
+      <main className="max-w-7xl px-12 md:px-20 py-28 font-default">
         {/* Heading */}
         <div className="mb-10 md:mb-14">
           <h2 className="text-3xl md:text-4xl font-semibold mb-4">
             Tell Us{" "}
-            <span className="text-blue-600 font-bold text-5xl">your Idea!</span>
+            <span className="text-blue-600 font-bold text-4xl">your Idea!</span>
           </h2>
           <p className="text-gray-400 max-w-2xl">
             We’d love to hear from you and explore how we can turn your thoughts

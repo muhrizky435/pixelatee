@@ -16,7 +16,7 @@ export function NavBar() {
       } else {
         setShow(true);
       }
-      setScrolled(currentScrollY > 100);
+      setScrolled(currentScrollY > 10);
       lastScrollY.current = currentScrollY;
     };
 
@@ -28,72 +28,79 @@ export function NavBar() {
     <>
       {/* Navbar */}
       <div
-        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-7xl px-6 py-3 flex items-center justify-between transition-all duration-300 font-default
-        border border-gray-200 rounded-2xl backdrop-blur-lg
+        className={`fixed top-0 left-0 z-50 w-full transition-all duration-300 font-default shadow-xl
         ${show ? "translate-y-0" : "-translate-y-[120%]"} 
-        ${scrolled ? "bg-white shadow-lg" : "bg-white/90 shadow-md"}
+        ${scrolled ? "bg-white shadow-xl" : "bg-transparent"}
       `}
       >
-        {/* Logo */}
-        <NavLink to={"/"}>
-          <img
-            className="w-32"
-            src="/Logotype.svg"
-            alt="Pixelatee Logotype"
-          />
-        </NavLink>
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          {/* Logo */}
+          <NavLink to={"/"}>
+            <img
+              className="w-32"
+              src="/Logotype.svg"
+              alt="Pixelatee Logotype"
+            />
+          </NavLink>
 
-        {/* Menu Desktop */}
-        <ul className="md:flex gap-10 justify-center items-center hidden text-gray-800 font-medium">
-          <li>
-            <NavLink
-              to="/services"
-              className={({ isActive }) =>
-                isActive ? "text-blue-600 font-semibold" : "hover:text-blue-500 transition-colors"
-              }
-            >
-              Services
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/portfolios"
-              className={({ isActive }) =>
-                isActive ? "text-blue-600 font-semibold" : "hover:text-blue-500 transition-colors"
-              }
-            >
-              Portfolios
-            </NavLink>
-          </li>
-          <li>
+          {/* Menu Desktop */}
+          <ul className="md:flex gap-10 justify-center items-center hidden text-gray-800 font-medium">
+            <li>
+              <NavLink
+                to="/services"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-blue-600 font-semibold"
+                    : "hover:text-blue-500 transition-colors"
+                }
+              >
+                Services
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/portfolios"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-blue-600 font-semibold"
+                    : "hover:text-blue-500 transition-colors"
+                }
+              >
+                Portfolios
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/contact"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-blue-600 font-semibold"
+                    : "hover:text-blue-500 transition-colors"
+                }
+              >
+                Contacts
+              </NavLink>
+            </li>
+          </ul>
+
+          {/* Right Section */}
+          <div className="hidden md:block">
             <NavLink
               to="/contact"
-              className={({ isActive }) =>
-                isActive ? "text-blue-600 font-semibold" : "hover:text-blue-500 transition-colors"
-              }
+              className="px-5 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors"
             >
-              Contacts
+              Get in touch
             </NavLink>
-          </li>
-        </ul>
+          </div>
 
-        {/* Right Section */}
-        <div className="hidden md:block">
-          <NavLink
-            to="/contact"
-            className="px-5 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors"
-          >
-            Get in touch
-          </NavLink>
-        </div>
-
-        {/* Mobile menu button */}
-        <div className="md:hidden flex items-center justify-end flex-1">
-          <HiMenu
-            onClick={() => setSidebarOpen(true)}
-            className="text-gray-700 cursor-pointer"
-            size={28}
-          />
+          {/* Mobile menu button */}
+          <div className="md:hidden flex items-center justify-end flex-1">
+            <HiMenu
+              onClick={() => setSidebarOpen(true)}
+              className="text-gray-700 cursor-pointer"
+              size={28}
+            />
+          </div>
         </div>
       </div>
 
