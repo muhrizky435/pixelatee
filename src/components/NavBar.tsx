@@ -13,12 +13,15 @@ export function NavBar() {
   }, []);
 
   return (
-    <nav
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        scrolled ? "bg-white/90 shadow-md backdrop-blur" : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <>
+      {/* Navbar */}
+      <div
+        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-7xl px-6 py-3 flex items-center justify-between transition-all duration-300 font-default
+         border border-[#06B6D4] backdrop-blur-lg
+        ${show ? "translate-y-0" : "-translate-y-[120%]"} 
+        ${scrolled ? "bg-white/90 shadow-lg" : "bg-white/70 shadow-md"}
+      `}
+      >
         {/* Logo */}
         <NavLink to={"/"}>
           <img
