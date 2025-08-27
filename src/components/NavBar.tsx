@@ -1,12 +1,9 @@
-import { useEffect, useState, useRef } from "react";
-import { HiMenu, HiX } from "react-icons/hi";
+import { useState, useEffect } from "react";
 import { NavLink } from "react-router";
 
 export function NavBar() {
   const [show, setShow] = useState(true);
   const [scrolled, setScrolled] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const lastScrollY = useRef(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,7 +16,6 @@ export function NavBar() {
       setScrolled(currentScrollY > 100);
       lastScrollY.current = currentScrollY;
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
