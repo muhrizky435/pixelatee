@@ -5,7 +5,6 @@ import { Link } from "react-router";
 export function Footer() {
   return (
     <footer className="relative grid grid-cols-1 lg:grid-cols-[1fr_250px_320px] py-14 px-8 lg:px-20 bg-senary font-default overflow-hidden">
-      {/* Background dengan opacity */}
 
       {/* Kolom 1 - Logo & Deskripsi */}
       <div className="relative flex flex-col gap-8 pe-10 items-start">
