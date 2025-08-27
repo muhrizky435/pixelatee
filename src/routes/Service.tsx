@@ -4,8 +4,10 @@ import { Footer } from "../components/Footer";
 export default function Service() {
   return (
     <>
-      <NavBar textColor="text-secondary" />
-      <main></main>
+      <NavBar />
+      <main>
+        
+      </main>
       <Footer />
     </>
   );

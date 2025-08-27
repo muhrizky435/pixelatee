@@ -2,11 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
 import { NavLink } from "react-router";
 
-type NavBarProps = {
-  textColor: "text-primary" | "text-secondary" | "text-tertiary";
-};
-
-export function NavBar({ textColor }: NavBarProps) {
+export function NavBar() {
   const [show, setShow] = useState(true);
   const [scrolled, setScrolled] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -15,14 +11,12 @@ export function NavBar({ textColor }: NavBarProps) {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
       if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
         setShow(false);
       } else {
         setShow(true);
       }
-
-      setScrolled(currentScrollY > 500);
+      setScrolled(currentScrollY > 100);
       lastScrollY.current = currentScrollY;
     };
 
@@ -35,101 +29,69 @@ export function NavBar({ textColor }: NavBarProps) {
       {/* Navbar */}
       <div
         className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-7xl px-6 py-3 flex items-center justify-between transition-all duration-300 font-default
-         border border-[#06B6D4] backdrop-blur-lg
+        border border-gray-200 rounded-2xl backdrop-blur-lg
         ${show ? "translate-y-0" : "-translate-y-[120%]"} 
-        ${scrolled ? "bg-white/90 shadow-lg" : "bg-white/70 shadow-md"}
+        ${scrolled ? "bg-white shadow-lg" : "bg-white/90 shadow-md"}
       `}
       >
         {/* Logo */}
         <NavLink to={"/"}>
           <img
-            className={"w-32"}
-            src={"/Logotype.svg"}
-            alt={"Pixelatee Logotype"}
+            className="w-32"
+            src="/Logotype.svg"
+            alt="Pixelatee Logotype"
           />
         </NavLink>
 
         {/* Menu Desktop */}
-        <ul
-          className={`md:flex gap-6 justify-center items-center flex-1 hidden ${
-            scrolled ? "text-gray-700" : textColor
-          }`}
-        >
+        <ul className="md:flex gap-10 justify-center items-center hidden text-gray-800 font-medium">
           <li>
             <NavLink
-              to={"/about"}
+              to="/services"
               className={({ isActive }) =>
-                isActive
-                  ? "font-semibold"
-                  : "hover:text-blue-500 transition-colors"
+                isActive ? "text-blue-600 font-semibold" : "hover:text-blue-500 transition-colors"
               }
             >
-              Tentang
+              Services
             </NavLink>
           </li>
           <li>
             <NavLink
-              to={"/services"}
+              to="/portfolios"
               className={({ isActive }) =>
-                isActive
-                  ? "font-semibold"
-                  : "hover:text-blue-500 transition-colors"
+                isActive ? "text-blue-600 font-semibold" : "hover:text-blue-500 transition-colors"
               }
             >
-              Layanan
+              Portfolios
             </NavLink>
           </li>
           <li>
             <NavLink
-              to={"/blogs"}
+              to="/contact"
               className={({ isActive }) =>
-                isActive
-                  ? "font-semibold"
-                  : "hover:text-blue-500 transition-colors"
+                isActive ? "text-blue-600 font-semibold" : "hover:text-blue-500 transition-colors"
               }
             >
-              Blog
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to={"/product"}
-              className={({ isActive }) =>
-                isActive
-                  ? "font-semibold"
-                  : "hover:text-blue-500 transition-colors"
-              }
-            >
-              Produk
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to={"/contact"}
-              className={({ isActive }) =>
-                isActive
-                  ? "font-semibold"
-                  : "hover:text-blue-500 transition-colors"
-              }
-            >
-              Kontak
+              Contacts
             </NavLink>
           </li>
         </ul>
 
         {/* Right Section */}
-        <div className={"md:flex items-center gap-6 hidden"}>
-          <div className="flex items-center gap-2 text-blue-600">
-            <span className="text-sm font-medium">Need help?</span>
-            <span className="font-semibold">(+62) 123-45678-91</span>
-          </div>
+        <div className="hidden md:block">
+          <NavLink
+            to="/contact"
+            className="px-5 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors"
+          >
+            Get in touch
+          </NavLink>
         </div>
 
         {/* Mobile menu button */}
-        <div className={"md:hidden items-center gap-8 flex flex-1 justify-end"}>
+        <div className="md:hidden flex items-center justify-end flex-1">
           <HiMenu
             onClick={() => setSidebarOpen(true)}
-            className={`${scrolled ? "text-gray-700" : textColor} cursor-pointer`}
+            className="text-gray-700 cursor-pointer"
             size={28}
           />
         </div>
@@ -158,28 +120,27 @@ export function NavBar({ textColor }: NavBarProps) {
         </div>
         <ul className="flex flex-col gap-4 p-4 text-gray-700">
           <li>
-            <NavLink to="/about" onClick={() => setSidebarOpen(false)}>
-              Tentang
-            </NavLink>
-          </li>
-          <li>
             <NavLink to="/services" onClick={() => setSidebarOpen(false)}>
-              Layanan
+              Services
             </NavLink>
           </li>
           <li>
-            <NavLink to="/blogs" onClick={() => setSidebarOpen(false)}>
-              Blog
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/product" onClick={() => setSidebarOpen(false)}>
-              Produk
+            <NavLink to="/portfolios" onClick={() => setSidebarOpen(false)}>
+              Portfolios
             </NavLink>
           </li>
           <li>
             <NavLink to="/contact" onClick={() => setSidebarOpen(false)}>
-              Kontak
+              Contacts
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/contact"
+              className="mt-4 inline-block px-4 py-2 rounded-lg bg-blue-500 text-white text-center"
+              onClick={() => setSidebarOpen(false)}
+            >
+              Get in touch
             </NavLink>
           </li>
         </ul>
