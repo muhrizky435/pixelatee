@@ -43,7 +43,7 @@ export function NavBar() {
         </li>
         <li>
           <NavLink
-            to="/portfolio"
+            to="/portofolio"
             className={({ isActive }) =>
               isActive
                 ? "text-black font-bold"
