@@ -1,189 +1,82 @@
-import { useEffect, useState, useRef } from "react";
-import { HiMenu, HiX } from "react-icons/hi";
+import { useState, useEffect } from "react";
 import { NavLink } from "react-router";
 
-type NavBarProps = {
-  textColor: "text-primary" | "text-secondary" | "text-tertiary";
-};
-
-export function NavBar({ textColor }: NavBarProps) {
-  const [show, setShow] = useState(true);
+export function NavBar() {
   const [scrolled, setScrolled] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const lastScrollY = useRef(0);
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
-        setShow(false);
-      } else {
-        setShow(true);
-      }
-
-      setScrolled(currentScrollY > 500);
-      lastScrollY.current = currentScrollY;
+      setScrolled(window.scrollY > 50);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <>
-      {/* Navbar */}
-      <div
-        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-7xl px-6 py-3 flex items-center justify-between transition-all duration-300 font-default
-        rounded-full border border-[#06B6D4] backdrop-blur-lg
-        ${show ? "translate-y-0" : "-translate-y-[120%]"} 
-        ${scrolled ? "bg-white/90 shadow-lg" : "bg-white/70 shadow-md"}
-      `}
-      >
+    <nav
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        scrolled ? "bg-white/90 shadow-md backdrop-blur" : "bg-transparent"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <NavLink to={"/"}>
           <img
-            className={"w-32"}
+            className="w-32"
             src={"/Logotype.svg"}
             alt={"Pixelatee Logotype"}
           />
         </NavLink>
 
-        {/* Menu Desktop */}
-        <ul
-          className={`md:flex gap-6 justify-center items-center flex-1 hidden ${
-            scrolled ? "text-gray-700" : textColor
-          }`}
-        >
+        {/* Menu */}
+        <ul className="hidden md:flex gap-8 text-base font-medium">
           <li>
             <NavLink
-              to={"/about"}
+              to="/services"
               className={({ isActive }) =>
                 isActive
-                  ? "font-semibold"
-                  : "hover:text-blue-500 transition-colors"
+                  ? "text-black font-bold"
+                  : "text-gray-800 hover:text-black transition-colors"
               }
             >
-              Tentang
+              Services
             </NavLink>
           </li>
           <li>
             <NavLink
-              to={"/services"}
+              to="/portfolio"
               className={({ isActive }) =>
                 isActive
-                  ? "font-semibold"
-                  : "hover:text-blue-500 transition-colors"
+                  ? "text-black font-bold"
+                  : "text-gray-800 hover:text-black transition-colors"
               }
             >
-              Layanan
+              Portfolio
             </NavLink>
           </li>
           <li>
             <NavLink
-              to={"/blogs"}
+              to="/contact"
               className={({ isActive }) =>
                 isActive
-                  ? "font-semibold"
-                  : "hover:text-blue-500 transition-colors"
+                  ? "text-black font-bold"
+                  : "text-gray-800 hover:text-black transition-colors"
               }
             >
-              Blog
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to={"/product"}
-              className={({ isActive }) =>
-                isActive
-                  ? "font-semibold"
-                  : "hover:text-blue-500 transition-colors"
-              }
-            >
-              Produk
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to={"/contact"}
-              className={({ isActive }) =>
-                isActive
-                  ? "font-semibold"
-                  : "hover:text-blue-500 transition-colors"
-              }
-            >
-              Kontak
+              Contact
             </NavLink>
           </li>
         </ul>
 
-        {/* Right Section */}
-        <div className={"md:flex items-center gap-6 hidden"}>
-          <div className="flex items-center gap-2 text-blue-600">
-            <span className="text-sm font-medium">Need help?</span>
-            <span className="font-semibold">(+62) 123-45678-91</span>
-          </div>
-        </div>
-
-        {/* Mobile menu button */}
-        <div className={"md:hidden items-center gap-8 flex flex-1 justify-end"}>
-          <HiMenu
-            onClick={() => setSidebarOpen(true)}
-            className={`${scrolled ? "text-gray-700" : textColor} cursor-pointer`}
-            size={28}
-          />
+        <div className="hidden md:block">
+          <NavLink
+            to="/contact"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium shadow-md transition"
+          >
+            Get in touch
+          </NavLink>
         </div>
       </div>
-
-      {/* Sidebar Overlay */}
-      <div
-        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300 ${
-          sidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
-        onClick={() => setSidebarOpen(false)}
-      />
-
-      {/* Sidebar */}
-      <div
-        className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50 transform transition-transform duration-300
-        ${sidebarOpen ? "translate-x-0" : "translate-x-full"}`}
-      >
-        <div className="flex items-center justify-between p-4 border-b">
-          <span className="font-semibold text-lg">Menu</span>
-          <HiX
-            size={28}
-            className="cursor-pointer text-gray-600"
-            onClick={() => setSidebarOpen(false)}
-          />
-        </div>
-        <ul className="flex flex-col gap-4 p-4 text-gray-700">
-          <li>
-            <NavLink to="/about" onClick={() => setSidebarOpen(false)}>
-              Tentang
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/services" onClick={() => setSidebarOpen(false)}>
-              Layanan
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/blogs" onClick={() => setSidebarOpen(false)}>
-              Blog
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/product" onClick={() => setSidebarOpen(false)}>
-              Produk
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/contact" onClick={() => setSidebarOpen(false)}>
-              Kontak
-            </NavLink>
-          </li>
-        </ul>
-      </div>
-    </>
+    </nav>
   );
 }
