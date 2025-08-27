@@ -35,7 +35,7 @@ export function NavBar({ textColor }: NavBarProps) {
       {/* Navbar */}
       <div
         className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-7xl px-6 py-3 flex items-center justify-between transition-all duration-300 font-default
-        rounded-full border border-[#06B6D4] backdrop-blur-lg
+         border border-[#06B6D4] backdrop-blur-lg
         ${show ? "translate-y-0" : "-translate-y-[120%]"} 
         ${scrolled ? "bg-white/90 shadow-lg" : "bg-white/70 shadow-md"}
       `}
