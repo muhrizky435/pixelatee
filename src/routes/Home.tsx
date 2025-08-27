@@ -4,7 +4,7 @@ import { Footer } from "../components/Footer";
 export default function Home() {
   return (
     <>
-      <NavBar textColor="text-secondary" />
+      <NavBar />
       <main>Pixelatee new</main>
       <Footer />
     </>

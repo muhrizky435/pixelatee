@@ -4,7 +4,7 @@ import { Footer } from "../components/Footer";
 export default function Contact() {
   return (
     <>
-      <NavBar textColor="text-secondary" />
+      <NavBar />
       <main></main>
       <Footer />
     </>
