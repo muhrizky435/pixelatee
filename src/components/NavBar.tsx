@@ -59,7 +59,7 @@ export function NavBar() {
             </li>
             <li>
               <NavLink
-                to="/portfolios"
+                to="/portfolio"
                 className={({ isActive }) =>
                   isActive
                     ? "text-blue-600 font-semibold"
@@ -132,7 +132,7 @@ export function NavBar() {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/portfolios" onClick={() => setSidebarOpen(false)}>
+            <NavLink to="/portfolio" onClick={() => setSidebarOpen(false)}>
               Portfolios
             </NavLink>
           </li>

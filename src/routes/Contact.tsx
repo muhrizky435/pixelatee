@@ -1,13 +1,26 @@
 import { NavBar } from "../components/NavBar";
 import { Footer } from "../components/Footer";
-import { FaMapMarkerAlt, FaEnvelope, FaPhoneAlt, FaRegCommentDots, FaTag, FaUser, FaFacebookSquare } from "react-icons/fa";
+import {
+  FaMapMarkerAlt,
+  FaEnvelope,
+  FaPhoneAlt,
+  FaRegCommentDots,
+  FaTag,
+  FaUser,
+  FaFacebookSquare,
+} from "react-icons/fa";
 import { FaInstagram, FaXTwitter, FaLinkedin } from "react-icons/fa6";
 
 export default function Contact() {
   return (
     <>
       <NavBar />
-      <main className="max-w-7xl px-12 md:px-20 py-28 font-default">
+      <main className="max-w-7xl px-12 md:px-20 py-28 font-default relative overflow-hidden">
+        {/* Partikel Blur Background */}
+        <div className="absolute top-10 left-0 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+        <div className="absolute bottom-60 right-0 w-74 h-74 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+        <div className="absolute bottom-10 left-0 -translate-x-1/2 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+
         {/* Heading */}
         <div className="mb-10 md:mb-14">
           <h2 className="text-3xl md:text-4xl font-semibold mb-4">
@@ -34,10 +47,10 @@ export default function Contact() {
               />
 
               <div className="p-5">
-                <h3 className="font-semibold text-lg mb-3">We Work here!</h3>
+                <h3 className="font-semibold text-xl mb-3">We Work <span className="font-bold text-blue-600">here!</span> </h3>
                 <p className="flex items-center gap-2 text-gray-700">
-                  <FaMapMarkerAlt className="text-blue-500" /> 24, Us Street,
-                  Washington DC
+                  <FaMapMarkerAlt className="text-blue-500" /> 24, Id Street,
+                  Konohagakure
                 </p>
                 <a
                   href="#"
