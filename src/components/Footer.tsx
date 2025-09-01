@@ -11,7 +11,7 @@ export function Footer() {
       </div> */}
 
       {/* Konten utama */}
-      <div className="relative grid grid-cols-1 md:grid-cols-4 gap-12 px-12 lg:px-20 py-16">
+      <div className="relative grid grid-cols-1 md:grid-cols-4 gap-16 px-12 lg:px-20 py-16">
         {/* Kolom 1 - Logo & Deskripsi */}
         <div className="flex flex-col gap-6">
           <Link to="/">
@@ -36,7 +36,7 @@ export function Footer() {
         </div>
 
         {/* Kolom 2 - About Us */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 ">
           <h3 className="text-white font-semibold text-lg mb-2">About Us</h3>
           <Link to="#" className="hover:text-white transition-colors">About</Link>
           <Link to="#" className="hover:text-white transition-colors">Goals</Link>

@@ -74,7 +74,7 @@ export default function PortoFolio() {
   return (
     <>
       <NavBar />
-      <main className="px-12 md:px-20 py-28 relative font-default overflow-hidden">
+      <main className="px-12 md:px-20 py-32 relative font-default overflow-hidden">
         {/* Background effect */}
         <div className="absolute top-10 left-0 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
         <div className="absolute bottom-60 right-0 w-74 h-74 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
@@ -83,7 +83,7 @@ export default function PortoFolio() {
 
         {/* Header */}
         <div className="text-center mb-12 max-w-2xl relative text-left leading-8">
-          <h1 className="text-4xl font-bold">
+          <h1 className="text-4xl font-bold leading-snug">
             Celebrating <span className="text-blue-400">Creativity </span>
             Through{" "}
             <span className="text-blue-500">
@@ -169,7 +169,10 @@ export default function PortoFolio() {
         <div className="mt-16 text-center relative z-10">
           <h2 className="text-3xl md:text-4xl font-semibold">
             Interested in Working with Us? <br /> Get in Touch{" "}
-            <span className="text-blue-600 font-bold">Here!</span>
+            <Link 
+              to="/contact"
+              className="text-blue-600 font-bold">Here!
+            </Link>
           </h2>
         </div>
       </main>

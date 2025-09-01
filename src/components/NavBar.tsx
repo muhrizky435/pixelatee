@@ -1,12 +1,15 @@
 import { useEffect, useState, useRef } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
-import { NavLink } from "react-router";
+import { NavLink, useLocation } from "react-router";
 
 export function NavBar() {
   const [show, setShow] = useState(true);
   const [scrolled, setScrolled] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const lastScrollY = useRef(0);
+
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,7 +25,7 @@ export function NavBar() {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isHome]);
 
   return (
     <>
@@ -31,26 +34,39 @@ export function NavBar() {
         className={`fixed top-0 left-0 z-50 w-full transition-all duration-300 font-default shadow-xl
         ${show ? "translate-y-0" : "-translate-y-[120%]"} 
         ${scrolled ? "bg-white shadow-xl" : "bg-transparent"}
+        ${isHome ? "shadow-none border-none bg-transparent" : ""}
       `}
       >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div
+          className={`max-w-7xl px-10 py-4 flex items-center justify-between
+          ${isHome ? "justify-start gap-26" : ""}
+        `}
+        >
+          {/* Partikel Blur Background */}
+          <div className="absolute top-0 left-60 w-22 h-22 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl opacity-10"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 w-35 h-35 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl opacity-5"></div>
+
           {/* Logo */}
           <NavLink to={"/"}>
             <img
-              className="w-32"
+              className="w-44"
               src="/Logotype.svg"
               alt="Pixelatee Logotype"
             />
           </NavLink>
 
           {/* Menu Desktop */}
-          <ul className="md:flex gap-10 justify-center items-center hidden text-gray-800 font-medium">
+          <ul
+            className={`md:flex gap-10 justify-center items-center hidden text-gray-800 font-medium ${
+              isHome ? "" : ""
+            }`}
+          >
             <li>
               <NavLink
                 to="/services"
                 className={({ isActive }) =>
                   isActive
-                    ? "text-blue-600 font-semibold"
+                    ? "text-blue-600 font-bold"
                     : "hover:text-blue-500 transition-colors"
                 }
               >
@@ -62,7 +78,7 @@ export function NavBar() {
                 to="/portfolio"
                 className={({ isActive }) =>
                   isActive
-                    ? "text-blue-600 font-semibold"
+                    ? "text-blue-600 font-bold"
                     : "hover:text-blue-500 transition-colors"
                 }
               >
@@ -74,7 +90,7 @@ export function NavBar() {
                 to="/contact"
                 className={({ isActive }) =>
                   isActive
-                    ? "text-blue-600 font-semibold"
+                    ? "text-blue-600 font-bold"
                     : "hover:text-blue-500 transition-colors"
                 }
               >
@@ -87,7 +103,13 @@ export function NavBar() {
           <div className="hidden md:block">
             <NavLink
               to="/contact"
-              className="px-5 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors"
+              className={`px-5 py-2 rounded-lg font-medium transition-colors
+              ${
+                isHome && !scrolled
+                  ? "bg-white text-blue-500 hover:text-white hover:bg-blue-600 ml-80"
+                  : "bg-blue-500 text-white hover:bg-blue-600 ml-80"
+              }
+              `}
             >
               Get in touch
             </NavLink>

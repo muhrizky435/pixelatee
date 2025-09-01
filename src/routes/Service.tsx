@@ -1,5 +1,17 @@
 import React, { useState } from "react";
-import { FaRegImage } from "react-icons/fa";
+import { Link } from "react-router";
+import {
+  FaRegImage,
+  FaCode,
+  FaServer,
+  FaLayerGroup,
+  FaApple,
+  FaAndroid,
+  FaMobileAlt,
+  FaUsers,
+  FaChartBar,
+  FaCog,
+} from "react-icons/fa";
 import { FaArrowTrendUp, FaCircleArrowUp } from "react-icons/fa6";
 import { LuArrowUpRight, LuArrowDownRight } from "react-icons/lu";
 import { motion, AnimatePresence } from "framer-motion";
@@ -31,12 +43,12 @@ const services: ServiceData[] = [
         desc: "creating rough layouts to plan user experience flow.",
       },
       {
-        icon: <FaArrowTrendUp className="text-blue-500 text-3xl mb-3" />,
+        icon: <FaArrowTrendUp className="text-green-500 text-3xl mb-3" />,
         title: "Prototype Design",
         desc: "building interactive mockups to test look and feel.",
       },
       {
-        icon: <FaRegImage className="text-blue-500 text-3xl mb-3" />,
+        icon: <FaRegImage className="text-yellow-500 text-3xl mb-3" />,
         title: "Final Mockups",
         desc: "delivering high-quality design previews for review.",
       },
@@ -47,16 +59,19 @@ const services: ServiceData[] = [
     label: "Web Development",
     items: [
       {
+        icon: <FaCode className="text-green-500 text-3xl mb-3" />,
         title: "Frontend Development",
         desc: "building user interfaces with React, Vue, or Angular.",
       },
       {
+        icon: <FaServer className="text-yellow-500 text-3xl mb-3" />,
         title: "Backend Development",
         desc: "creating APIs and server logic using Node.js or Django.",
       },
       {
+        icon: <FaLayerGroup className="text-purple-500 text-3xl mb-3" />,
         title: "FullStack Development",
-        desc: "Buailding user interface and creating APIs and server logic using Node.js or Django.",
+        desc: "building user interface and creating APIs and server logic using Node.js or Django.",
       },
     ],
   },
@@ -65,16 +80,19 @@ const services: ServiceData[] = [
     label: "Mobile Application",
     items: [
       {
+        icon: <FaApple className="text-gray-500 text-3xl mb-3" />,
         title: "iOS Apps",
         desc: "developing apps for Apple devices using Swift.",
       },
       {
+        icon: <FaAndroid className="text-green-600 text-3xl mb-3" />,
         title: "Android Apps",
         desc: "building Android apps with Kotlin or Flutter.",
       },
       {
-        title: "Android Apps",
-        desc: "building Android apps with Kotlin or Flutter.",
+        icon: <FaMobileAlt className="text-pink-500 text-3xl mb-3" />,
+        title: "Cross-Platform Apps",
+        desc: "developing apps that work on both iOS and Android with React Native or Flutter.",
       },
     ],
   },
@@ -83,16 +101,19 @@ const services: ServiceData[] = [
     label: "CRM System (SaaS Dashboard)",
     items: [
       {
+        icon: <FaUsers className="text-blue-600 text-3xl mb-3" />,
         title: "User Management",
         desc: "managing customers, roles, and permissions.",
       },
       {
+        icon: <FaChartBar className="text-orange-500 text-3xl mb-3" />,
         title: "Analytics Dashboard",
         desc: "track usage, sales, and reports in real-time.",
       },
       {
-        title: "Analytics Dashboard",
-        desc: "track usage, sales, and reports in real-time.",
+        icon: <FaCog className="text-indigo-500 text-3xl mb-3" />,
+        title: "System Settings",
+        desc: "configure system preferences, integrations, and automations.",
       },
     ],
   },
@@ -109,7 +130,7 @@ export default function ServisSection() {
     <>
       <NavBar />
       <main>
-        <div className="bg-white text-gray-800 px-5 md:px-20 py-28 font-default relative overflow-hidden">
+        <div className="bg-white text-gray-800 px-5 md:px-20 py-32 font-default relative overflow-hidden">
           {/* Partikel Blur Background */}
           <div className="absolute top-10 left-0 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
           <div className="absolute bottom-10 right-0 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
@@ -134,7 +155,7 @@ export default function ServisSection() {
               {/* Image kiri */}
               <div className="flex justify-center md:justify-start md:col-span-2">
                 <img
-                  src="https://images.unsplash.com/photo-1551434678-e076c223a692"
+                  src="/img/photo2.jpeg"
                   alt="Services"
                   className="rounded-lg shadow-lg w-full md:h-120 max-w-sm object-cover"
                 />
@@ -192,7 +213,10 @@ export default function ServisSection() {
             <div className="mt-16 text-center">
               <h3 className="text-3xl md:text-4xl font-semibold">
                 Let’s Build Something Great Together, <br /> Get in Touch{" "}
-                <span className="text-blue-600 font-bold">Here!</span>
+                <Link 
+                  to="/contact"
+                  className="text-blue-600 font-bold">Here!
+                </Link>
               </h3>
             </div>
           </div>

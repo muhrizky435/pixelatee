@@ -15,7 +15,7 @@ export default function Contact() {
   return (
     <>
       <NavBar />
-      <main className="max-w-7xl px-12 md:px-20 py-28 font-default relative overflow-hidden">
+      <main className="max-w-7xl px-12 md:px-20 py-32 font-default relative overflow-hidden">
         {/* Partikel Blur Background */}
         <div className="absolute top-10 left-0 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
         <div className="absolute bottom-60 right-0 w-74 h-74 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
