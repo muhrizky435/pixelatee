@@ -9,6 +9,7 @@ import Service from "./routes/Service";
 import PortoFolio from "./routes/Portfolio";
 import PortoFolioDetail from "./routes/Portfolio-Detail";
 import Contact from "./routes/Contact";
+import NewsletterThankYou from "./routes/NewsletterThankYou";
 
 
 createRoot(document.getElementById("root")!).render(
@@ -21,6 +22,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="portfolio" element={<PortoFolio />} />
         <Route path="portfolio/:id" element={<PortoFolioDetail />} />
         <Route path="contact" element={<Contact />} />
+        <Route path="newsletters/:memberId/thank-you" element={<NewsletterThankYou />} />
 
         {/* Admin Cms Route */}
 

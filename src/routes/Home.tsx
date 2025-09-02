@@ -6,6 +6,7 @@ import ClientSlider from "../components/ClientSlider";
 import { HiArrowRight } from "react-icons/hi";
 import { useState } from "react";
 import { HiOutlineChevronDown, HiOutlineChevronUp } from "react-icons/hi";
+import { joinNewsletter } from "../api/newsletter.api";
 
 // faq
 const faqs = [
@@ -106,6 +107,51 @@ const projects = [
 export default function Home() {
   const [openId, setOpenId] = useState<number | null>(null);
 
+  // state untuk toast join newsletter
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastType, setToastType] = useState<"success" | "error">("success");
+  const [toastMessage, setToastMessage] = useState("");
+
+  // Tambahan state untuk newsletter
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [newsletterLoading, setNewsletterLoading] = useState(false);
+  
+  // handle kirim email join newsletter
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setNewsletterLoading(true);
+
+    // fetch api kirim email untuk join newsletter
+    try {
+      await joinNewsletter({ email: newsletterEmail });
+      setToastMessage("Check your email to confirm your subscription!");
+      setNewsletterEmail("");
+
+      // tampilkan toast success
+      setToastType("success");
+      setToastMessage("Check your email to confirm your subscription!");
+      setToastOpen(true);
+
+      // auto close 4 detik
+      setTimeout(() => setToastOpen(false), 4000);
+    } catch (err) {
+      let msg = "Failed to subscribe.";
+      if (err && typeof err === "object" && "response" in err) {
+        const errorObj = err as { response?: { data?: { message?: string } } };
+        msg = errorObj.response?.data?.message || msg;
+      }
+
+      // tampilkan toast error
+      setToastType("error");
+      setToastMessage(msg);
+      setToastOpen(true);
+
+      setTimeout(() => setToastOpen(false), 3000);
+    } finally {
+      setNewsletterLoading(false);
+    }
+  };
+
   const toggle = (id: number) => {
     setOpenId(openId === id ? null : id);
   };
@@ -115,41 +161,42 @@ export default function Home() {
       <NavBar />
       <main className="font-default bg-white text-gray-800">
         {/* Hero Section */}
-        <section className="relative grid grid-cols-1 md:grid-cols-[3fr_2fr]">
+        <section className="relative grid grid-cols-1 md:grid-cols-[3fr_2fr] min-h-screen">
           {/* Left: Blue block */}
-          <div className="flex flex-col justify-between pt-19">
-            <div className="bg-[#2563eb] text-white px-8 md:px-16 py-20">
-              <h1 className="text-3xl md:text-4xl font-bold leading-snug mb-4">
+          <div className="flex flex-col justify-between pt-19 h-full">
+            <div className="bg-[#2563eb] text-white px-8 md:px-16 py-20 flex-1 flex flex-col justify-center">
+              <h1 className="text-4xl md:text-5xl font-bold leading-snug mb-4">
                 Transforming Ideas Into <br /> Digital Impact
               </h1>
-              <p className="text-sm md:text-base text-blue-100">
+              <p className="text-lg md:text-base text-gray-300">
                 We craft meaningful experiences that help brands grow and
                 connect with people.
               </p>
             </div>
-            {/* Logos inside hero, with white bg */}
-            <div className="bg-white py-6 px-6 md:px-2">
-              <div className="flex flex-wrap justify-start items-center gap-10">
+
+            {/* Logo didalam hero section */}
+            <div className="bg-white py-6 px-2 md:px-2">
+              <div className="flex flex-wrap justify-start items-center gap-8">
                 <ClientSlider />
               </div>
             </div>
           </div>
 
-          {/* Right: Image full */}
-          <div className="hidden md:block">
+          {/* kanan: full gambar */}
+          <div className="hidden md:block h-full">
             <img
               src="/img/photo4.png"
               alt="team work"
-              className="h-130 w-full object-cover"
+              className="h-full w-full object-cover"
             />
           </div>
         </section>
 
         {/* Empowering Section */}
         <section className="text-center py-10 md:py-19 px-12 md:x-6">
-          <h2 className="text-3xl md:text-5xl font-bold text-gray-800">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-800">
             Empowering{" "}
-            <span className="text-blue-400 font-semibold">businesses</span>,
+            <span className="text-blue-500 font-semibold">businesses</span>,
             inspiring{" "}
             <span className="text-blue-600 font-semibold">change</span>.
           </h2>
@@ -166,7 +213,7 @@ export default function Home() {
             <h3 className="text-4xl md:text-5xl text-left font-bold text-gray-900 mb-6 leading-snug">
               Our <span className="text-blue-400">Story</span>,{" "}
               <span className="text-blue-500">Vision</span>, and{" "}
-              <span className="text-blue-700">Values</span>
+              <span className="text-blue-600">Values</span>
             </h3>
 
             <FaQuoteLeft className="text-blue-600 text-4xl mb-4" />
@@ -283,8 +330,8 @@ export default function Home() {
         {/* section Project */}
         <section className="pt-20 px-12 md:px-26 bg-white">
           {/* Heading */}
-          <div className="mb-10 text-center md:text-left">
-            <h2 className="text-4xl md:text-5xl font-semibold text-gray-900 leading-snug">
+          <div className="mb-10 text-justify md:text-left">
+            <h2 className="text-3xl md:text-5xl font-semibold text-gray-900 leading-snug">
               Transforming{" "}
               <span className="text-blue-500 font-bold">Creative Ideas</span>
               <br />
@@ -317,7 +364,7 @@ export default function Home() {
                   </h3>
                   <Link
                     to={`/portfolio/${project.id}`}
-                    className="inline-flex items-center gap-2 mt-4 text-yellow-200 hover:text-white font-medium text-sm group"
+                    className="inline-flex items-center gap-2 mt-4 text-white hover:text-yellow-400 font-medium text-sm group"
                   >
                     <span>Get a Direction</span>
                     <HiArrowRight className="text-lg transform group-hover:translate-x-1 transition-transform duration-200" />
@@ -331,7 +378,7 @@ export default function Home() {
           <div className="flex justify-center mt-14">
             <Link
               to="/portfolio"
-              className="inline-flex font-semibold text-xl rounded-full border border-blue-500  py-2 px-8 items-center gap-2 mt-4 text-blue-500 hover:text-white hover:bg-blue-500 group"
+              className="inline-flex font-medium text-xl rounded-full border border-blue-500  py-2 px-8 items-center gap-2 mt-4 text-blue-500 hover:text-white hover:bg-blue-500 group"
             >
               <span>See More</span>
               <HiArrowRight className="transform group-hover:translate-x-1 transition-transform duration-200" />
@@ -357,7 +404,6 @@ export default function Home() {
 
           {/* Testimonials */}
           <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 max-w-6xl mx-auto">
-            
             {testimonials.map((t) => (
               <div
                 key={t.id}
@@ -379,25 +425,47 @@ export default function Home() {
             <span className="text-white font-extrabold">Newsletter!</span>
           </h3>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center max-w-2xl mx-auto w-full gap-3 sm:gap-0 px-6">
+          <form
+            onSubmit={handleNewsletterSubmit}
+            className="flex flex-col sm:flex-row items-center justify-center max-w-2xl mx-auto w-full gap-3 sm:gap-0 px-6"
+          >
             <input
               type="email"
               placeholder="Your Email"
-              className="w-full sm:flex-1 px-4 py-3 bg-white text-blue-600 rounded-md sm:rounded-l-md sm:rounded-r-none focus:outline-none"
+              value={newsletterEmail}
+              onChange={(e) => setNewsletterEmail(e.target.value)}
+              required
+              className="w-full sm:flex-1 px-4 py-3 bg-white text-gray-700 rounded-md sm:rounded-l-md sm:rounded-r-none focus:outline-none"
+              disabled={newsletterLoading}
             />
-            <button className="w-full sm:w-auto px-6 py-3 bg-blue-800 rounded-md sm:rounded-l-none sm:rounded-r-md hover:bg-blue-900 transition">
-              Subscribe
+            <button
+              type="submit"
+              className="w-full sm:w-auto px-6 py-3 bg-blue-800 rounded-md sm:rounded-l-none sm:rounded-r-md hover:bg-blue-900 transition disabled:opacity-50"
+              disabled={newsletterLoading}
+            >
+              {newsletterLoading ? "Subscribing..." : "Subscribe"}
             </button>
+          </form>
+          {/* Feedback */}
+          {/* Toast */}
+          <div
+            className={`fixed top-5 right-5 z-50 transform transition-all duration-500 ${
+              toastOpen ? "translate-x-0 opacity-100" : "translate-x-40 opacity-0"
+            }`}
+          >
+            <div
+              className={`px-6 py-4 rounded shadow-lg text-white font-semibold ${
+                toastType === "success" ? "bg-green-500" : "bg-red-600"
+              }`}
+            >
+              {toastMessage}
+            </div>
           </div>
         </div>
         {/* end Testimonials & Newsletter Section */}
 
         {/* FAQ Section */}
         <section className="w-full py-16 px-6 md:px-12 lg:px-24">
-          {/* Circle Blur */}
-          <div className="absolute top-50 -left-20 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-15 "></div>
-          <div className="absolute bottom-30 right-0 w-74 h-74 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-100"></div>
-
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-5xl mx-auto">
             {/* Left Heading */}
             <div className="md:col-span-1">

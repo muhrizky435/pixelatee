@@ -122,7 +122,7 @@ const services: ServiceData[] = [
 export default function ServisSection() {
   const [openService, setOpenService] = useState<ServiceKey | null>("uiux");
 
-  const toggleService = (service: ServiceKey) => {
+  const toggle = (service: ServiceKey) => {
     setOpenService((prev) => (prev === service ? null : service));
   };
 
@@ -130,7 +130,7 @@ export default function ServisSection() {
     <>
       <NavBar />
       <main>
-        <div className="bg-white text-gray-800 px-5 md:px-20 py-32 font-default relative overflow-hidden">
+        <div className="bg-white text-gray-800 px-5 md:px-20 py-28 font-default relative overflow-hidden">
           {/* Partikel Blur Background */}
           <div className="absolute top-10 left-0 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
           <div className="absolute bottom-10 right-0 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
@@ -138,13 +138,13 @@ export default function ServisSection() {
 
           <div className="max-w-7xl mx-auto flex flex-col">
             {/* Heading atas */}
-            <div className="text-center md:text-right md:ml-auto mb-12">
-              <h2 className="text-4xl md:text-4xl leading-snug font-bold">
-                We <span className="text-blue-600">Build.</span> We{" "}
-                <span className="text-blue-600">Design.</span> We{" "}
+            <div className="text-center md:text-left md:ml-auto mb-12">
+              <h2 className="text-4xl md:text-5xl leading-snug font-bold">
+                We <span className="text-blue-400">Build.</span> We{" "}
+                <span className="text-blue-500">Design.</span> We < br/>
                 <span className="text-blue-600">Innovate.</span>
               </h2>
-              <p className="text-gray-400 mt-3 text-base max-w-2xl md:ml-auto md:text-center">
+              <p className="text-gray-400 mt-3 text-base max-w-2xl md:ml-auto md:text-left">
                 Explore the range of services we offer to elevate your digital
                 presence.
               </p>
@@ -161,22 +161,34 @@ export default function ServisSection() {
                 />
               </div>
 
-              {/* Service kanan */}
+              {/* Kanan Service */}
               <div className="flex flex-col gap-4 md:col-span-3 px-8 md:px-0">
                 {services.map((service) => (
-                  <div key={service.key}>
-                    <button
-                      className="w-full flex justify-between items-center text-xl font-semibold py-3 border-b border-gray-700"
-                      onClick={() => toggleService(service.key)}
-                    >
-                      {service.label}
+                  <div
+                    key={service.key}
+                    className="border-b border-gray-200 pb-4 cursor-pointer"
+                    onClick={() => toggle(service.key)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <h3
+                          className={`text-2xl font-semibold ${
+                            openService === service.label
+                              ? "text-gray-900"
+                              : "text-gray-700"
+                          }`}
+                        >
+                          {service.label}
+                        </h3>
+                      </div>
                       {openService === service.key ? (
-                        <LuArrowUpRight className="text-xl text-blue-600" />
+                        <LuArrowUpRight className="text-blue-600 text-xl" />
                       ) : (
-                        <LuArrowDownRight className="text-xl text-blue-600" />
+                        <LuArrowDownRight className="text-blue-600 text-xl" />
                       )}
-                    </button>
+                    </div>
 
+                    {/* isi service */}
                     <AnimatePresence>
                       {openService === service.key && (
                         <motion.div
@@ -213,9 +225,8 @@ export default function ServisSection() {
             <div className="mt-16 text-center">
               <h3 className="text-3xl md:text-4xl font-semibold">
                 Let’s Build Something Great Together, <br /> Get in Touch{" "}
-                <Link 
-                  to="/contact"
-                  className="text-blue-600 font-bold">Here!
+                <Link to="/contact" className="text-blue-600 font-bold">
+                  Here!
                 </Link>
               </h3>
             </div>

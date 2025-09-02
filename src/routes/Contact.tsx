@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { NavBar } from "../components/NavBar";
 import { Footer } from "../components/Footer";
 import {
@@ -10,12 +11,66 @@ import {
   FaFacebookSquare,
 } from "react-icons/fa";
 import { FaInstagram, FaXTwitter, FaLinkedin } from "react-icons/fa6";
+import { sendContactAxios } from "../api/contact.api";
 
 export default function Contact() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
+
+  // tambahan state untuk toast
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastType, setToastType] = useState<"success" | "error">("success");
+  const [toastMessage, setToastMessage] = useState("");
+
+  // handle submit
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setFeedback(null);
+
+    // fetch api kirim pesan (contact.api.ts)
+    try {
+      const res = await sendContactAxios({ name, email, subject, message });
+      setFeedback(res.message || "Message sent successfully!");
+      setName("");
+      setEmail("");
+      setSubject("");
+      setMessage("");
+
+      // tampilkan toast success
+      setToastType("success");
+      setToastMessage(res.message || "Message sent successfully!");
+      setToastOpen(true);
+
+      // auto close 4 detik
+      setTimeout(() => setToastOpen(false), 4000);
+    } catch (err) {
+      let msg = "Failed to send message.";
+      if (err && typeof err === "object" && "response" in err) {
+        const errorObj = err as { response?: { data?: { message?: string } } };
+        msg = errorObj.response?.data?.message || msg;
+      }
+      setFeedback(msg);
+
+      // tampilkan toast error
+      setToastType("error");
+      setToastMessage(msg);
+      setToastOpen(true);
+
+      setTimeout(() => setToastOpen(false), 3000);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <NavBar />
-      <main className="max-w-7xl px-12 md:px-20 py-32 font-default relative overflow-hidden">
+      <main className="max-w-7xl px-12 md:px-20 py-28 font-default relative overflow-hidden">
         {/* Partikel Blur Background */}
         <div className="absolute top-10 left-0 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
         <div className="absolute bottom-60 right-0 w-74 h-74 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
@@ -23,9 +78,9 @@ export default function Contact() {
 
         {/* Heading */}
         <div className="mb-10 md:mb-14">
-          <h2 className="text-3xl md:text-4xl font-semibold mb-4">
+          <h2 className="text-4xl md:text-5xl font-semibold mb-4">
             Tell Us{" "}
-            <span className="text-blue-600 font-bold text-4xl">your Idea!</span>
+            <span className="text-blue-600 font-bold">your Idea!</span>
           </h2>
           <p className="text-gray-400 max-w-2xl">
             We’d love to hear from you and explore how we can turn your thoughts
@@ -34,9 +89,9 @@ export default function Contact() {
           </p>
         </div>
 
-        {/* Grid Layout: Office Card (left) + Form (right) */}
+        {/* Grid Layout: kiri-image kanan-form */}
         <div className="grid md:grid-cols-2 gap-12 items-start">
-          {/* Left Section */}
+          {/* kiri Section */}
           <div>
             {/* Office Card */}
             <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden mb-6">
@@ -47,7 +102,9 @@ export default function Contact() {
               />
 
               <div className="p-5">
-                <h3 className="font-semibold text-xl mb-3">We Work <span className="font-bold text-blue-600">here!</span> </h3>
+                <h3 className="font-semibold text-xl mb-3">
+                  We Work <span className="font-bold text-blue-600">here!</span>{" "}
+                </h3>
                 <p className="flex items-center gap-2 text-gray-700">
                   <FaMapMarkerAlt className="text-blue-500" /> 24, Id Street,
                   Konohagakure
@@ -104,7 +161,7 @@ export default function Contact() {
             <h3 className="text-2xl font-semibold mb-6">
               Also, you can <span className="text-blue-600">Contact Us!</span>
             </h3>
-            <form className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               {/* Name */}
               <div>
                 <label className="flex items-center gap-2 mb-2 text-gray-700 font-medium">
@@ -113,6 +170,9 @@ export default function Contact() {
                 <input
                   type="text"
                   placeholder="Enter your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               </div>
@@ -125,6 +185,9 @@ export default function Contact() {
                 <input
                   type="email"
                   placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               </div>
@@ -137,6 +200,9 @@ export default function Contact() {
                 <input
                   type="text"
                   placeholder="Enter subject"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  required
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               </div>
@@ -150,22 +216,52 @@ export default function Contact() {
                   placeholder="Write your message..."
                   rows={5}
                   maxLength={1000}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
                 />
-                <p className="text-right text-sm text-gray-500">0/1000</p>
+                <p className="text-right text-sm text-gray-500">
+                  {message.length}/1000
+                </p>
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 rounded-lg transition"
+                disabled={loading}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 rounded-lg transition disabled:opacity-50"
               >
-                Send Message
+                {loading ? "Sending..." : "Send Message"}
               </button>
+
+              {feedback && (
+                <p className="text-center text-sm mt-2 text-gray-700">
+                  {feedback}
+                </p>
+              )}
             </form>
           </div>
         </div>
       </main>
       <Footer />
+
+      {/* Toast (pojok kanan atas) */}
+      <div
+        className={`fixed top-5 right-5 transform transition-all duration-500 ${
+          toastOpen ? "translate-x-0 opacity-100" : "translate-x-40 opacity-0"
+        }`}
+      >
+        <div
+          className={`px-5 py-3 rounded-lg shadow-lg text-white ${
+            toastType === "success" ? "bg-blue-500" : "bg-red-600"
+          }`}
+        >
+          <p className="font-semibold">
+            {toastType === "success" ? "Success" : "Error"}
+          </p>
+          <p className="text-sm">{toastMessage}</p>
+        </div>
+      </div>
     </>
   );
 }

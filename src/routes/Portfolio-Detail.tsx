@@ -14,9 +14,9 @@ export default function PortfolioDetail() {
       desc: "A smart link shortening platform with real-time analytics and custom branding options.",
       img: "https://cre8ive.co.nz/wp-content/uploads/2018/04/url-shortener.png",
       gallery: [
-        "/img/photo1.jpeg",
-        "/img/photo2.jpeg",
         "/img/photo3.jpg",
+        "/img/photo2.jpeg",
+        "/img/photo1.jpeg",
       ],
     },
     {
@@ -26,9 +26,9 @@ export default function PortfolioDetail() {
       desc: "Cloud hosting with enterprise-grade security and 99.9% uptime guarantee.",
       img: "https://filearchive.cnews.ru/img/articles/2020/09/09/adobestock1588800871024x440_300x200.jpg",
       gallery: [
-        "/img/photo1.jpeg",
-        "/img/photo2.jpeg",
         "/img/photo3.jpg",
+        "/img/photo2.jpeg",
+        "/img/photo1.jpeg",
       ],
     },
     {
@@ -38,9 +38,9 @@ export default function PortfolioDetail() {
       desc: "A flexible content management system designed for startups and enterprises.",
       img: "https://asset.kompas.com/crops/AZAM5yIWvooWd73IqxwWTjO_RIM=/204x0:1299x730/375x240/data/photo/2022/09/09/631aebe1bd4be.png",
       gallery: [
-        "/img/photo1.jpeg",
-        "/img/photo2.jpeg",
         "/img/photo3.jpg",
+        "/img/photo2.jpeg",
+        "/img/photo1.jpeg",
       ],
     },
     {
@@ -50,9 +50,9 @@ export default function PortfolioDetail() {
       desc: "Complete e-commerce solution with integrated payment gateways and inventory tracking.",
       img: "https://prabumulihpos.disway.id/upload/ed4e3fb251ee6cd35ce7030c49673843.jpg",
       gallery: [
-        "/img/photo1.jpeg",
-        "/img/photo2.jpeg",
         "/img/photo3.jpg",
+        "/img/photo2.jpeg",
+        "/img/photo1.jpeg",
       ],
     },
     {
@@ -62,9 +62,9 @@ export default function PortfolioDetail() {
       desc: "A modern HR system for attendance, payroll automation, and employee performance tra...",
       img: "https://www.emailaudience.com/wp-content/uploads/diagram-explanation-of-HRIS-vs-HRMS-vs-HCM.png",
       gallery: [
-        "/img/photo1.jpeg",
-        "/img/photo2.jpeg",
         "/img/photo3.jpg",
+        "/img/photo2.jpeg",
+        "/img/photo1.jpeg",
       ],
     },
     {
@@ -74,9 +74,9 @@ export default function PortfolioDetail() {
       desc: "Digital event management platform with ticketing, registration, and live-stream integra...",
       img: "https://iconiclife.com/wp-content/uploads/2023/10/RF2_1965-500x436.jpg",
       gallery: [
-        "/img/photo1.jpeg",
-        "/img/photo2.jpeg",
         "/img/photo3.jpg",
+        "/img/photo2.jpeg",
+        "/img/photo1.jpeg",
       ],
     },
     {
@@ -86,9 +86,9 @@ export default function PortfolioDetail() {
       desc: "Interactive learning management system with video courses, quizzes, and certifications.",
       img: "https://idwebhost.com/blog/wp-content/uploads/2024/11/lms-a.png",
       gallery: [
-        "/img/photo1.jpeg",
-        "/img/photo2.jpeg",
         "/img/photo3.jpg",
+        "/img/photo2.jpeg",
+        "/img/photo1.jpeg",
       ],
     },
   ];
@@ -110,7 +110,7 @@ export default function PortfolioDetail() {
   return (
     <>
       <NavBar />
-      <main className="px-12 md:px-20 py-32 font-default">
+      <main className="px-12 md:px-20 py-24 font-default">
         {/* Back */}
         <Link
           to="/portfolio"
@@ -136,6 +136,7 @@ export default function PortfolioDetail() {
             <img
               src={project.img}
               alt={project.title}
+              loading="lazy"
               className="w-full h-60 md:h-72 object-cover"
             />
           </div>
@@ -151,9 +152,9 @@ export default function PortfolioDetail() {
             {/* Wrapper scroll */}
             <div className="relative">
               {/* Fade kiri */}
-              <div className="pointer-events-none absolute left-0 top-0 h-full md:w-64 w-12 bg-gradient-to-r from-white to-transparent z-10"></div>
+              <div className="pointer-events-none absolute left-0 top-0 h-full md:w-35 w-12 bg-gradient-to-r from-white to-transparent z-10"></div>
               {/* Fade kanan */}
-              <div className="pointer-events-none absolute right-0 md:right-50 top-0 h-full md:w-64 w-12 bg-gradient-to-l from-white to-transparent z-10"></div>
+              <div className="pointer-events-none absolute right-0 md:right-46 top-0 h-full md:w-64 w-12 bg-gradient-to-l from-white to-transparent z-10"></div>
 
               {/* Gallery scrollable */}
               <div className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth">
@@ -165,6 +166,7 @@ export default function PortfolioDetail() {
                     <img
                       src={g}
                       alt={`Gallery ${i + 1}`}
+                      loading="lazy"
                       className="w-full h-50 object-cover"
                     />
                   </div>
