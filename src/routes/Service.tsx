@@ -130,7 +130,7 @@ export default function ServisSection() {
     <>
       <NavBar />
       <main>
-        <div className="bg-white text-gray-800 px-5 md:px-20 py-28 font-default relative overflow-hidden">
+        <div className="bg-white text-gray-800 px-5 md:px-20 py-25 font-default relative overflow-hidden">
           {/* Partikel Blur Background */}
           <div className="absolute top-10 left-0 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
           <div className="absolute bottom-10 right-0 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>

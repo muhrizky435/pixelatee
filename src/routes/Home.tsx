@@ -159,7 +159,7 @@ export default function Home() {
   return (
     <>
       <NavBar />
-      <main className="font-default bg-white text-gray-800">
+      <main className="font-default bg-white text-gray-800 overflow-hidden">
         {/* Hero Section */}
         <section className="relative grid grid-cols-1 md:grid-cols-[3fr_2fr] min-h-screen">
           {/* Left: Blue block */}
@@ -172,13 +172,6 @@ export default function Home() {
                 We craft meaningful experiences that help brands grow and
                 connect with people.
               </p>
-            </div>
-
-            {/* Logo didalam hero section */}
-            <div className="bg-white py-6 px-2 md:px-2">
-              <div className="flex flex-wrap justify-start items-center gap-8">
-                <ClientSlider />
-              </div>
             </div>
           </div>
 
@@ -203,7 +196,7 @@ export default function Home() {
         </section>
 
         {/* Story, Vision, Values */}
-        <section className="relative max-w-7xl px-12 md:px-26 grid grid-cols-1 md:grid-cols-2 gap-12 items-start overflow-hidden">
+        <section id="about" className="relative max-w-7xl px-12 md:px-26 grid grid-cols-1 md:grid-cols-2 gap-12 items-start overflow-hidden">
           {/* Circle Blur */}
           <div className="absolute top-50 -left-20 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-15 "></div>
           <div className="absolute bottom-30 right-0 w-74 h-74 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-15"></div>
@@ -327,8 +320,23 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Clients Section */}
+        <section className="text-center py-10 pt-19 px-12 md:px-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-blue-600">
+            Clients{" "}
+            <span className="text-gray-700 font-semibold">We Work With</span>
+          </h2>
+
+          {/* Logo didalam hero section */}
+          <div className="bg-white py-6 px-2 md:px-2">
+            <div className="flex flex-wrap justify-start items-center gap-8">
+              <ClientSlider />
+            </div>
+          </div>
+        </section>
+
         {/* section Project */}
-        <section className="pt-20 px-12 md:px-26 bg-white">
+        <section className=" px-12 md:px-26 bg-white">
           {/* Heading */}
           <div className="mb-10 text-justify md:text-left">
             <h2 className="text-3xl md:text-5xl font-semibold text-gray-900 leading-snug">
@@ -465,7 +473,7 @@ export default function Home() {
         {/* end Testimonials & Newsletter Section */}
 
         {/* FAQ Section */}
-        <section className="w-full py-16 px-6 md:px-12 lg:px-24">
+        <section id="faq" className="w-full py-14 px-13 md:px-12 lg:px-24">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-5xl mx-auto">
             {/* Left Heading */}
             <div className="md:col-span-1">

@@ -1,106 +1,62 @@
+import { useEffect, useState } from "react";
 import { NavBar } from "../components/NavBar";
 import { Footer } from "../components/Footer";
 import { Link, useParams } from "react-router";
 import { HiArrowLeft } from "react-icons/hi";
+import { getPortfolioDetail } from "../api/portfolio.api";
+import type { Portfolio } from "../api/portfolio.api";
+
+// Dummy gallery data
+const dummyGallery = {
+  gallery: [
+    "/img/photo1.jpeg",
+    "/img/photo2.jpeg",
+    "/img/photo3.jpg",
+    "/img/photo3.jpg",
+    "/img/photo3.jpg",
+  ],
+};
+
 
 export default function PortfolioDetail() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
+  const [project, setProject] = useState<Portfolio | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const portofolio = [
-    {
-      id: 1,
-      type: "BrightWave Media",
-      title: "NovaLink Shortener",
-      desc: "A smart link shortening platform with real-time analytics and custom branding options.",
-      img: "https://cre8ive.co.nz/wp-content/uploads/2018/04/url-shortener.png",
-      gallery: [
-        "/img/photo3.jpg",
-        "/img/photo2.jpeg",
-        "/img/photo1.jpeg",
-      ],
-    },
-    {
-      id: 2,
-      type: "Horizon Tech",
-      title: "SkyHost Cloud",
-      desc: "Cloud hosting with enterprise-grade security and 99.9% uptime guarantee.",
-      img: "https://filearchive.cnews.ru/img/articles/2020/09/09/adobestock1588800871024x440_300x200.jpg",
-      gallery: [
-        "/img/photo3.jpg",
-        "/img/photo2.jpeg",
-        "/img/photo1.jpeg",
-      ],
-    },
-    {
-      id: 3,
-      type: "Urban Mart",
-      title: "CoreCMSr",
-      desc: "A flexible content management system designed for startups and enterprises.",
-      img: "https://asset.kompas.com/crops/AZAM5yIWvooWd73IqxwWTjO_RIM=/204x0:1299x730/375x240/data/photo/2022/09/09/631aebe1bd4be.png",
-      gallery: [
-        "/img/photo3.jpg",
-        "/img/photo2.jpeg",
-        "/img/photo1.jpeg",
-      ],
-    },
-    {
-      id: 4,
-      type: "Urban Mart",
-      title: "ShopMaster E-Commerce",
-      desc: "Complete e-commerce solution with integrated payment gateways and inventory tracking.",
-      img: "https://prabumulihpos.disway.id/upload/ed4e3fb251ee6cd35ce7030c49673843.jpg",
-      gallery: [
-        "/img/photo3.jpg",
-        "/img/photo2.jpeg",
-        "/img/photo1.jpeg",
-      ],
-    },
-    {
-      id: 5,
-      type: "Summit Corp",
-      title: "PeopleFlow HRIS",
-      desc: "A modern HR system for attendance, payroll automation, and employee performance tra...",
-      img: "https://www.emailaudience.com/wp-content/uploads/diagram-explanation-of-HRIS-vs-HRMS-vs-HCM.png",
-      gallery: [
-        "/img/photo3.jpg",
-        "/img/photo2.jpeg",
-        "/img/photo1.jpeg",
-      ],
-    },
-    {
-      id: 6,
-      type: "Summit Corp",
-      title: "EventSphere",
-      desc: "Digital event management platform with ticketing, registration, and live-stream integra...",
-      img: "https://iconiclife.com/wp-content/uploads/2023/10/RF2_1965-500x436.jpg",
-      gallery: [
-        "/img/photo3.jpg",
-        "/img/photo2.jpeg",
-        "/img/photo1.jpeg",
-      ],
-    },
-    {
-      id: 7,
-      type: "Mobile Application",
-      title: "Learnify LMS",
-      desc: "Interactive learning management system with video courses, quizzes, and certifications.",
-      img: "https://idwebhost.com/blog/wp-content/uploads/2024/11/lms-a.png",
-      gallery: [
-        "/img/photo3.jpg",
-        "/img/photo2.jpeg",
-        "/img/photo1.jpeg",
-      ],
-    },
-  ];
+  useEffect(() => {
+    if (!id) return;
+    const fetchDetail = async () => {
+      try {
+        const data = await getPortfolioDetail(id);
+        setProject(data);
+      } catch {
+        setError("Failed to load project detail");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDetail();
+  }, [id]);
 
-  const project = portofolio.find((p) => p.id === Number(id));
-
-  if (!project) {
+  if (loading) {
     return (
       <>
         <NavBar />
-        <main className="px-8 md:px-20 py-28 font-default">
-          <p className="text-center text-gray-500">Project not found.</p>
+        <main className="px-8 md:px-20 py-28 font-default text-center">
+          <p className="text-gray-500">Loading...</p>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
+  if (error || !project) {
+    return (
+      <>
+        <NavBar />
+        <main className="px-8 md:px-20 py-28 font-default text-center">
+          <p className="text-red-500">{error || "Project not found."}</p>
         </main>
         <Footer />
       </>
@@ -116,7 +72,7 @@ export default function PortfolioDetail() {
           to="/portfolio"
           className="inline-flex items-center gap-2 mt-4 text-blue-600 hover:text-blue-800 font-medium text-lg group"
         >
-          <HiArrowLeft className="text-lg transform group-hover:translate-x-1 transition-transform duration-200" />
+          <HiArrowLeft className="text-lg transform group-hover:-translate-x-1 transition-transform duration-200" />
           Back
         </Link>
 
@@ -130,11 +86,11 @@ export default function PortfolioDetail() {
               Implemented for{" "}
               <span className="font-semibold">{project.type}</span>
             </p>
-            <p className="text-gray-600 mt-4 max-w-lg">{project.desc}</p>
+            <p className="text-gray-600 mt-4 max-w-lg text-justify">{project.description}</p>
           </div>
           <div className="rounded-xl overflow-hidden shadow-lg">
             <img
-              src={project.img}
+              src={project.mainImage}
               alt={project.title}
               loading="lazy"
               className="w-full h-60 md:h-72 object-cover"
@@ -143,22 +99,19 @@ export default function PortfolioDetail() {
         </div>
 
         {/* Gallery */}
-        {project.gallery && project.gallery.length > 0 && (
+        {dummyGallery.gallery && dummyGallery.gallery.length > 0 && (
           <div className="mb-12 relative">
             <h2 className="text-lg font-semibold text-blue-500 mb-4">
               Gallery
             </h2>
-
-            {/* Wrapper scroll */}
             <div className="relative">
               {/* Fade kiri */}
               <div className="pointer-events-none absolute left-0 top-0 h-full md:w-35 w-12 bg-gradient-to-r from-white to-transparent z-10"></div>
               {/* Fade kanan */}
-              <div className="pointer-events-none absolute right-0 md:right-46 top-0 h-full md:w-64 w-12 bg-gradient-to-l from-white to-transparent z-10"></div>
-
-              {/* Gallery scrollable */}
+              <div className="pointer-events-none absolute right-0 top-0 h-full md:w-35 w-12 bg-gradient-to-l from-white to-transparent z-10"></div>
+              {/* Scrollable gallery */}
               <div className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth">
-                {project.gallery.slice(0, 3).map((g, i) => (
+                {dummyGallery.gallery?.map((g: string, i: number) => (
                   <div
                     key={i}
                     className="flex-shrink-0 w-64 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition"
@@ -179,10 +132,9 @@ export default function PortfolioDetail() {
         {/* CTA */}
         <div className="mt-16 text-center relative z-10">
           <h2 className="text-3xl md:text-4xl font-semibold">
-            Question Or Ideas?<br /> Get in Touch{" "}
-            <Link 
-              to="/contact"
-              className="text-blue-600 font-bold">Here!
+            Question Or Ideas? <br /> Get in Touch{" "}
+            <Link to="/contact" className="text-blue-600 font-bold">
+              Here!
             </Link>
           </h2>
         </div>

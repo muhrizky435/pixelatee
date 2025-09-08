@@ -38,9 +38,9 @@ export function Footer() {
         {/* Kolom 2 - About Us */}
         <div className="flex flex-col gap-3 ">
           <h3 className="text-white font-semibold text-lg mb-2">About Us</h3>
-          <Link to="#" className="hover:text-white transition-colors">About</Link>
-          <Link to="#" className="hover:text-white transition-colors">Goals</Link>
-          <Link to="#" className="hover:text-white transition-colors">FAQ</Link>
+          <Link to="#about" className="hover:text-white transition-colors">About</Link>
+          <Link to="#about" className="hover:text-white transition-colors">Goals</Link>
+          <Link to="#faq" className="hover:text-white transition-colors">FAQ</Link>
         </div>
 
         {/* Kolom 3 - Menus */}
