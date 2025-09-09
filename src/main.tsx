@@ -19,6 +19,7 @@ import ContactAdmin from "./routes/admin-cms/contact/Contact-Admin";
 import Profile from "./routes/admin-cms/profile-setting/Profile-Admin";
 
 import PortfolioAdmin from "./routes/admin-cms/portfolio/Portfolio-Admin";
+import PortfolioEdit from "./routes/admin-cms/portfolio/Edit-Portfolio";
 
 
 createRoot(document.getElementById("root")!).render(
@@ -52,7 +53,9 @@ createRoot(document.getElementById("root")!).render(
         <Route path="panels-admins/profile" element={<Profile />} />
 
         {/* Portfolio Admin */}
-        <Route path="panels-admins/admins/portfolios" element={<PortfolioAdmin />} />
+        <Route path="panels-admins/portfolios" element={<PortfolioAdmin />} />
+        <Route path="panels-admins/portfolios/:id" element={<PortfolioAdmin />} />
+        <Route path="panels-admins/portfolios/edit/:id" element={<PortfolioEdit />} />
 
       </Routes>
     </BrowserRouter>
