@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import NavBarCMS from "../../../components/CMS-Navbar";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Link } from "react-router";
+import { FiFilter } from "react-icons/fi";
 
 const contact = [
   {
@@ -43,14 +44,96 @@ const contact = [
 
 export default function ContactAdmin() {
   const [openMenu, setOpenMenu] = useState<number | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const filterRef = useRef<HTMLDivElement | null>(null);
+  const [search, setSearch] = useState("");
+  const [showFilter, setShowFilter] = useState(false);
+
+  // Dropdown close on outside click (filter)
+  useEffect(() => {
+    if (!showFilter) return;
+    const handleClick = (e: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(e.target as Node)) {
+        setShowFilter(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [showFilter]);
+
+  // Dropdown close on outside click (action menu)
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpenMenu(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuRef]);
+
+  // // filter contact
+  // const filteredContact = contact.filter((item) =>
+  //   item.title.toLowerCase().includes(search.toLowerCase())
+  // );
 
   return (
     <NavBarCMS>
-      <main className="bg-gray-50 min-h-screen p-6 space-y-8">
+      <main className="bg-gray-50 min-h-screen pt-2 pb-8 px-8 space-y-8">
         {/* Header */}
         <header className="mb-6">
           <h1 className="text-3xl font-bold text-blue-500">Contact</h1>
         </header>
+
+        {/* Search & Filter */}
+        <div className="relative" ref={filterRef}>
+          <div className="flex items-center border rounded-full px-4 py-2 bg-white shadow-md focus-within:ring-2 focus-within:ring-blue-500 transition">
+            <FiFilter
+              size={18}
+              className="mr-2 text-gray-400 cursor-pointer hover:text-blue-600"
+              onClick={() => setShowFilter(!showFilter)}
+            />
+            <input
+              type="text"
+              placeholder="Search by Title..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="outline-none text-sm w-40 md:w-64 bg-transparent"
+            />
+          </div>
+
+          {/* Filter Dropdown */}
+          {showFilter && (
+            <div className="absolute left-0 mt-3 w-64 bg-white border rounded-xl shadow-lg p-4 z-20 animate-scaleIn">
+              <p className="font-semibold text-sm text-gray-700 mb-3">Filter by Type</p>
+              <div className="grid grid-cols-1 gap-2 text-sm">
+                {[
+                  "Customer Service",
+                  "UI/UX Designer",
+                  "Mobile Development",
+                  "Web Development",
+                  "IT Consultant",
+                  "Other",
+                ].map((type) => (
+                  <label
+                    key={type}
+                    className="flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-blue-50 transition"
+                  >
+                    <input
+                      type="radio"
+                      name="type"
+                      className="text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="text-gray-700">{type}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Contact Table */}
         <section className="bg-white shadow-sm rounded-2xl border border-gray-100 p-6">
@@ -97,11 +180,13 @@ export default function ContactAdmin() {
                       </button>
 
                       {openMenu === item.id && (
-                        <div className="absolute top-1/2 right-10 -translate-y-1/2 w-40 bg-white border border-gray-100 rounded-xl shadow-lg z-20 animate-fadeIn">
+                        <div
+                          ref={menuRef}
+                          className="absolute top-1/2 right-10 -translate-y-1/2 w-40 bg-white border border-gray-100 rounded-xl shadow-lg z-20 animate-fadeIn"
+                        >
                           <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 rounded-t-xl transition">
                             Lihat Detail
                           </button>
-                          <div className="border-t border-gray-100"></div>
                           <button className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-b-xl transition">
                             Hapus
                           </button>

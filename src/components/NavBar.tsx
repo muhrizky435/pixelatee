@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
 import { NavLink, useLocation } from "react-router";
+import "../index.css";
 
 export function NavBar() {
   const [show, setShow] = useState(true);

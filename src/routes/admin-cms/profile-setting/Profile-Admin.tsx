@@ -42,7 +42,7 @@ export default function AdminProfile() {
 
   return (
     <NavBarCMS>
-      <main className="bg-gray-50 min-h-screen p-6 space-y-8">
+      <main className="bg-gray-50 min-h-screen pt-2 pb-8 px-8 space-y-8">
         {/* Heading */}
         <h1 className="text-3xl font-bold text-blue-500 mb-6">My Profile</h1>
 
