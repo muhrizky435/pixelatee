@@ -12,3 +12,24 @@
   --color-quinary: #06b6d4;
   --color-senary: #0f172a;
 }
+
+@layer base {
+  .jodit-wysiwyg ul {
+    list-style-type: disc !important;
+    padding-left: 1.5rem !important;
+    margin: 0.5rem 0;
+  }
+  .jodit-wysiwyg ol {
+    list-style-type: decimal !important;
+    padding-left: 1.5rem !important;
+    margin: 0.5rem 0;
+  }
+  .jodit-wysiwyg blockquote {
+    border-left: 4px solid #ccc;
+    padding-left: 1rem;
+    color: #555;
+    font-style: italic;
+    margin: 0.5rem 0;
+  }
+}
+

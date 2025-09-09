@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import NavBarCMS from "../../../components/CMS-Navbar";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import {
@@ -140,10 +140,24 @@ const admins = [
 
 export default function DashboardAdmin() {
   const [openMenu, setOpenMenu] = useState<number | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpenMenu(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openMenu]);
 
   return (
     <NavBarCMS>
-      <main className="bg-gray-50 min-h-screen p-6 px-8 space-y-8">
+      <main className="bg-gray-50 min-h-screen pt-2 pb-8 px-8 space-y-8">
         {/* Header */}
         <header className="mb-6">
           <h1 className="text-3xl font-bold text-blue-500">Dashboard</h1>
@@ -153,7 +167,7 @@ export default function DashboardAdmin() {
         {/* Top Section: Chart + Admins */}
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Chart Card */}
-          <div className="col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div className="col-span-2 bg-white p-6 rounded-2xl shadow-md border border-gray-100">
             <div className="flex justify-between items-center mb-6">
               <div className="flex gap-8">
                 <div>
@@ -206,7 +220,7 @@ export default function DashboardAdmin() {
           </div>
 
           {/* Admins Card */}
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">Admins</h2>
             <ul className="space-y-4">
               {admins.map((admin, i) => (
@@ -225,8 +239,8 @@ export default function DashboardAdmin() {
             </ul>
             <div className="mt-6 flex justify-end">
               <Link
-                to={`/admin`}
-                className="font-semibold flex text-right gap-1 mt-2 group w-fit text-blue-600 hover:text-blue-800 text-lg"
+                to={`/panels-admins/admins`}
+                className="font-semibold flex text-right gap-1 mt-2 group w-fit text-blue-500 hover:text-blue-700 text-md"
               >
                 See more
                 <span className="ml-1 group-hover:translate-x-1 transition-transform">
@@ -238,7 +252,7 @@ export default function DashboardAdmin() {
         </section>
 
         {/* Portfolio Table */}
-        <section className="bg-white shadow-sm rounded-2xl border border-gray-100 p-6">
+        <section className="bg-white shadow-md rounded-2xl border border-gray-100 p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-800">Portfolios</h2>
             <span className="text-sm text-gray-500">{portfolios.length}</span>
@@ -259,7 +273,7 @@ export default function DashboardAdmin() {
                 {portfolios.map((item) => (
                   <tr
                     key={item.id}
-                    className="border-b border-gray-200 last:border-0 hover:bg-gray-50 transition"
+                    className="border-b border-gray-200 last:border-0 hover:bg-blue-50 transition"
                   >
                     <td className="flex items-center gap-3 py-3 px-4">
                       <img
@@ -293,14 +307,16 @@ export default function DashboardAdmin() {
                       </button>
 
                       {openMenu === item.id && (
-                        <div className="absolute top-1/2 right-10 -translate-y-1/2 w-40 bg-white border border-gray-100 rounded-xl shadow-lg z-20 animate-fadeIn">
+                        <div
+                          ref={menuRef}
+                          className="absolute top-1/2 right-10 -translate-y-1/2 w-40 bg-white border border-gray-100 rounded-xl shadow-lg z-20 animate-fadeIn"
+                        >
                           <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 rounded-t-xl transition">
                             Lihat Detail
                           </button>
                           <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition">
                             Edit
                           </button>
-                          <div className="border-t border-gray-100"></div>
                           <button className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-b-xl transition">
                             Hapus
                           </button>
@@ -315,8 +331,8 @@ export default function DashboardAdmin() {
 
           <div className="mt-6 flex justify-end">
             <Link
-              to={`/admin`}
-              className="font-semibold flex text-right gap-1 mt-2 group w-fit text-blue-600 hover:text-blue-800 text-lg"
+              to={`/panels-admins/portfolios`}
+              className="font-semibold flex text-right gap-1 mt-2 group w-fit text-blue-500 hover:text-blue-700 text-md"
             >
               See more
               <span className="ml-1 group-hover:translate-x-1 transition-transform">
@@ -328,7 +344,7 @@ export default function DashboardAdmin() {
         {/* End */}
 
         {/* Contact Table */}
-        <section className="bg-white shadow-sm rounded-2xl border border-gray-100 p-6">
+        <section className="bg-white shadow-md rounded-2xl border border-gray-100 p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-800">Contact</h2>
             <span className="text-sm text-gray-500">{contact.length}</span>
@@ -349,15 +365,13 @@ export default function DashboardAdmin() {
                 {contact.map((item) => (
                   <tr
                     key={item.id}
-                    className="border-b border-gray-200 last:border-0 hover:bg-gray-50 transition"
+                    className="border-b border-gray-200 last:border-0 hover:bg-blue-50 transition"
                   >
-                    <td className="flex items-center gap-3 py-3 px-4">
-                      <span className="font-medium text-gray-800">
-                        {item.title}
-                      </span>
-                      <span className="font-medium text-gray-600">
-                        {item.sender}
-                      </span>
+                    <td className="py-3 px-4">
+                      <div className="flex flex-col">
+                        <span className="font-medium text-gray-800">{item.title}</span>
+                        <span className="text-sm text-gray-600">{item.sender}</span>
+                      </div>
                     </td>
                     <td className="py-3 px-4 text-gray-600">{item.email}</td>
                     <td className="py-3 px-4 text-gray-600">{item.handleBy}</td>
@@ -373,14 +387,13 @@ export default function DashboardAdmin() {
                       </button>
 
                       {openMenu === item.id && (
-                        <div className="absolute top-1/2 right-10 -translate-y-1/2 w-40 bg-white border border-gray-100 rounded-xl shadow-lg z-20 animate-fadeIn">
+                        <div
+                          ref={menuRef}
+                          className="absolute top-1/2 right-10 -translate-y-1/2 w-40 bg-white border border-gray-100 rounded-xl shadow-lg z-20 animate-fadeIn"
+                        >
                           <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 rounded-t-xl transition">
                             Lihat Detail
                           </button>
-                          <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition">
-                            Edit
-                          </button>
-                          <div className="border-t border-gray-100"></div>
                           <button className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-b-xl transition">
                             Hapus
                           </button>
@@ -395,8 +408,8 @@ export default function DashboardAdmin() {
 
           <div className="mt-6 flex justify-end">
             <Link
-              to={`/admin`}
-              className="font-semibold flex text-right gap-1 mt-2 group w-fit text-blue-600 hover:text-blue-800 text-lg"
+              to={`/panels-admins/contacts`}
+              className="font-semibold flex text-right gap-1 mt-2 group w-fit text-blue-500 hover:text-blue-700 text-md"
             >
               See more
               <span className="ml-1 group-hover:translate-x-1 transition-transform">

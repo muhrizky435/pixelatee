@@ -13,12 +13,21 @@ import NewsletterThankYou from "./routes/NewsletterThankYou";
 
 // Admin Cms Route
 import Dashboard from "./routes/admin-cms/dashboard/Dashboard-Admin";
+
+// Admin Newsletter
 import Newsletter from "./routes/admin-cms/newsletter/Newsletter-Admin";
 import DetailNewsletter from "./routes/admin-cms/newsletter/Newsletter-Detail-Admin";
+import EditNewsletter from "./routes/admin-cms/newsletter/Newsletter-Edit-Admin";
+
+// Admin Contactq
 import ContactAdmin from "./routes/admin-cms/contact/Contact-Admin";
+
+// Admin Portfolio
+import PortfolioAdmin from "./routes/admin-cms/portfolio/Portfolio-Admin";
+
+// Admin Setting Profile
 import Profile from "./routes/admin-cms/profile-setting/Profile-Admin";
 
-import PortfolioAdmin from "./routes/admin-cms/portfolio/Portfolio-Admin";
 
 
 createRoot(document.getElementById("root")!).render(
@@ -36,17 +45,13 @@ createRoot(document.getElementById("root")!).render(
         {/* Admin Cms Route */}
         <Route path="panels-admins/dashboard" element={<Dashboard />} />
 
-        {/* Newsletter Admin */}
-        <Route path="panels-admins/newsletter" element={<Newsletter />} />
-        <Route path="panels-admins/newsletter/:id" element={<DetailNewsletter />} />
-
         {/* Contact Admin */}
         <Route path="panels-admins/contacts" element={<ContactAdmin />} />
         
-
         {/* Newsletter Admin */}
         <Route path="panels-admins/newsletter" element={<Newsletter />} />
         <Route path="panels-admins/newsletter/:id" element={<DetailNewsletter />} />
+        <Route path="panels-admins/newsletter/edit/:id" element={<EditNewsletter />} />
 
         {/* Profile Setting  */}
         <Route path="panels-admins/profile" element={<Profile />} />
