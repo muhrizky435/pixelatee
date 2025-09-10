@@ -7,6 +7,7 @@ import { HiArrowRight } from "react-icons/hi";
 import { useState } from "react";
 import { HiOutlineChevronDown, HiOutlineChevronUp } from "react-icons/hi";
 import { joinNewsletter } from "../api/newsletter.api";
+import Reveal from "../components/Animate-Home-Reveal";
 
 // faq
 const faqs = [
@@ -115,7 +116,7 @@ export default function Home() {
   // Tambahan state untuk newsletter
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterLoading, setNewsletterLoading] = useState(false);
-  
+
   // handle kirim email join newsletter
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -163,234 +164,243 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative grid grid-cols-1 md:grid-cols-[3fr_2fr] min-h-screen">
           {/* Left: Blue block */}
-          <div className="flex flex-col justify-between pt-19 h-full">
-            <div className="bg-[#2563eb] text-white px-8 md:px-16 py-20 flex-1 flex flex-col justify-center">
-              <h1 className="text-4xl md:text-5xl font-bold leading-snug mb-4">
-                Transforming Ideas Into <br /> Digital Impact
-              </h1>
-              <p className="text-lg md:text-base text-gray-300">
-                We craft meaningful experiences that help brands grow and
-                connect with people.
-              </p>
+          <Reveal>
+            <div className="flex flex-col justify-between pt-19 h-full">
+              <div className="bg-[#2563eb] text-white px-8 md:px-16 py-20 flex-1 flex flex-col justify-center">
+                <h1 className="text-4xl md:text-5xl font-bold leading-snug mb-4">
+                  Transforming Ideas Into <br /> Digital Impact
+                </h1>
+                <p className="text-lg md:text-base text-gray-300">
+                  We craft meaningful experiences that help brands grow and
+                  connect with people.
+                </p>
+              </div>
             </div>
-          </div>
+          </Reveal>
 
           {/* kanan: full gambar */}
-          <div className="hidden md:block h-full">
-            <img
-              src="/img/photo4.png"
-              alt="team work"
-              className="h-full w-full object-cover"
-            />
-          </div>
+          <Reveal delay={0.2}>
+            <div className="hidden md:block h-full">
+              <img
+                src="/img/photo4.png"
+                alt="team work"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </Reveal>
         </section>
 
         {/* Empowering Section */}
         <section className="text-center py-10 md:py-19 px-12 md:x-6">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-800">
-            Empowering{" "}
-            <span className="text-blue-500 font-semibold">businesses</span>,
-            inspiring{" "}
-            <span className="text-blue-600 font-semibold">change</span>.
-          </h2>
+          <Reveal>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-800">
+              Empowering{" "}
+              <span className="text-blue-500 font-semibold">businesses</span>,
+              inspiring{" "}
+              <span className="text-blue-600 font-semibold">change</span>.
+            </h2>
+          </Reveal>
         </section>
 
         {/* Story, Vision, Values */}
-        <section id="about" className="relative max-w-7xl px-12 md:px-26 grid grid-cols-1 md:grid-cols-2 gap-12 items-start overflow-hidden">
+        <section
+          id="about"
+          className="relative max-w-7xl px-12 md:px-26 grid grid-cols-1 md:grid-cols-2 gap-12 items-start overflow-hidden"
+        >
           {/* Circle Blur */}
           <div className="absolute top-50 -left-20 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-15 "></div>
           <div className="absolute bottom-30 right-0 w-74 h-74 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-15"></div>
 
           {/* Left */}
-          <div>
-            <h3 className="text-4xl md:text-5xl text-left font-bold text-gray-900 mb-6 leading-snug">
-              Our <span className="text-blue-400">Story</span>,{" "}
-              <span className="text-blue-500">Vision</span>, and{" "}
-              <span className="text-blue-600">Values</span>
-            </h3>
+          <Reveal>
+            <div>
+              <h3 className="text-4xl md:text-5xl text-left font-bold text-gray-900 mb-6 leading-snug">
+                Our <span className="text-blue-400">Story</span>,{" "}
+                <span className="text-blue-500">Vision</span>, and{" "}
+                <span className="text-blue-600">Values</span>
+              </h3>
 
-            <FaQuoteLeft className="text-blue-600 text-4xl mb-4" />
+              <FaQuoteLeft className="text-blue-600 text-4xl mb-4" />
 
-            <p className="text-gray-500 text-lg leading-8">
-              Pixelatee began with a simple belief:{" "}
-              <span className="text-blue-600">
-                every idea deserves to be brought to life with creativity and
-                purpose
-              </span>
-              . Today, we’ve grown into a digital studio dedicated to
-              transforming ideas into impactful experiences. Guided by our
-              vision and values—creativity, collaboration, integrity,
-              excellence, and impact—we strive to be a trusted partner for
-              brands worldwide.
-            </p>
-          </div>
+              <p className="text-gray-500 text-lg leading-8">
+                Pixelatee began with a simple belief:{" "}
+                <span className="text-blue-600">
+                  every idea deserves to be brought to life with creativity and
+                  purpose
+                </span>
+                . Today, we’ve grown into a digital studio dedicated to
+                transforming ideas into impactful experiences. Guided by our
+                vision and values—creativity, collaboration, integrity,
+                excellence, and impact—we strive to be a trusted partner for
+                brands worldwide.
+              </p>
+            </div>
+          </Reveal>
 
           {/* Right */}
-          <div>
-            <img
-              src="/img/photo5.png"
-              alt="discussion"
-              className="rounded-lg shadow-md mb-10"
-            />
+          <Reveal delay={0.3}>
+            <div>
+              <img
+                src="/img/photo5.png"
+                alt="discussion"
+                className="rounded-lg shadow-md mb-10"
+              />
 
-            {/* Stats row */}
-            <div className="grid grid-cols-2 md:grid-cols-2 gap-8 text-center">
-              <div>
-                <p className="text-3xl font-bold text-blue-600">8</p>
-                <p className="text-gray-700 text-sm mt-1">Years Experience</p>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-blue-600">20</p>
-                <p className="text-gray-700 text-sm mt-1">Project Challenge</p>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-blue-600">12</p>
-                <p className="text-gray-700 text-sm mt-1">Industry Awards</p>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-blue-600">40</p>
-                <p className="text-gray-700 text-sm mt-1">Trusted Partners</p>
+              {/* Stats row */}
+              <div className="grid grid-cols-2 md:grid-cols-2 gap-8 text-center">
+                {/* stats */}
+                {[
+                  { num: 8, text: "Years Experience" },
+                  { num: 20, text: "Project Challenge" },
+                  { num: 12, text: "Industry Awards" },
+                  { num: 40, text: "Trusted Partners" },
+                ].map((s, i) => (
+                  <Reveal key={i} delay={i * 0.2}>
+                    <div>
+                      <p className="text-3xl font-bold text-blue-600">
+                        {s.num}
+                      </p>
+                      <p className="text-gray-700 text-sm mt-1">{s.text}</p>
+                    </div>
+                  </Reveal>
+                ))}
               </div>
             </div>
-          </div>
+          </Reveal>
         </section>
 
         {/* Section What We Do Best */}
         <section className="max-w-7xl mx-auto px-12 md:px-26 pt-20">
           {/* Heading */}
-          <h3 className="text-4xl md:text-5xl font-bold text-gray-900 mb-10">
-            What We Do <span className="text-blue-600">Best</span>
-          </h3>
+          <Reveal>
+            <h3 className="text-4xl md:text-5xl font-bold text-gray-900 mb-10">
+              What We Do <span className="text-blue-600">Best</span>
+            </h3>
+          </Reveal>
 
           {/* Grid 2x2 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Card 1 */}
-            <div className="bg-green-500 rounded-lg overflow-hidden shadow-md">
-              <div className="p-4">
-                <h5 className="text-white text-lg font-semibold">UI/UX</h5>
+            <Reveal>
+              <div className="bg-green-500 rounded-lg overflow-hidden shadow-md">
+                <div className="p-4">
+                  <h5 className="text-white text-lg font-semibold">UI/UX</h5>
+                </div>
+                <img
+                  src="/img/uiux.png"
+                  alt="UI/UX"
+                  className="w-full h-40 object-cover"
+                />
               </div>
-              <img
-                src="/img/uiux.png"
-                alt="UI/UX"
-                className="w-full h-40 object-cover"
-              />
-            </div>
+            </Reveal>
 
             {/* Card 2 */}
-            <div className="bg-red-400 rounded-lg overflow-hidden shadow-md">
-              <div className="p-4">
-                <h4 className="text-white text-lg font-semibold">
-                  Web Development
-                </h4>
+            <Reveal>
+              <div className="bg-red-400 rounded-lg overflow-hidden shadow-md">
+                <div className="p-4">
+                  <h4 className="text-white text-lg font-semibold">
+                    Web Development
+                  </h4>
+                </div>
+                <img
+                  src="/img/web.png"
+                  alt="Web Development"
+                  className="w-full h-40 object-cover"
+                />
               </div>
-              <img
-                src="/img/web.png"
-                alt="Web Development"
-                className="w-full h-40 object-cover"
-              />
-            </div>
+            </Reveal>
 
             {/* Card 3 */}
-            <div className="bg-orange-400 rounded-lg overflow-hidden shadow-md">
-              <div className="p-4">
-                <h4 className="text-white text-lg font-semibold">
-                  Mobile Application
-                </h4>
+            <Reveal>
+              <div className="bg-orange-400 rounded-lg overflow-hidden shadow-md">
+                <div className="p-4">
+                  <h4 className="text-white text-lg font-semibold">
+                    Mobile Application
+                  </h4>
+                </div>
+                <img
+                  src="/img/mobile.png"
+                  alt="Mobile Application"
+                  className="w-full h-40 object-cover"
+                />
               </div>
-              <img
-                src="/img/mobile.png"
-                alt="Mobile Application"
-                className="w-full h-40 object-cover"
-              />
-            </div>
+            </Reveal>
 
             {/* Card 4 */}
-            <div className="bg-cyan-700 rounded-lg overflow-hidden shadow-md">
-              <div className="p-4">
-                <h4 className="text-white text-lg font-semibold">
-                  CRM System (SaaS Dashboard)
-                </h4>
+            <Reveal>
+              <div className="bg-cyan-700 rounded-lg overflow-hidden shadow-md">
+                <div className="p-4">
+                  <h4 className="text-white text-lg font-semibold">
+                    CRM System (SaaS Dashboard)
+                  </h4>
+                </div>
+                <img
+                  src="/img/crm.png"
+                  alt="CRM System"
+                  className="w-full h-40 object-cover"
+                />
               </div>
-              <img
-                src="/img/crm.png"
-                alt="CRM System"
-                className="w-full h-40 object-cover"
-              />
-            </div>
+            </Reveal>
           </div>
         </section>
 
         {/* Clients Section */}
         <section className="text-center py-10 pt-19 px-12 md:px-6">
-          <h2 className="text-4xl md:text-5xl font-bold text-blue-600">
-            Clients{" "}
-            <span className="text-gray-700 font-semibold">We Work With</span>
-          </h2>
-
-          {/* Logo didalam hero section */}
-          <div className="bg-white py-6 px-2 md:px-2">
-            <div className="flex flex-wrap justify-start items-center gap-8">
-              <ClientSlider />
+          <Reveal>
+            <h2 className="text-4xl md:text-5xl font-bold text-blue-600">
+              Clients{" "}
+              <span className="text-gray-700 font-semibold">We Work With</span>
+            </h2>
+          </Reveal>
+          <Reveal delay={0.3}>
+            <div className="bg-white py-6">
+              <div className="flex flex-wrap justify-start items-center gap-8">
+                <ClientSlider />
+              </div>
             </div>
-          </div>
+          </Reveal>
         </section>
 
         {/* section Project */}
-        <section className=" px-12 md:px-26 bg-white">
-          {/* Heading */}
-          <div className="mb-10 text-justify md:text-left">
-            <h2 className="text-3xl md:text-5xl font-semibold text-gray-900 leading-snug">
-              Transforming{" "}
-              <span className="text-blue-500 font-bold">Creative Ideas</span>
-              <br />
-              Into Impactful{" "}
-              <span className="text-blue-700 font-bold">Projects</span>
-            </h2>
-          </div>
-
-          {/* Project Cards */}
+        <section className="px-12 md:px-26 bg-white">
+          <Reveal>
+            <div className="mb-10 text-justify md:text-left">
+              <h2 className="text-3xl md:text-5xl font-semibold text-gray-900 leading-snug">
+                Transforming{" "}
+                <span className="text-blue-500 font-bold">Creative Ideas</span>
+                <br />
+                Into Impactful{" "}
+                <span className="text-blue-700 font-bold">Projects</span>
+              </h2>
+            </div>
+          </Reveal>
           <div className="max-w-6xl mx-auto flex flex-col gap-5">
-            {projects.map((project) => (
-              <div
-                key={project.id}
-                className="flex flex-col md:flex-row overflow-hidden rounded-lg shadow bg-blue-500 text-white"
-              >
-                {/* Image */}
-                <div className="md:w-1/3">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="h-40 md:h-full w-full object-cover"
-                  />
+            {projects.map((project, i) => (
+              <Reveal key={project.id} delay={i * 0.2}>
+                <div className="flex flex-col md:flex-row overflow-hidden rounded-lg shadow bg-blue-500 text-white">
+                  <div className="md:w-1/3">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="h-40 md:h-full w-full object-cover"
+                    />
+                  </div>
+                  <div className="md:w-2/3 flex flex-col justify-center p-5">
+                    <p className="text-lg opacity-80 mb-1">{project.company}</p>
+                    <h3 className="text-2xl md:text-4xl font-semibold mb-3">
+                      {project.title}
+                    </h3>
+                    <Link
+                      to={`/portfolio/${project.id}`}
+                      className="inline-flex items-center gap-2 mt-4 text-white hover:text-yellow-400 font-medium text-sm group"
+                    >
+                      <span>Get a Direction</span>
+                      <HiArrowRight className="text-lg transform group-hover:translate-x-1 transition-transform duration-200" />
+                    </Link>
+                  </div>
                 </div>
-
-                {/* Content */}
-                <div className="md:w-2/3 flex flex-col justify-center p-5">
-                  <p className="text-lg opacity-80 mb-1">{project.company}</p>
-                  <h3 className="text-2xl md:text-4xl font-semibold mb-3">
-                    {project.title}
-                  </h3>
-                  <Link
-                    to={`/portfolio/${project.id}`}
-                    className="inline-flex items-center gap-2 mt-4 text-white hover:text-yellow-400 font-medium text-sm group"
-                  >
-                    <span>Get a Direction</span>
-                    <HiArrowRight className="text-lg transform group-hover:translate-x-1 transition-transform duration-200" />
-                  </Link>
-                </div>
-              </div>
+              </Reveal>
             ))}
-          </div>
-
-          {/* See More Button */}
-          <div className="flex justify-center mt-14">
-            <Link
-              to="/portfolio"
-              className="inline-flex font-medium text-xl rounded-full border border-blue-500  py-2 px-8 items-center gap-2 mt-4 text-blue-500 hover:text-white hover:bg-blue-500 group"
-            >
-              <span>See More</span>
-              <HiArrowRight className="transform group-hover:translate-x-1 transition-transform duration-200" />
-            </Link>
           </div>
         </section>
         {/* end section project */}
@@ -402,16 +412,19 @@ export default function Home() {
           <div className="absolute bottom-30 right-0 w-74 h-74 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-15"></div>
 
           {/* Heading */}
-          <div className="mb-10">
-            <h2 className="text-4xl md:text-5xl font-semibold text-gray-900 leading-snug">
-              <span className="text-blue-600 font-bold">Words</span> from Those
-              <br />
-              Who <span className="text-blue-600 font-bold">Trusted Us</span>
-            </h2>
-          </div>
+          <Reveal>
+            <div className="mb-10">
+              <h2 className="text-4xl md:text-5xl font-semibold text-gray-900 leading-snug">
+                <span className="text-blue-600 font-bold">Words</span> from
+                Those
+                <br />
+                Who <span className="text-blue-600 font-bold">Trusted Us</span>
+              </h2>
+            </div>
+          </Reveal>
 
           {/* Testimonials */}
-          <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 max-w-6xl mx-auto">
+          {/* <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 max-w-6xl mx-auto">
             {testimonials.map((t) => (
               <div
                 key={t.id}
@@ -423,64 +436,82 @@ export default function Home() {
                 </p>
               </div>
             ))}
+          </div> */}
+          <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 max-w-6xl mx-auto">
+            {testimonials.map((t, i) => (
+              <Reveal key={t.id} delay={i * 0.2}>
+                <div className="bg-white border rounded-lg shadow-lg p-6 hover:shadow-md transition">
+                  <p className="text-gray-700 text-sm mb-4">“{t.quote}”</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    — <span className="text-blue-600">{t.name}</span>, {t.role}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
           </div>
         </section>
 
         {/* Newsletter */}
-        <div className="bg-blue-600 mt-20 mb-16 py-12 text-center text-white w-full">
-          <h3 className="text-3xl md:text-4xl text-gray-100 mb-8">
-            Join Our{" "}
-            <span className="text-white font-extrabold">Newsletter!</span>
-          </h3>
+        <Reveal>
+          <div className="bg-blue-600 mt-20 mb-16 py-12 text-center text-white w-full">
+            <h3 className="text-3xl md:text-4xl text-gray-100 mb-8">
+              Join Our{" "}
+              <span className="text-white font-extrabold">Newsletter!</span>
+            </h3>
 
-          <form
-            onSubmit={handleNewsletterSubmit}
-            className="flex flex-col sm:flex-row items-center justify-center max-w-2xl mx-auto w-full gap-3 sm:gap-0 px-6"
-          >
-            <input
-              type="email"
-              placeholder="Your Email"
-              value={newsletterEmail}
-              onChange={(e) => setNewsletterEmail(e.target.value)}
-              required
-              className="w-full sm:flex-1 px-4 py-3 bg-white text-gray-700 rounded-md sm:rounded-l-md sm:rounded-r-none focus:outline-none"
-              disabled={newsletterLoading}
-            />
-            <button
-              type="submit"
-              className="w-full sm:w-auto px-6 py-3 bg-blue-800 rounded-md sm:rounded-l-none sm:rounded-r-md hover:bg-blue-900 transition disabled:opacity-50"
-              disabled={newsletterLoading}
+            <form
+              onSubmit={handleNewsletterSubmit}
+              className="flex flex-col sm:flex-row items-center justify-center max-w-2xl mx-auto w-full gap-3 sm:gap-0 px-6"
             >
-              {newsletterLoading ? "Subscribing..." : "Subscribe"}
-            </button>
-          </form>
-          {/* Feedback */}
-          {/* Toast */}
-          <div
-            className={`fixed top-5 right-5 z-50 transform transition-all duration-500 ${
-              toastOpen ? "translate-x-0 opacity-100" : "translate-x-40 opacity-0"
-            }`}
-          >
+              <input
+                type="email"
+                placeholder="Your Email"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
+                required
+                className="w-full sm:flex-1 px-4 py-3 bg-white text-gray-700 rounded-md sm:rounded-l-md sm:rounded-r-none focus:outline-none"
+                disabled={newsletterLoading}
+              />
+              <button
+                type="submit"
+                className="w-full sm:w-auto px-6 py-3 bg-blue-800 rounded-md sm:rounded-l-none sm:rounded-r-md hover:bg-blue-900 transition disabled:opacity-50"
+                disabled={newsletterLoading}
+              >
+                {newsletterLoading ? "Subscribing..." : "Subscribe"}
+              </button>
+            </form>
+            {/* Feedback */}
+            {/* Toast */}
             <div
-              className={`px-6 py-4 rounded shadow-lg text-white font-semibold ${
-                toastType === "success" ? "bg-green-500" : "bg-red-600"
+              className={`fixed top-5 right-5 z-50 transform transition-all duration-500 ${
+                toastOpen
+                  ? "translate-x-0 opacity-100"
+                  : "translate-x-40 opacity-0"
               }`}
             >
-              {toastMessage}
+              <div
+                className={`px-6 py-4 rounded shadow-lg text-white font-semibold ${
+                  toastType === "success" ? "bg-green-500" : "bg-red-600"
+                }`}
+              >
+                {toastMessage}
+              </div>
             </div>
           </div>
-        </div>
+        </Reveal>
         {/* end Testimonials & Newsletter Section */}
 
         {/* FAQ Section */}
         <section id="faq" className="w-full py-14 px-13 md:px-12 lg:px-24">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-5xl mx-auto">
             {/* Left Heading */}
-            <div className="md:col-span-1">
-              <h2 className="text-5xl md:text-5xl font-extrabold text-blue-600">
-                FAQ
-              </h2>
-            </div>
+            <Reveal>
+              <div className="md:col-span-1">
+                <h2 className="text-5xl md:text-5xl font-extrabold text-blue-600">
+                  FAQ
+                </h2>
+              </div>
+            </Reveal>
 
             {/* Right FAQ List */}
             <div className="md:col-span-3 space-y-4">
@@ -522,14 +553,16 @@ export default function Home() {
           </div>
 
           {/* CTA */}
-          <div className="mt-16 text-center relative z-10">
-            <h2 className="text-3xl md:text-4xl font-semibold">
-              Designed to grow with you. <br /> Get in Touch{" "}
-              <Link to="/contact" className="text-blue-600 font-bold">
-                Here!
-              </Link>
-            </h2>
-          </div>
+          <Reveal>
+            <div className="mt-16 text-center relative z-10">
+              <h2 className="text-3xl md:text-4xl font-semibold">
+                Designed to grow with you. <br /> Get in Touch{" "}
+                <Link to="/contact" className="text-blue-600 font-bold">
+                  Here!
+                </Link>
+              </h2>
+            </div>
+          </Reveal>
         </section>
       </main>
       <Footer />
