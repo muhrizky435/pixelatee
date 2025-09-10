@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router";
 import "./index.css";
 
-// Publi Route
+// ---Public Route
 import Home from "./routes/Home";
 import Service from "./routes/Service";
 import PortoFolio from "./routes/Portfolio";
@@ -11,20 +11,23 @@ import PortoFolioDetail from "./routes/Portfolio-Detail";
 import Contact from "./routes/Contact";
 import NewsletterThankYou from "./routes/NewsletterThankYou";
 
-// Admin Cms Route
+// ---Admin Cms Route
+// Admin Dashboard
 import Dashboard from "./routes/admin-cms/dashboard/Dashboard-Admin";
 
 // Admin Newsletter
 import Newsletter from "./routes/admin-cms/newsletter/Newsletter-Admin";
-import DetailNewsletter from "./routes/admin-cms/newsletter/Newsletter-Detail-Admin";
 import EditNewsletter from "./routes/admin-cms/newsletter/Newsletter-Edit-Admin";
 
-// Admin Contactq
+// Admin Contact
 import ContactAdmin from "./routes/admin-cms/contact/Contact-Admin";
 
 // Admin Portfolio
 import PortfolioAdmin from "./routes/admin-cms/portfolio/Portfolio-Admin";
-import PortfolioEdit from "./routes/admin-cms/portfolio/Edit-Portfolio";
+import PortfolioEdit from "./routes/admin-cms/portfolio/Portfolio-Edit-Admin";
+
+// Admin Profile-Setting
+import Profile from "./routes/admin-cms/profile-setting/Profile-Admin";
 
 
 createRoot(document.getElementById("root")!).render(
@@ -47,7 +50,6 @@ createRoot(document.getElementById("root")!).render(
         
         {/* Newsletter Admin */}
         <Route path="panels-admins/newsletter" element={<Newsletter />} />
-        <Route path="panels-admins/newsletter/:id" element={<DetailNewsletter />} />
         <Route path="panels-admins/newsletter/edit/:id" element={<EditNewsletter />} />
 
         {/* Profile Setting  */}

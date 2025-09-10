@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import NavBarCMS from "../../../components/CMS-Navbar";
+import ContactDetailModal from "./Contact-Detail-Admin";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Link } from "react-router";
 import { FiFilter } from "react-icons/fi";
@@ -48,6 +49,21 @@ export default function ContactAdmin() {
   const filterRef = useRef<HTMLDivElement | null>(null);
   const [search, setSearch] = useState("");
   const [showFilter, setShowFilter] = useState(false);
+  const [filterType, setFilterType] = useState<string | null>(null);
+
+  const [selectedContact, setSelectedContact] = useState<typeof contact[0] | null>(null);
+
+  // filter contacts
+  const filteredContact = contact.filter((c) => {
+    const matchesType = filterType ? c.subject === filterType : true;
+
+    const matchesSearch = search
+      ? c.name.toLowerCase().includes(search.toLowerCase()) ||
+        c.message.toLowerCase().includes(search.toLowerCase())
+      : true;
+
+    return matchesType && matchesSearch;
+  });
 
   // Dropdown close on outside click (filter)
   useEffect(() => {
@@ -75,22 +91,15 @@ export default function ContactAdmin() {
     };
   }, [menuRef]);
 
-  // // filter contact
-  // const filteredContact = contact.filter((item) =>
-  //   item.title.toLowerCase().includes(search.toLowerCase())
-  // );
-
   return (
     <NavBarCMS>
       <main className="bg-gray-50 min-h-screen pt-2 pb-8 px-8 space-y-8">
         {/* Header */}
-        <header className="mb-6">
-          <h1 className="text-3xl font-bold text-blue-500">Contact</h1>
-        </header>
+        <h1 className="text-3xl font-bold text-blue-500">Contact</h1>
 
         {/* Search & Filter */}
         <div className="relative" ref={filterRef}>
-          <div className="flex items-center border rounded-full px-4 py-2 bg-white shadow-md focus-within:ring-2 focus-within:ring-blue-500 transition">
+          <div className="flex items-center border rounded-lg px-4 py-2 bg-white shadow-md focus-within:ring-2 focus-within:ring-blue-500 transition">
             <FiFilter
               size={18}
               className="mr-2 text-gray-400 cursor-pointer hover:text-blue-600"
@@ -98,7 +107,7 @@ export default function ContactAdmin() {
             />
             <input
               type="text"
-              placeholder="Search by Title..."
+              placeholder="Search contact..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="outline-none text-sm w-40 md:w-64 bg-transparent"
@@ -108,9 +117,12 @@ export default function ContactAdmin() {
           {/* Filter Dropdown */}
           {showFilter && (
             <div className="absolute left-0 mt-3 w-64 bg-white border rounded-xl shadow-lg p-4 z-20 animate-scaleIn">
-              <p className="font-semibold text-sm text-gray-700 mb-3">Filter by Type</p>
+              <p className="font-semibold text-sm text-gray-700 mb-3">
+                Filter by Type
+              </p>
               <div className="grid grid-cols-1 gap-2 text-sm">
                 {[
+                  "Draft",
                   "Customer Service",
                   "UI/UX Designer",
                   "Mobile Development",
@@ -125,6 +137,8 @@ export default function ContactAdmin() {
                     <input
                       type="radio"
                       name="type"
+                      checked={filterType === type}
+                      onChange={() => setFilterType(type)}
                       className="text-blue-600 focus:ring-blue-500"
                     />
                     <span className="text-gray-700">{type}</span>
@@ -141,7 +155,7 @@ export default function ContactAdmin() {
             <h2 className="text-xl font-semibold text-gray-800">
               List Message
             </h2>
-            <span className="text-sm text-gray-500">{contact.length}</span>
+            <span className="text-sm text-gray-500">{filteredContact.length}</span>
           </div>
 
           <div className="overflow-x-auto">
@@ -156,7 +170,7 @@ export default function ContactAdmin() {
                 </tr>
               </thead>
               <tbody>
-                {contact.map((item) => (
+                {filteredContact.map((item) => (
                   <tr
                     key={item.id}
                     className="border-b border-gray-200 last:border-0 hover:bg-blue-50 transition"
@@ -184,7 +198,9 @@ export default function ContactAdmin() {
                           ref={menuRef}
                           className="absolute top-1/2 right-10 -translate-y-1/2 w-40 bg-white border border-gray-100 rounded-xl shadow-lg z-20 animate-fadeIn"
                         >
-                          <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 rounded-t-xl transition">
+                          <button 
+                            onClick={() => setSelectedContact(item)}
+                            className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 rounded-t-xl transition">
                             Lihat Detail
                           </button>
                           <button className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-b-xl transition">
@@ -211,6 +227,12 @@ export default function ContactAdmin() {
             </Link>
           </div>
         </section>
+
+        {/* Modal */}
+        <ContactDetailModal
+          onClose={() => setSelectedContact(null)}
+          contact={selectedContact}
+        />
       </main>
     </NavBarCMS>
   );

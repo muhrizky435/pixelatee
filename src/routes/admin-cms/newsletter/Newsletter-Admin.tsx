@@ -6,6 +6,8 @@ import { FaSave, FaTrash, FaTimes } from "react-icons/fa";
 import { Link } from "react-router";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import JoditEditor from "jodit-react";
+import NewsletterDetailModal from "./Newsletter-Detail-Admin";
+import { MdAdd, MdDeleteOutline } from "react-icons/md";
 
 // dummy data newsletter
 const newsletters = [
@@ -15,6 +17,7 @@ const newsletters = [
     date: "12 Aug 2024",
     time: "13:42",
     type: "Tech",
+    status: "Sent",
     desc: "Suspendisse euismod turpis vel imperdiet vulputate...",
     img: "/img/crm.png",
   },
@@ -24,6 +27,7 @@ const newsletters = [
     date: "12 Aug 2024",
     time: "13:42",
     type: "Tech",
+    status: "Sent",
     desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
     img: "/img/crm.png",
   },
@@ -33,6 +37,7 @@ const newsletters = [
     date: "12 Aug 2024",
     time: "13:42",
     type: "Tech",
+    status: "Sent",
     desc: "sim risus. Quisque ornare ultricies magna...",
     img: "/img/crm.png",
   },
@@ -42,6 +47,7 @@ const newsletters = [
     date: "12 Aug 2024",
     time: "13:42",
     type: "Tech",
+    status: "Schedule",
     desc: "Suspendisse euismod turpis vel imperdiet vulputate...",
     img: "/img/crm.png",
   },
@@ -82,17 +88,48 @@ const schedule = [
 
 export default function Newsletter() {
   const [sendAfter24, setSendAfter24] = useState(true);
-  const [showFilter, setShowFilter] = useState(false);
+  const [selectedNewsletter, setSelectedNewsletter] = useState<(typeof newsletters)[0] | null>(null);
+
+
+  // state form
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [file, setFile] = useState<File | null>(null);
+
+  
+  // state filter & search
   const [preview, setPreview] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [showFilter, setShowFilter] = useState(false);
+  const [filterStatus, setFilterStatus] = useState<string | null>(null);
+  const [filterType, setFilterType] = useState<string | null>(null);
+
+
+  // ref
+  const filterRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+
+  // state modal & open menu dropdown
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [openMenu, setOpenMenu] = useState<number | null>(null);
   const [showDraftModal, setShowDraftModal] = useState(false);
-  const filterRef = useRef<HTMLDivElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
+
+
+  // filter newsletters
+  const filteredNewsletters = newsletters.filter((newsletter) => {
+    const matchesStatus = filterStatus
+      ? newsletter.status === filterStatus
+      : true;
+    const matchesType = filterType ? newsletter.type === filterType : true;
+    const matchesSearch = search
+      ? newsletter.title.toLowerCase().includes(search.toLowerCase()) ||
+        newsletter.desc.toLowerCase().includes(search.toLowerCase())
+      : true;
+
+    return matchesStatus && matchesType && matchesSearch;
+  });
+
   const [draftList, setDraftList] = useState<
     {
       id: number;
@@ -102,6 +139,7 @@ export default function Newsletter() {
       preview: string | null;
     }[]
   >([]);
+
 
   // Dropdown close on outside click (filter)
   useEffect(() => {
@@ -115,7 +153,8 @@ export default function Newsletter() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [showFilter]);
 
-  // Dropdown close on outside click (Schedule menu)
+
+  // Dropdown close on outside click (menu)
   useEffect(() => {
     if (openMenu === null) return;
     const handleClick = (e: MouseEvent) => {
@@ -126,6 +165,7 @@ export default function Newsletter() {
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, [openMenu]);
+
 
   // Drag & drop file handler
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -145,13 +185,16 @@ export default function Newsletter() {
     }
   };
 
+
   // Button enable/disable logic
   const isInputFilled = !!title || !!file;
+
 
   // Cancel button logic
   const handleCancel = () => {
     setShowCancelModal(true);
   };
+
 
   // Send button logic
   const handleSend = () => {
@@ -161,6 +204,7 @@ export default function Newsletter() {
     setFile(null);
     setPreview(null);
   };
+
 
   // Confirm cancel modal
   const handleCancelModalYes = () => {
@@ -186,6 +230,7 @@ export default function Newsletter() {
     setPreview(null);
   };
 
+
   // Restore draft ke form dan hapus dari draftList
   const handleDraftModalRestore = (draft: (typeof draftList)[0]) => {
     setTitle(draft.title);
@@ -196,15 +241,11 @@ export default function Newsletter() {
     setShowDraftModal(false);
   };
 
+
   // Hapus draft dari list
   const handleDeleteDraft = (id: number) => {
     setDraftList(draftList.filter((d) => d.id !== id));
   };
-
-  // Filtered newsletters
-  const filteredNewsletters = newsletters.filter((n) =>
-    n.title.toLowerCase().includes(search.toLowerCase())
-  );
 
   return (
     <NavBarCMS>
@@ -274,7 +315,7 @@ export default function Newsletter() {
           )}
         </div>
 
-        {/* Rich Text Editor (Jodit) */}
+        {/* Rich Text Editor */}
         <div className="border rounded-lg bg-white overflow-hidden">
           <JoditEditor
             value={content}
@@ -352,10 +393,10 @@ export default function Newsletter() {
 
           {/* Search & Filter */}
           <div className="relative" ref={filterRef}>
-            <div className="flex items-center border rounded-full px-4 py-2 bg-white shadow-md focus-within:ring-2 focus-within:ring-blue-500 transition">
+            <div className="flex items-center border rounded-lg px-4 py-2 bg-white shadow-md focus-within:ring-2 focus-within:ring-blue-500 transition">
               <input
                 type="text"
-                placeholder="Search by Title..."
+                placeholder="Search Newsletter..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="outline-none text-sm w-40 md:w-64 bg-transparent"
@@ -371,10 +412,13 @@ export default function Newsletter() {
 
             {/* Filter Dropdown */}
             {showFilter && (
-              <div className="absolute right-0 mt-3 w-64 bg-white border rounded-xl shadow-lg p-5 z-20 animate-scaleIn">
+              <div
+                className="absolute right-0 mt-3 w-64 bg-white border rounded-xl shadow-lg p-5 z-20 animate-scaleIn"
+                ref={filterRef}
+              >
                 {/* Status */}
                 <div className="mb-4">
-                  <p className="font-semibold text-sm text-gray-700 mb-3 flex items-center gap-1">
+                  <p className="font-semibold text-sm text-gray-700 mb-3">
                     Status
                   </p>
                   <div className="space-y-2 text-sm">
@@ -386,6 +430,8 @@ export default function Newsletter() {
                         <input
                           type="radio"
                           name="status"
+                          checked={filterStatus === status}
+                          onChange={() => setFilterStatus(status)}
                           className="text-blue-600"
                         />
                         <span>{status}</span>
@@ -408,6 +454,8 @@ export default function Newsletter() {
                         <input
                           type="radio"
                           name="type"
+                          checked={filterType === type}
+                          onChange={() => setFilterType(type)}
                           className="text-blue-600"
                         />
                         <span>{type}</span>
@@ -420,7 +468,8 @@ export default function Newsletter() {
                 <div className="mt-4 flex justify-end">
                   <button
                     onClick={() => {
-                      // reset filter logic
+                      setFilterStatus(null);
+                      setFilterType(null);
                     }}
                     className="text-xs font-medium text-gray-500 hover:text-red-500 transition"
                   >
@@ -466,15 +515,12 @@ export default function Newsletter() {
                       Edit
                     </Link>
 
-                    <Link
-                      to={`/panels-admins/newsletter/${n.id}`}
+                    <button
+                      onClick={() => setSelectedNewsletter(n)}
                       className="px-4 py-2 font-medium flex items-center gap-2 border border-blue-400 rounded-xl text-blue-600 hover:text-blue-800 text-sm hover:border-blue-500 hover:scale-105 shadow-sm transition"
                     >
-                      See more
-                      <span className="ml-1 group-hover:translate-x-1 transition-transform">
-                        &rarr;
-                      </span>
-                    </Link>
+                      See more →
+                    </button>
                   </div>
                 </div>
               </div>
@@ -547,6 +593,13 @@ export default function Newsletter() {
         </section>
         {/* ----------END-------- */}
 
+        {/* -------MODAL------- */}
+        {/* Modal Detail Newsletter */}
+        <NewsletterDetailModal
+          newsletter={selectedNewsletter}
+          onClose={() => setSelectedNewsletter(null)}
+        />
+
         {/* Cancel Modal */}
         {showCancelModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -594,69 +647,46 @@ export default function Newsletter() {
         {/* Draft Modal */}
         {showDraftModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-            <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-3xl relative">
+            <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-lg relative">
               {/* Header */}
-              <div className="flex items-center justify-between mb-6">
-                <h4 className="text-2xl font-bold text-blue-500">Draft</h4>
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-lg font-semibold text-gray-800">Draft</h4>
                 <button
                   onClick={() => setShowDraftModal(false)}
-                  className="text-gray-400 hover:text-gray-600 text-xl font-bold"
+                  className="text-gray-500 hover:text-gray-700 text-xl font-bold"
                 >
                   &times;
                 </button>
               </div>
 
               {draftList.length === 0 ? (
-                <p className="text-gray-500 mb-4">Belum ada draft.</p>
+                <p className="text-gray-500 text-sm">Belum ada draft.</p>
               ) : (
-                <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-2">
+                <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
                   {draftList.map((draft, idx) => (
                     <div
                       key={draft.id}
-                      className="border rounded-lg p-4 flex flex-col md:flex-row md:items-start gap-4 bg-gray-50 shadow-sm hover:shadow-md transition"
+                      className="border rounded-lg px-4 py-3 flex items-center justify-between hover:shadow transition"
                     >
-                      <div className="flex-1 space-y-2">
-                        <div className="font-semibold text-lg text-blue-700">
-                          Draft #{idx + 1}
-                        </div>
-                        <div className="text-gray-700">
-                          <span className="font-medium">Judul:</span>{" "}
-                          {draft.title || "(Kosong)"}
-                        </div>
-                        <div className="text-gray-700">
-                          <span className="font-medium">Isi:</span>
-                          <div
-                            className="mt-1 text-sm text-gray-600 prose max-w-none"
-                            dangerouslySetInnerHTML={{
-                              __html:
-                                draft.content?.length > 200
-                                  ? draft.content.slice(0, 200) + "..."
-                                  : draft.content || "(Kosong)",
-                            }}
-                          ></div>
-                        </div>
-                        {draft.preview && (
-                          <img
-                            src={draft.preview}
-                            alt="draft"
-                            className="mt-2 h-20 w-20 object-cover rounded border"
-                          />
-                        )}
-                      </div>
+                      <span className="font-medium text-gray-700">
+                        {"Draft #" + (idx + 1) + " " + draft.title}
+                      </span>
 
-                      {/* Actions */}
-                      <div className="flex flex-row md:flex-col gap-2 md:items-end">
+                      <div className="flex items-center gap-2">
+                        {/* Tombol Tambah */}
                         <button
-                          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium transition flex items-center gap-1"
+                          className="p-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 transition"
                           onClick={() => handleDraftModalRestore(draft)}
                         >
-                          + Tambah
+                          <MdAdd />
                         </button>
+
+                        {/* Tombol Hapus */}
                         <button
-                          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-medium transition flex items-center gap-1"
+                          className="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 transition"
                           onClick={() => handleDeleteDraft(draft.id)}
                         >
-                          Hapus
+                          <MdDeleteOutline />
                         </button>
                       </div>
                     </div>
@@ -665,9 +695,9 @@ export default function Newsletter() {
               )}
 
               {/* Footer */}
-              <div className="flex justify-end mt-8">
+              <div className="flex justify-end mt-5">
                 <button
-                  className="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium transition"
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition text-sm"
                   onClick={() => setShowDraftModal(false)}
                 >
                   Tutup
