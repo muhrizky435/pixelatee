@@ -29,6 +29,12 @@ import PortfolioEdit from "./routes/admin-cms/portfolio/Portfolio-Edit-Admin";
 // Admin Profile-Setting
 import Profile from "./routes/admin-cms/profile-setting/Profile-Admin";
 
+// --- Super Admin Route
+// Super Admin Dashboard
+import SuperAdminDashboard from "./routes/super-admin/admin/Super-Admin";
+import AdminSuperAdmin from "./routes/super-admin/admin/Admin-Super-Admin";
+import ProfileSuperAdmin from "./routes/super-admin/profile/Profile-Super-Admin";
+
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -59,6 +65,15 @@ createRoot(document.getElementById("root")!).render(
         <Route path="panels-admins/portfolios" element={<PortfolioAdmin />} />
         <Route path="panels-admins/portfolios/:id" element={<PortfolioAdmin />} />
         <Route path="panels-admins/portfolios/edit/:id" element={<PortfolioEdit />} />
+
+        {/* Super Admin Route */}
+        <Route path="panels-super-admins/dashboard" element={<SuperAdminDashboard />} />
+
+        {/* Tambah Admin */}
+        <Route path="panels-super-admins/admin" element={<AdminSuperAdmin />} />
+
+        {/*Profile Super Admin */}
+        <Route path="panels-super-admins/profile" element={<ProfileSuperAdmin />} />
 
       </Routes>
     </BrowserRouter>
