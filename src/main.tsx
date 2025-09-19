@@ -37,7 +37,14 @@ import ContactAdmin from "./routes/admin-cms/contact/Contact-Admin";
 import Profile from "./routes/admin-cms/profile-setting/Profile-Admin";
 // import Setting from "./routes/admin-cms/profile-setting/Setting-Admin";
 
-// Protected route
+
+// --- Super Admin Route
+// Super Admin Dashboard
+import SuperAdminDashboard from "./routes/super-admin/admin/Super-Admin";
+import AdminSuperAdmin from "./routes/super-admin/admin/Admin-Super-Admin";
+import ProfileSuperAdmin from "./routes/super-admin/profile/Profile-Super-Admin";
+
+
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -50,6 +57,8 @@ createRoot(document.getElementById("root")!).render(
         <Route path="portfolio/:id" element={<PortoFolioDetail />} />
         <Route path="contact" element={<Contact />} />
         <Route path="newsletters/:memberId/thank-you" element={<NewsletterThankYou />} />
+
+        {/* --------- */}
 
         {/* Admin Cms Route */}
         {/* Auth Admin */}
@@ -68,16 +77,26 @@ createRoot(document.getElementById("root")!).render(
         <Route path="panels-admins/portfolios/:id" element={<PortfolioAdmin />} />
         <Route path="panels-admins/portfolios/edit/:id" element={<PortfolioEdit />} />
 
-        {/* Clients */}
-        <Route path="panels-admins/Clients" element={<ClientsAdmin />} />
+        {/* Client Admin */}
+        <Route path="panels-admins/clients" element={<ClientsAdmin />} />
 
         {/* Contact Admin */}
         <Route path="panels-admins/contacts" element={<ContactAdmin />} />
 
-        {/* Profile Setting  */}
-        <Route path="panels-admins/profile" element={<Profile />} />
-        {/* <Route path="panels-admins/settings" element={<Setting />} /> */}
+        {/* Profile Admin */}
+        <Route path="panels-admins/profiles" element={<Profile />} />
 
+
+        {/* --------- */}
+        
+        {/* Super Admin Route */}
+        <Route path="panels-super-admins/dashboard" element={<SuperAdminDashboard />} />
+
+        {/* Tambah Admin */}
+        <Route path="panels-super-admins/admin" element={<AdminSuperAdmin />} />
+
+        {/*Profile Super Admin */}
+        <Route path="panels-super-admins/profile" element={<ProfileSuperAdmin />} />
 
       </Routes>
     </BrowserRouter>
