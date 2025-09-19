@@ -2,70 +2,84 @@ import { useState, useRef, useEffect } from "react";
 import NavBarCMS from "../../../components/CMS-Navbar";
 import ContactDetailModal from "./Contact-Detail-Admin";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { Link } from "react-router";
 import { FiFilter } from "react-icons/fi";
+import {
+  getAllContactsAdmin,
+  deleteContactAdmin,
+} from "../../../api/contact.api";
+import type { Contact } from "../../../api/contact.api";
+import { FaSearch } from "react-icons/fa";
 
-const contact = [
-  {
-    id: 1,
-    name: "NovaLink Shortener",
-    email: "example@pixelatee.com",
-    subject: "Draft",
-    message: "Hello, I am interested in your services.",
-  },
-  {
-    id: 2,
-    name: "NovaLink Shortener",
-    email: "example@pixelatee.com",
-    subject: "Draft",
-    message: "Hello, I am interested in your services.",
-  },
-  {
-    id: 3,
-    name: "NovaLink Shortener",
-    email: "example@pixelatee.com",
-    subject: "Draft",
-    message: "Hello, I am interested in your services.",
-  },
-  {
-    id: 4,
-    name: "NovaLink Shortener",
-    email: "example@pixelatee.com",
-    subject: "Draft",
-    message: "Hello, I am interested in your services.",
-  },
-  {
-    id: 5,
-    name: "NovaLink Shortener",
-    email: "example@pixelatee.com",
-    subject: "Draft",
-    message: "Hello, I am interested in your services.",
-  },
-];
+/* =========================
+   Mapping TYPE → Label
+========================= */
+const TYPE_LABELS: Record<string, string> = {
+  CUSTOMER_SERVICE: "Customer Service",
+  IT_CONSULTATION: "IT Consultation",
+  UIUX_DEVELOPMENT: "UI/UX Development",
+  MOBILE_DEVELOPMENT: "Mobile Development",
+  WEB_DEVELOPMENT: "Web Development",
+  OTHER: "Other",
+};
 
 export default function ContactAdmin() {
-  const [openMenu, setOpenMenu] = useState<number | null>(null);
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const filterRef = useRef<HTMLDivElement | null>(null);
+
   const [search, setSearch] = useState("");
   const [showFilter, setShowFilter] = useState(false);
   const [filterType, setFilterType] = useState<string | null>(null);
 
-  const [selectedContact, setSelectedContact] = useState<typeof contact[0] | null>(null);
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [selectedContactId, setSelectedContactId] = useState<string | null>(
+    null
+  );
+
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  useEffect(() => {
+    const fetchContacts = async () => {
+      try {
+        const res = await getAllContactsAdmin();
+        setContacts(res.data.contacts ?? []);
+      } catch (err) {
+        console.error("Failed to fetch contacts:", err);
+        setContacts([]);
+      }
+    };
+
+    fetchContacts();
+  }, []);
 
   // filter contacts
-  const filteredContact = contact.filter((c) => {
-    const matchesType = filterType ? c.subject === filterType : true;
-
+  const filteredContact = contacts.filter((c) => {
+    const matchesType = filterType ? c.type === filterType : true;
     const matchesSearch = search
       ? c.name.toLowerCase().includes(search.toLowerCase()) ||
+        c.email.toLowerCase().includes(search.toLowerCase()) ||
         c.message.toLowerCase().includes(search.toLowerCase())
       : true;
 
     return matchesType && matchesSearch;
   });
 
-  // Dropdown close on outside click (filter)
+  // paginate contacts
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentContacts = filteredContact.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredContact.length / itemsPerPage)
+  );
+
+  // close filter dropdown on outside click
   useEffect(() => {
     if (!showFilter) return;
     const handleClick = (e: MouseEvent) => {
@@ -77,7 +91,7 @@ export default function ContactAdmin() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [showFilter]);
 
-  // Dropdown close on outside click (action menu)
+  // close menu on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -91,71 +105,88 @@ export default function ContactAdmin() {
     };
   }, [menuRef]);
 
+  // handle delete contact
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteContactAdmin(id);
+      setContacts((prev) => prev.filter((c) => c.id !== id));
+      setOpenMenu(null);
+    } catch (err) {
+      console.error("Failed to delete contact:", err);
+    }
+  };
+
   return (
     <NavBarCMS>
       <main className="bg-gray-50 min-h-screen pt-2 pb-8 px-8 space-y-8">
         {/* Header */}
         <h1 className="text-3xl font-bold text-blue-500">Contact</h1>
 
-        {/* Search & Filter */}
+        {/* Search */}
         <div className="relative" ref={filterRef}>
-          <div className="flex items-center border rounded-lg px-4 py-2 bg-white shadow-md focus-within:ring-2 focus-within:ring-blue-500 transition">
-            <FiFilter
+          <div className="flex items-center border border-gray-300 rounded-lg px-4 py-2 bg-white shadow-md focus-within:ring-2 focus-within:ring-blue-500 transition">
+            <FaSearch
               size={18}
               className="mr-2 text-gray-400 cursor-pointer hover:text-blue-600"
-              onClick={() => setShowFilter(!showFilter)}
             />
             <input
               type="text"
-              placeholder="Search contact..."
+              placeholder="Search by Name, Email..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="outline-none text-sm w-40 md:w-64 bg-transparent"
             />
           </div>
-
-          {/* Filter Dropdown */}
-          {showFilter && (
-            <div className="absolute left-0 mt-3 w-64 bg-white border rounded-xl shadow-lg p-4 z-20 animate-scaleIn">
-              <p className="font-semibold text-sm text-gray-700 mb-3">
-                Filter by Type
-              </p>
-              <div className="grid grid-cols-1 gap-2 text-sm">
-                {[
-                  "Draft",
-                  "Customer Service",
-                  "UI/UX Designer",
-                  "Mobile Development",
-                  "Web Development",
-                  "IT Consultant",
-                  "Other",
-                ].map((type) => (
-                  <label
-                    key={type}
-                    className="flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-blue-50 transition"
-                  >
-                    <input
-                      type="radio"
-                      name="type"
-                      checked={filterType === type}
-                      onChange={() => setFilterType(type)}
-                      className="text-blue-600 focus:ring-blue-500"
-                    />
-                    <span className="text-gray-700">{type}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Contact Table */}
         <section className="bg-white shadow-sm rounded-2xl border border-gray-100 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-800">
-              List Message
-            </h2>
-            <span className="text-sm text-gray-500">{filteredContact.length}</span>
+          {/* Header + Filter */}
+          <div className="flex items-center justify-between mb-6 relative">
+            <div>
+              <h2 className="text-xl font-semibold text-gray-800">
+                List Message
+              </h2>
+              <span className="text-sm text-gray-500">
+                {filteredContact.length}
+              </span>
+            </div>
+
+            {/* Filter */}
+            <div className="relative" ref={filterRef}>
+              <button
+                onClick={() => setShowFilter(!showFilter)}
+                className="flex items-center gap-2 px-3 py-2 border rounded-lg text-sm text-gray-600 hover:text-blue-600 hover:border-blue-400 transition"
+              >
+                <FiFilter size={16} />
+                Filter
+              </button>
+
+              {showFilter && (
+                <div className="absolute right-0 mt-2 w-72 bg-white border rounded-xl shadow-lg p-4 z-20 animate-scaleIn">
+                  <p className="font-semibold text-sm text-gray-700 mb-3">
+                    Filter by Type
+                  </p>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    {Object.entries(TYPE_LABELS).map(([value, label]) => (
+                      <label
+                        key={value}
+                        className="flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-blue-50 transition"
+                      >
+                        <input
+                          type="radio"
+                          name="type"
+                          checked={filterType === value}
+                          onChange={() => setFilterType(value)}
+                          className="text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="text-gray-700">{label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="overflow-x-auto">
@@ -164,25 +195,29 @@ export default function ContactAdmin() {
                 <tr className="border-b text-sm text-blue-400">
                   <th className="py-3 px-4">Name</th>
                   <th className="py-3 px-4">Email</th>
+                  <th className="py-3 px-4">Type</th>
                   <th className="py-3 px-4">Subject</th>
                   <th className="py-3 px-4">Message</th>
                   <th className="py-3 px-4 text-right">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredContact.map((item) => (
+                {currentContacts.map((item) => (
                   <tr
                     key={item.id}
                     className="border-b border-gray-200 last:border-0 hover:bg-blue-50 transition"
                   >
-                    <td className="flex items-center gap-3 py-3 px-4">
-                      <span className="font-medium text-gray-600">
-                        {item.name}
-                      </span>
-                    </td>
+                    <td className="py-3 px-4 text-gray-600 font-bold">{item.name}</td>
                     <td className="py-3 px-4 text-gray-600">{item.email}</td>
+                    <td className="py-3 px-4 text-gray-600">
+                      {TYPE_LABELS[item.type] ?? item.type}
+                    </td>
                     <td className="py-3 px-4 text-gray-600">{item.subject}</td>
-                    <td className="py-3 px-4 text-gray-600">{item.message}</td>
+                    <td className="py-3 px-4 text-gray-600">
+                      {item.message.length > 100
+                        ? item.message.slice(0, 70) + "..."
+                        : item.message}
+                    </td>
                     <td className="py-3 px-4 text-right relative">
                       <button
                         onClick={() =>
@@ -198,12 +233,17 @@ export default function ContactAdmin() {
                           ref={menuRef}
                           className="absolute top-1/2 right-10 -translate-y-1/2 w-40 bg-white border border-gray-100 rounded-xl shadow-lg z-20 animate-fadeIn"
                         >
-                          <button 
-                            onClick={() => setSelectedContact(item)}
-                            className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 rounded-t-xl transition">
+                          <button
+                            onClick={() => setSelectedContactId(item.id)}
+                            className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 rounded-t-xl transition"
+                          >
                             Lihat Detail
                           </button>
-                          <button className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-b-xl transition">
+
+                          <button
+                            onClick={() => handleDelete(item.id)}
+                            className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-b-xl transition"
+                          >
                             Hapus
                           </button>
                         </div>
@@ -215,23 +255,55 @@ export default function ContactAdmin() {
             </table>
           </div>
 
-          <div className="mt-6 flex justify-end">
-            <Link
-              to={`/admin`}
-              className="font-semibold flex text-right gap-1 mt-2 group w-fit text-blue-600 hover:text-blue-800 text-lg"
-            >
-              See more
-              <span className="ml-1 group-hover:translate-x-1 transition-transform">
-                &rarr;
-              </span>
-            </Link>
+          {/* Pagination */}
+          <div className="flex justify-end mt-6">
+            <div className="flex items-center gap-2">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((prev) => prev - 1)}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition ${
+                  currentPage === 1
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-blue-600 hover:bg-blue-50"
+                }`}
+              >
+                ← Prev
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (num) => (
+                  <button
+                    key={num}
+                    onClick={() => setCurrentPage(num)}
+                    className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-medium transition ${
+                      currentPage === num
+                        ? "bg-blue-500 text-white"
+                        : "text-gray-600 hover:bg-blue-50"
+                    }`}
+                  >
+                    {num}
+                  </button>
+                )
+              )}
+
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition ${
+                  currentPage === totalPages
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-blue-600 hover:bg-blue-50"
+                }`}
+              >
+                Next →
+              </button>
+            </div>
           </div>
         </section>
 
-        {/* Modal */}
         <ContactDetailModal
-          onClose={() => setSelectedContact(null)}
-          contact={selectedContact}
+          onClose={() => setSelectedContactId(null)}
+          contactId={selectedContactId}
         />
       </main>
     </NavBarCMS>

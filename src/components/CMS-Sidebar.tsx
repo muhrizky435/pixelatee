@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
+import Cookies from "js-cookie";
 import { useLocation, useNavigate } from "react-router";
-import { FaCogs, FaBars } from "react-icons/fa";
+import { FaBars } from "react-icons/fa";
 import { MdOutlineContactMail } from "react-icons/md";
-import { BsBox2 } from "react-icons/bs";
+import { BsBox2, BsPerson } from "react-icons/bs";
 import { IoHomeOutline, IoNewspaperOutline } from "react-icons/io5";
+import { FiLogOut } from "react-icons/fi";
 
 export function SidebarCMS() {
   const location = useLocation();
@@ -12,15 +14,56 @@ export function SidebarCMS() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const isResizing = useRef(false);
 
+  const handleLogout = () => {
+    // Hapus cookie session (frontend only)
+    Cookies.remove("session");
+
+    // Redirect ke login
+    navigate("/panels-admins/auth-login");
+  };
+ 
   const menus = [
-    { path: "/panels-admins/dashboard", icon: <IoHomeOutline />, label: "Dashboard" },
-    { path: "/panels-admins/newsletter", icon: <IoNewspaperOutline />, label: "Newsletter" },
+    {
+      path: "/panels-admins/dashboard",
+      icon: <IoHomeOutline />,
+      label: "Dashboard",
+    },
+    {
+      path: "/panels-admins/newsletter",
+      icon: <IoNewspaperOutline />,
+      label: "Newsletter",
+    },
     { path: "/panels-admins/portfolios", icon: <BsBox2 />, label: "Portfolio" },
-    { path: "/panels-admins/contacts", icon: <MdOutlineContactMail />, label: "Contact" },
-    { path: "/panels-admins/settings", icon: <FaCogs />, label: "Setting" },
+    {
+      path: "/panels-admins/clients",
+      icon: <BsPerson />,
+      label: "Clients",
+    },
+    {
+      path: "/panels-admins/contacts",
+      icon: <MdOutlineContactMail />,
+      label: "Contact",
+    },
+    // { path: "/panels-admins/settings", icon: <FaCogs />, label: "Setting" },
   ];
 
-  // --- Drag Resize ---
+  // --- Auto collapse on resize ---
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsCollapsed(true);
+      } else {
+        setIsCollapsed(false);
+      }
+    };
+
+    handleResize(); // run sekali saat load
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+
+  // Drag Resize
   const handleMouseDown = () => {
     if (isCollapsed) return;
     isResizing.current = true;
@@ -89,9 +132,10 @@ export function SidebarCMS() {
                 key={menu.path}
                 onClick={() => navigate(menu.path)}
                 className={`flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-all
-                  ${active
-                    ? "bg-blue-400 text-white shadow-md"
-                    : "text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg"
+                  ${
+                    active
+                      ? "bg-blue-400 text-white shadow-md"
+                      : "text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg"
                   }
                   ${isCollapsed ? "justify-center" : "gap-3"}`}
               >
@@ -101,6 +145,21 @@ export function SidebarCMS() {
             );
           })}
         </nav>
+
+        {/* Logout button */}
+        <div className="p-6 border-t border-gray-100">
+          <button
+            onClick={handleLogout}
+            className={`flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-all
+              ${isCollapsed ? "justify-center" : "gap-3"}
+               text-red-600 hover:bg-red-200`}
+          >
+            <span className="text-lg">
+              <FiLogOut />
+            </span>
+            {!isCollapsed && <span className="truncate">SignOut</span>}
+          </button>
+        </div>
 
         {/* Footer */}
         {!isCollapsed && (

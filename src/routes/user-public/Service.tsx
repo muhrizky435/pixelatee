@@ -15,8 +15,8 @@ import {
 import { FaArrowTrendUp, FaCircleArrowUp } from "react-icons/fa6";
 import { LuArrowUpRight, LuArrowDownRight } from "react-icons/lu";
 import { motion, AnimatePresence } from "framer-motion";
-import { NavBar } from "../components/NavBar";
-import { Footer } from "../components/Footer";
+import { NavBar } from "../../components/NavBar";
+import { Footer } from "../../components/Footer";
 
 type ServiceKey = "uiux" | "webdev" | "mobile" | "crm";
 

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { NavBar } from "../components/NavBar";
-import { Footer } from "../components/Footer";
+import { NavBar } from "../../components/NavBar";
+import { Footer } from "../../components/Footer";
 import { Link, useParams } from "react-router";
 import { HiArrowLeft } from "react-icons/hi";
-import { getPortfolioDetail } from "../api/portfolio.api";
-import type { Portfolio } from "../api/portfolio.api";
+import { getPortfolioDetail } from "../../api/portfolio.api";
+import type { Portfolio } from "../../api/portfolio.api";
 
 // Dummy gallery data
 const dummyGallery = {

@@ -1,11 +1,11 @@
 // portfolio.tsx
-import { NavBar } from "../components/NavBar";
-import { Footer } from "../components/Footer";
+import { NavBar } from "../../components/NavBar";
+import { Footer } from "../../components/Footer";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { HiArrowRight } from "react-icons/hi";
-import { getAllPortfolios } from "../api/portfolio.api";
-import type { Portfolio } from "../api/portfolio.api";
+import { getAllPortfolios } from "../../api/portfolio.api";
+import type { Portfolio } from "../../api/portfolio.api";
 
 export default function PortfolioPage() {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
