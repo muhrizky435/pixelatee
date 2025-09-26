@@ -5,8 +5,7 @@ import { useNavigate } from "react-router";
 export default function AdminSuperAdmin() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
     email: "",
     phone: "+62",
     role: "Admin",
@@ -45,27 +44,15 @@ export default function AdminSuperAdmin() {
           className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 max-w-full"
         >
           {/* Row 1 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="gap-6 mb-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                First Name
+                Name
               </label>
               <input
                 type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Last Name
-              </label>
-              <input
-                type="text"
-                name="lastName"
-                value={formData.lastName}
+                name="name"
+                value={formData.name}
                 onChange={handleChange}
                 className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
               />
