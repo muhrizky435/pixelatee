@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
-import { NavBar } from "../components/NavBar";
-import { Footer } from "../components/Footer";
+import { NavBar } from "../../components/NavBar";
+import { Footer } from "../../components/Footer";
 
 export default function NewsletterThankYou() {
   const { memberId } = useParams();

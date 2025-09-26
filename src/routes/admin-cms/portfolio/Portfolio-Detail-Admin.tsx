@@ -1,20 +1,18 @@
 import React, { useEffect } from "react";
 import { FiEdit, FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import type { Portfolio } from "../../../api/portfolio.api";
 
-type Portfolio = {
-  id: number | string;
-  title: string;
-  description: string;
-  img: string;
-  gallery: string[];
-  author: string;
-  time: string;
+// extend API type untuk UI
+interface PortfolioUI extends Portfolio {
   date: string;
-};
+  time: string;
+  img: string;
+  author?: string;
+}
 
 interface PortfolioModalProps {
-  portfolio: Portfolio | null;
+  portfolio: PortfolioUI | null;
   onClose: () => void;
   galleryRef?: React.RefObject<HTMLDivElement | null>;
 }
@@ -80,11 +78,11 @@ const PortfolioModal: React.FC<PortfolioModalProps> = ({ portfolio, onClose, gal
         {/* Gallery */}
         <h3 className="mt-8 mb-3 font-semibold">Gallery</h3>
         <div ref={galleryRef} className="flex gap-3 overflow-hidden pb-3">
-          {portfolio.gallery.map((img, i) => (
+          {portfolio.gallery?.map((img: string, i: number) => (
             <img
               key={i}
               src={img}
-              alt="gallery"
+              alt={`gallery-${i}`}
               className="w-45 h-20 rounded-lg object-cover flex-shrink-0"
             />
           ))}

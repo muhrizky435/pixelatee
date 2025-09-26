@@ -1,13 +1,27 @@
 import { useState, useEffect, useRef } from "react";
+import Cookies from "js-cookie";
 import { FaBell, FaChevronDown } from "react-icons/fa";
 import { SidebarCMS } from "./CMS-Sidebar";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
-export default function NavBarCMS({ children }: { children?: React.ReactNode }) {
+export default function NavBarCMS({
+  children,
+}: {
+  children?: React.ReactNode;
+}) {
   const [day, setDay] = useState("");
   const [dateTime, setDateTime] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Hapus cookie session (frontend only)
+    Cookies.remove("session");
+
+    // Redirect ke login
+    navigate("/panels-admins/auth-login");
+  };
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
@@ -41,7 +55,10 @@ export default function NavBarCMS({ children }: { children?: React.ReactNode }) 
   // Tutup dropdown kalau klik di luar
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
         setDropdownOpen(false);
       }
     }
@@ -95,14 +112,15 @@ export default function NavBarCMS({ children }: { children?: React.ReactNode }) 
                   >
                     Profile
                   </Link>
-                  <Link
+                  {/* <Link
                     to="/panels-admins/setting"
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                   >
                     Settings
-                  </Link>
+                  </Link> */}
                   <Link
-                    to="/logout"
+                    onClick={handleLogout}
+                    to="/panels-admins/auth-login"
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                   >
                     Sign Out

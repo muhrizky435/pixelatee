@@ -4,14 +4,18 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import "./index.css";
 
 // ---Public Route
-import Home from "./routes/Home";
-import Service from "./routes/Service";
-import PortoFolio from "./routes/Portfolio";
-import PortoFolioDetail from "./routes/Portfolio-Detail";
-import Contact from "./routes/Contact";
-import NewsletterThankYou from "./routes/NewsletterThankYou";
+import Home from "./routes/user-public/Home";
+import Service from "./routes/user-public/Service";
+import PortoFolio from "./routes/user-public/Portfolio";
+import PortoFolioDetail from "./routes/user-public/Portfolio-Detail";
+import Contact from "./routes/user-public/Contact";
+import NewsletterThankYou from "./routes/user-public/NewsletterThankYou";
 
 // ---Admin Cms Route
+// Admin Auth
+import Login from "./routes/admin-cms/auth/Auth-Login";
+import Register from "./routes/admin-cms/auth/Auth-Register";
+
 // Admin Dashboard
 import Dashboard from "./routes/admin-cms/dashboard/Dashboard-Admin";
 
@@ -19,21 +23,27 @@ import Dashboard from "./routes/admin-cms/dashboard/Dashboard-Admin";
 import Newsletter from "./routes/admin-cms/newsletter/Newsletter-Admin";
 import EditNewsletter from "./routes/admin-cms/newsletter/Newsletter-Edit-Admin";
 
-// Admin Contact
-import ContactAdmin from "./routes/admin-cms/contact/Contact-Admin";
-
 // Admin Portfolio
 import PortfolioAdmin from "./routes/admin-cms/portfolio/Portfolio-Admin";
 import PortfolioEdit from "./routes/admin-cms/portfolio/Portfolio-Edit-Admin";
 
+// Admin Clients
+import ClientsAdmin from "./routes/admin-cms/client/Client-Admin";
+
+// Admin Contact
+import ContactAdmin from "./routes/admin-cms/contact/Contact-Admin";
+
 // Admin Profile-Setting
 import Profile from "./routes/admin-cms/profile-setting/Profile-Admin";
+// import Setting from "./routes/admin-cms/profile-setting/Setting-Admin";
+
 
 // --- Super Admin Route
 // Super Admin Dashboard
 import SuperAdminDashboard from "./routes/super-admin/admin/Super-Admin";
 import AdminSuperAdmin from "./routes/super-admin/admin/Admin-Super-Admin";
 import ProfileSuperAdmin from "./routes/super-admin/profile/Profile-Super-Admin";
+
 
 
 createRoot(document.getElementById("root")!).render(
@@ -48,24 +58,37 @@ createRoot(document.getElementById("root")!).render(
         <Route path="contact" element={<Contact />} />
         <Route path="newsletters/:memberId/thank-you" element={<NewsletterThankYou />} />
 
+        {/* --------- */}
+
         {/* Admin Cms Route */}
+        {/* Auth Admin */}
+        <Route path="panels-admins/auth-login" element={<Login />} />
+        <Route path="panels-superadmins/auth-register" element={<Register />} />
+
+        {/* Dashboard Admin */}
         <Route path="panels-admins/dashboard" element={<Dashboard />} />
 
-        {/* Contact Admin */}
-        <Route path="panels-admins/contacts" element={<ContactAdmin />} />
-        
         {/* Newsletter Admin */}
         <Route path="panels-admins/newsletter" element={<Newsletter />} />
         <Route path="panels-admins/newsletter/edit/:id" element={<EditNewsletter />} />
-
-        {/* Profile Setting  */}
-        <Route path="panels-admins/profile" element={<Profile />} />
 
         {/* Portfolio Admin */}
         <Route path="panels-admins/portfolios" element={<PortfolioAdmin />} />
         <Route path="panels-admins/portfolios/:id" element={<PortfolioAdmin />} />
         <Route path="panels-admins/portfolios/edit/:id" element={<PortfolioEdit />} />
 
+        {/* Client Admin */}
+        <Route path="panels-admins/clients" element={<ClientsAdmin />} />
+
+        {/* Contact Admin */}
+        <Route path="panels-admins/contacts" element={<ContactAdmin />} />
+
+        {/* Profile Admin */}
+        <Route path="panels-admins/profiles" element={<Profile />} />
+
+
+        {/* --------- */}
+        
         {/* Super Admin Route */}
         <Route path="panels-super-admins/dashboard" element={<SuperAdminDashboard />} />
 

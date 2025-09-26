@@ -1,57 +1,22 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import NavBarCMS from "../../../components/CMS-Navbar";
 import { FiImage, FiFilter } from "react-icons/fi";
-import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { FaSave, FaTrash, FaTimes } from "react-icons/fa";
 import { Link } from "react-router";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import JoditEditor from "jodit-react";
 import NewsletterDetailModal from "./Newsletter-Detail-Admin";
-import { MdAdd, MdDeleteOutline } from "react-icons/md";
-
-// dummy data newsletter
-const newsletters = [
-  {
-    id: 1,
-    title: "What happen in Industry of Tech Right Now?",
-    date: "12 Aug 2024",
-    time: "13:42",
-    type: "Tech",
-    status: "Sent",
-    desc: "Suspendisse euismod turpis vel imperdiet vulputate...",
-    img: "/img/crm.png",
-  },
-  {
-    id: 2,
-    title: "This is why you should use Angular than React",
-    date: "12 Aug 2024",
-    time: "13:42",
-    type: "Tech",
-    status: "Sent",
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-    img: "/img/crm.png",
-  },
-  {
-    id: 3,
-    title: "React updated to v19.2",
-    date: "12 Aug 2024",
-    time: "13:42",
-    type: "Tech",
-    status: "Sent",
-    desc: "sim risus. Quisque ornare ultricies magna...",
-    img: "/img/crm.png",
-  },
-  {
-    id: 4,
-    title: "Typescript is 10 times faster Now",
-    date: "12 Aug 2024",
-    time: "13:42",
-    type: "Tech",
-    status: "Schedule",
-    desc: "Suspendisse euismod turpis vel imperdiet vulputate...",
-    img: "/img/crm.png",
-  },
-];
+import { MdOutlineSubtitles } from "react-icons/md";
+import DOMPurify from "dompurify";
+import {
+  getAdminNewsletters,
+  createAdminNewsletter,
+  deleteNewsletter,
+} from "../../../api/newsletter.api";
+import type {
+  NewsletterResponse,
+  NewsletterPayload,
+} from "../../../api/newsletter.api";
+import type { AxiosError } from "axios";
 
 const schedule = [
   {
@@ -66,194 +31,152 @@ const schedule = [
     createdAt: "2024-08-01 10:00",
     sendAt: "2024-08-02 10:00",
   },
-  {
-    id: 3,
-    title: "NovaLink Shortener",
-    createdAt: "2024-08-01 10:00",
-    sendAt: "2024-08-02 10:00",
-  },
-  {
-    id: 4,
-    title: "NovaLink Shortener",
-    createdAt: "2024-08-01 10:00",
-    sendAt: "2024-08-02 10:00",
-  },
-  {
-    id: 5,
-    title: "NovaLink Shortener",
-    createdAt: "2024-08-01 10:00",
-    subject: "Draft",
-  },
 ];
 
 export default function Newsletter() {
-  const [sendAfter24, setSendAfter24] = useState(true);
-  const [selectedNewsletter, setSelectedNewsletter] = useState<(typeof newsletters)[0] | null>(null);
+  const [newsletters, setNewsletters] = useState<NewsletterResponse[]>([]);
+  const [, setLoading] = useState(false);
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
+  // state modal
+  const [selectedNewsletter, setSelectedNewsletter] = useState<NewsletterResponse | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedNewsletterForDelete, setSelectedNewsletterForDelete] = useState<NewsletterResponse | null>(null);
+  const [showDeleteSuccessModal, setShowDeleteSuccessModal] = useState(false);
+  const [showCreateSuccessModal, setShowCreateSuccessModal] = useState(false);
+  const [showCreateErrorModal, setShowCreateErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // state form
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [type, setType] = useState<"TECH" | "BUSINESS" | "INTERNAL" | "OTHER">("TECH");
   const [file, setFile] = useState<File | null>(null);
+  const [sendAfter24, setSendAfter24] = useState(false);
 
-  
-  // state filter & search
+  // filter & search
   const [preview, setPreview] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [showFilter, setShowFilter] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<string | null>(null);
 
-
-  // ref
   const filterRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-
-
-  // state modal & open menu dropdown
-  const [showCancelModal, setShowCancelModal] = useState(false);
   const [openMenu, setOpenMenu] = useState<number | null>(null);
-  const [showDraftModal, setShowDraftModal] = useState(false);
 
+  // Get Data Newsletter
+  const fetchNewsletters = useCallback(async () => {
+    try {
+      setLoading(true);
+      const res = await getAdminNewsletters({
+        status: filterStatus || undefined,
+        type: filterType || undefined,
+        search: search || undefined,
+      });
+      setNewsletters(res.data.data || []);
+    } catch (err) {
+      console.error("Failed fetch newsletters:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [filterStatus, filterType, search]);
 
-  // filter newsletters
-  const filteredNewsletters = newsletters.filter((newsletter) => {
-    const matchesStatus = filterStatus
-      ? newsletter.status === filterStatus
-      : true;
-    const matchesType = filterType ? newsletter.type === filterType : true;
-    const matchesSearch = search
-      ? newsletter.title.toLowerCase().includes(search.toLowerCase()) ||
-        newsletter.desc.toLowerCase().includes(search.toLowerCase())
-      : true;
-
-    return matchesStatus && matchesType && matchesSearch;
-  });
-
-  const [draftList, setDraftList] = useState<
-    {
-      id: number;
-      title: string;
-      content: string;
-      file: File | null;
-      preview: string | null;
-    }[]
-  >([]);
-
-
-  // Dropdown close on outside click (filter)
   useEffect(() => {
-    if (!showFilter) return;
-    const handleClick = (e: MouseEvent) => {
-      if (filterRef.current && !filterRef.current.contains(e.target as Node)) {
-        setShowFilter(false);
+    fetchNewsletters();
+  }, [fetchNewsletters]);
+
+  // Handle Tambah Newsletter
+  const handleSend = async () => {
+    if (!title && !file) return;
+    try {
+      const payload: NewsletterPayload = {
+        title,
+        content,
+        type,
+        status: "PUBLISHED",
+        isScheduled: sendAfter24,
+        file,
+      };
+      await createAdminNewsletter(payload);
+      handleCancel();
+      fetchNewsletters();
+      setShowCreateSuccessModal(true);
+    } catch (error) {
+      const err = error as AxiosError<{ message?: string; errors?: string[] }>;
+      console.error("Failed create newsletter:", err);
+
+      if (err.response?.data?.message) {
+        setErrorMessage(err.response.data.message);
+      } else if (err.response?.data?.errors) {
+        setErrorMessage(err.response.data.errors.join(", "));
+      } else {
+        setErrorMessage("Failed to create newsletter. Please try again.");
       }
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [showFilter]);
 
-
-  // Dropdown close on outside click (menu)
-  useEffect(() => {
-    if (openMenu === null) return;
-    const handleClick = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setOpenMenu(null);
-      }
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [openMenu]);
-
-
-  // Drag & drop file handler
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setFile(e.dataTransfer.files[0]);
-      setPreview(URL.createObjectURL(e.dataTransfer.files[0]));
+      setShowCreateErrorModal(true);
     }
   };
+
+  // Handle Confirm Delete Newsletter
+  const handleDeleteConfirm = async () => {
+    if (!selectedNewsletterForDelete) return;
+
+    try {
+      await deleteNewsletter(selectedNewsletterForDelete.id);
+      fetchNewsletters();
+      setShowDeleteModal(false);
+      setSelectedNewsletterForDelete(null);
+      setShowDeleteSuccessModal(true);
+    } catch (error) {
+      console.error("Failed to delete newsletter:", error);
+    }
+  };
+
+  // handle file upload
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (f) {
+      setFile(f);
+      setPreview(URL.createObjectURL(f));
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const f = e.dataTransfer.files[0];
+    if (f) {
+      setFile(f);
+      setPreview(URL.createObjectURL(f));
+    }
+  };
+
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-      setPreview(URL.createObjectURL(e.target.files[0]));
-    }
-  };
 
-
-  // Button enable/disable logic
-  const isInputFilled = !!title || !!file;
-
-
-  // Cancel button logic
+  // Handle Reset Form ketika klik cancel
   const handleCancel = () => {
-    setShowCancelModal(true);
-  };
-
-
-  // Send button logic
-  const handleSend = () => {
-    if (!isInputFilled) return;
     setTitle("");
     setContent("");
     setFile(null);
     setPreview(null);
+    setSendAfter24(true);
   };
 
-
-  // Confirm cancel modal
-  const handleCancelModalYes = () => {
-    const newDraft = {
-      id: Date.now(),
-      title,
-      content,
-      file,
-      preview,
-    };
-    setDraftList([...draftList, newDraft]);
-    setShowCancelModal(false);
-    setTitle("");
-    setContent("");
-    setFile(null);
-    setPreview(null);
-  };
-  const handleCancelModalNo = () => {
-    setShowCancelModal(false);
-    setTitle("");
-    setContent("");
-    setFile(null);
-    setPreview(null);
-  };
-
-
-  // Restore draft ke form dan hapus dari draftList
-  const handleDraftModalRestore = (draft: (typeof draftList)[0]) => {
-    setTitle(draft.title);
-    setContent(draft.content);
-    setFile(draft.file);
-    setPreview(draft.preview);
-    setDraftList(draftList.filter((d) => d.id !== draft.id));
-    setShowDraftModal(false);
-  };
-
-
-  // Hapus draft dari list
-  const handleDeleteDraft = (id: number) => {
-    setDraftList(draftList.filter((d) => d.id !== id));
-  };
+  const isInputFilled = !!title || !!file;
+  const filteredNewsletters = newsletters;
 
   return (
     <NavBarCMS>
-      <main className="bg-gray-50 min-h-screen pt-2 pb-8 px-8 space-y-8">
-        {/* Header */}
+      <main className="bg-gray-50 min-h-screen pt-2 pb-8 md:px-8 px-2 space-y-8">
         <h1 className="text-3xl font-bold text-blue-500">Newsletter</h1>
 
-        {/* Title Input dan button Draft */}
+        {/* Form Input Title */}
+        <p className="flex items-center text-gray-500 mb-1">
+          <MdOutlineSubtitles size={18} className="mr-2" />
+          Title
+        </p>
         <div className="flex items-center gap-4">
           <input
             type="text"
@@ -265,17 +188,25 @@ export default function Newsletter() {
                focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 
                focus:shadow-md focus:shadow-blue-200 transition"
           />
+        </div>
 
-          {/* Tombol Draft */}
-          <button
-            className={`px-4 py-2 text-lg bg-blue-400 text-white font-medium rounded-lg 
-                hover:bg-blue-600 transition 
-                ${draftList.length ? "" : "opacity-50 cursor-not-allowed"}`}
-            onClick={() => setShowDraftModal(true)}
-            disabled={!draftList.length}
+        {/* Type Field */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-gray-500">Type</label>
+          <select
+            value={type}
+            onChange={(e) =>
+              setType(
+                e.target.value as "TECH" | "BUSINESS" | "INTERNAL" | "OTHER"
+              )
+            }
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
           >
-            Draft
-          </button>
+            <option value="TECH">TECH</option>
+            <option value="BUSINESS">BUSINESS</option>
+            <option value="INTERNAL">INTERNAL</option>
+            <option value="OTHER">OTHER</option>
+          </select>
         </div>
 
         {/* Upload Area */}
@@ -286,7 +217,11 @@ export default function Newsletter() {
         >
           {preview ? (
             <div className="flex flex-col items-center">
-              <img src={preview} alt="preview" className="h-24 mb-2 rounded" />
+              <img
+                src={preview}
+                alt="preview"
+                className="w-full mb-2 rounded"
+              />
               <button
                 type="button"
                 className="text-red-500 text-md"
@@ -343,7 +278,7 @@ export default function Newsletter() {
 
         {/* Options + Buttons */}
         <div className="flex flex-col gap-4">
-          {/* Toggle */}
+          {/* Toggle Schedule */}
           <label className="flex items-center gap-3 cursor-pointer">
             <div className="relative">
               <input
@@ -355,10 +290,13 @@ export default function Newsletter() {
               <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-600 transition-colors"></div>
               <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-all peer-checked:translate-x-5"></div>
             </div>
-            <span className="text-gray-700 text-sm">Send after 24 hours</span>
+            <span className="text-gray-700 text-sm">
+              {sendAfter24
+                ? "Scheduled (Send after 24 hours)"
+                : "Send Immediately"}
+            </span>
           </label>
 
-          {/* Buttons Send Newsletter */}
           <div className="flex justify-between">
             <button
               className={`px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md ${
@@ -376,14 +314,13 @@ export default function Newsletter() {
               onClick={handleSend}
               disabled={!isInputFilled}
             >
-              Send Newsletter
+              Create Newsletter
             </button>
           </div>
         </div>
 
-        {/* ----------Card List Newsletter----------- */}
+        {/* List Newsletter */}
         <div className="flex justify-between items-center mb-6">
-          {/* Title */}
           <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
             Newsletter
             <span className="bg-blue-100 text-blue-600 text-sm px-2 py-0.5 rounded-full">
@@ -391,7 +328,7 @@ export default function Newsletter() {
             </span>
           </h2>
 
-          {/* Search & Filter */}
+          {/* Search + Filter */}
           <div className="relative" ref={filterRef}>
             <div className="flex items-center border rounded-lg px-4 py-2 bg-white shadow-md focus-within:ring-2 focus-within:ring-blue-500 transition">
               <input
@@ -410,7 +347,6 @@ export default function Newsletter() {
               </button>
             </div>
 
-            {/* Filter Dropdown */}
             {showFilter && (
               <div
                 className="absolute right-0 mt-3 w-64 bg-white border rounded-xl shadow-lg p-5 z-20 animate-scaleIn"
@@ -464,7 +400,6 @@ export default function Newsletter() {
                   </div>
                 </div>
 
-                {/* Clear Filter */}
                 <div className="mt-4 flex justify-end">
                   <button
                     onClick={() => {
@@ -481,7 +416,7 @@ export default function Newsletter() {
           </div>
         </div>
 
-        {/* Newsletter Section */}
+        {/* Newsletter Cards */}
         <div className="bg-white rounded-xl shadow-md p-6">
           <div className="grid md:grid-cols-2 gap-6 leading-8">
             {filteredNewsletters.map((n) => (
@@ -489,25 +424,47 @@ export default function Newsletter() {
                 key={n.id}
                 className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition"
               >
-                <img
-                  src={n.img}
-                  alt={n.title}
-                  className="w-full h-40 object-cover"
-                />
+                {n.photo && (
+                  <img
+                    src={`${BASE_URL}/newsletter/${n.photo}`}
+                    alt={n.title}
+                    className="w-full h-40 object-cover"
+                  />
+                )}
+
                 <div className="p-4">
                   <p className="text-xs text-gray-500">
-                    {n.time}, {n.date}
+                    {new Date(n.createdAt).toLocaleString()}
                   </p>
+
                   <span className="inline-block bg-gray-800 text-white text-xs px-2 py-1 rounded mt-1">
                     {n.type}
                   </span>
+
                   <h3 className="text-md font-semibold mt-2 line-clamp-2">
                     {n.title}
                   </h3>
-                  <p className="text-sm text-gray-600 mt-1 line-clamp-3">
-                    {n.desc}
-                  </p>
+
+                  <p
+                    className="text-sm text-gray-600 mt-1 line-clamp-3"
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(n.content),
+                    }}
+                  ></p>
+
                   <div className="flex items-center gap-3 mt-4">
+                    {/* Tombol Hapus */}
+                    <button
+                      onClick={() => {
+                        setSelectedNewsletterForDelete(n);
+                        setShowDeleteModal(true);
+                      }}
+                      className="px-4 py-2 font-medium flex items-center gap-2 border border-red-500 rounded-xl text-red-600 hover:text-red-800 text-sm hover:border-red-600 hover:scale-105 shadow-sm transition"
+                    >
+                      Delete
+                    </button>
+
+                    {/* Tombol Edit */}
                     <Link
                       to={`/panels-admins/newsletter/edit/${n.id}`}
                       className="px-4 py-2 font-medium flex items-center gap-2 bg-blue-500 border border-blue-500 rounded-xl text-white text-sm shadow-sm hover:bg-blue-600 hover:scale-105 transition"
@@ -515,6 +472,7 @@ export default function Newsletter() {
                       Edit
                     </Link>
 
+                    {/* Tombol See more */}
                     <button
                       onClick={() => setSelectedNewsletter(n)}
                       className="px-4 py-2 font-medium flex items-center gap-2 border border-blue-400 rounded-xl text-blue-600 hover:text-blue-800 text-sm hover:border-blue-500 hover:scale-105 shadow-sm transition"
@@ -528,13 +486,12 @@ export default function Newsletter() {
           </div>
         </div>
 
-        {/* Schedule Section */}
+        {/* Schedule Section (dummy) */}
         <section className="bg-white shadow-md rounded-2xl border border-gray-100 p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-800">Schedule</h2>
             <span className="text-sm text-gray-500">{schedule.length}</span>
           </div>
-
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left text-gray-600">
               <thead>
@@ -591,118 +548,88 @@ export default function Newsletter() {
             </table>
           </div>
         </section>
-        {/* ----------END-------- */}
 
-        {/* -------MODAL------- */}
         {/* Modal Detail Newsletter */}
         <NewsletterDetailModal
           newsletter={selectedNewsletter}
           onClose={() => setSelectedNewsletter(null)}
         />
 
-        {/* Cancel Modal */}
-        {showCancelModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-            <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm text-center">
-              {/* Icon Warning */}
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-red-100 text-red-600">
-                <HiOutlineExclamationCircle size={32} />
-              </div>
-
-              {/* Title */}
-              <h4 className="text-lg font-semibold text-gray-800 mb-2">
-                Masukkan ke draft?
-              </h4>
-
-              {/* Description */}
-              <p className="text-sm text-gray-600 mb-6">
-                Apakah ingin menyimpan inputan ke draft atau hapus saja?
+        {/* Modal Hapus Newsletter */}
+        {showDeleteModal && selectedNewsletterForDelete && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 flex flex-col">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                Delete Newsletter
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Are you sure you want to delete "
+                <span className="font-medium">
+                  {selectedNewsletterForDelete.title}
+                </span>
+                "?
               </p>
-
-              {/* Actions */}
-              <div className="flex items-center justify-center gap-3">
+              <div className="flex justify-end gap-3">
                 <button
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition"
-                  onClick={handleCancelModalYes}
+                  onClick={() => setShowDeleteModal(false)}
+                  className="px-4 py-2 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
                 >
-                  <FaSave /> Simpan
+                  Cancel
                 </button>
                 <button
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition"
-                  onClick={handleCancelModalNo}
+                  onClick={handleDeleteConfirm}
+                  className="px-4 py-2 rounded-xl bg-red-600 text-white hover:bg-red-700 transition"
                 >
-                  <FaTrash /> Hapus
-                </button>
-                <button
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-300 text-gray-800 text-sm font-medium hover:bg-gray-400 transition"
-                  onClick={() => setShowCancelModal(false)}
-                >
-                  <FaTimes /> Batal
+                  Delete
                 </button>
               </div>
             </div>
           </div>
         )}
+        {showDeleteSuccessModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+            <div className="bg-white rounded-2xl shadow-xl  w-full max-w-md p-6 text-center">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                Success!
+              </h3>
+              <p className="mb-6">Newsletter successfully delete.</p>
+              <button
+                onClick={() => setShowDeleteSuccessModal(false)}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
 
-        {/* Draft Modal */}
-        {showDraftModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-            <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-lg relative">
-              {/* Header */}
-              <div className="flex items-center justify-between mb-4">
-                <h4 className="text-lg font-semibold text-gray-800">Draft</h4>
-                <button
-                  onClick={() => setShowDraftModal(false)}
-                  className="text-gray-500 hover:text-gray-700 text-xl font-bold"
-                >
-                  &times;
-                </button>
-              </div>
-
-              {draftList.length === 0 ? (
-                <p className="text-gray-500 text-sm">Belum ada draft.</p>
-              ) : (
-                <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
-                  {draftList.map((draft, idx) => (
-                    <div
-                      key={draft.id}
-                      className="border rounded-lg px-4 py-3 flex items-center justify-between hover:shadow transition"
-                    >
-                      <span className="font-medium text-gray-700">
-                        {"Draft #" + (idx + 1) + " " + draft.title}
-                      </span>
-
-                      <div className="flex items-center gap-2">
-                        {/* Tombol Tambah */}
-                        <button
-                          className="p-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 transition"
-                          onClick={() => handleDraftModalRestore(draft)}
-                        >
-                          <MdAdd />
-                        </button>
-
-                        {/* Tombol Hapus */}
-                        <button
-                          className="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 transition"
-                          onClick={() => handleDeleteDraft(draft.id)}
-                        >
-                          <MdDeleteOutline />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Footer */}
-              <div className="flex justify-end mt-5">
-                <button
-                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition text-sm"
-                  onClick={() => setShowDraftModal(false)}
-                >
-                  Tutup
-                </button>
-              </div>
+        {/* Modal Success Create Newsletter */}
+        {showCreateSuccessModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+            <div className="bg-white rounded-2xl w-full max-w-md p-6 text-center shadow-xl">
+              <h2 className="text-lg font-semibold mb-4">Success!</h2>
+              <p className="mb-6">Newsletter successfully created and added.</p>
+              <button
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                onClick={() => setShowCreateSuccessModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+        {/* Modal Error Create Newsletter */}
+        {showCreateErrorModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+            <div className="bg-white rounded-2xl w-full max-w-md p-6 text-center shadow-xl">
+              <h2 className="text-lg font-semibold text-red-600 mb-4">Error</h2>
+              <p className="mb-6 text-gray-700">{errorMessage}</p>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                onClick={() => setShowCreateErrorModal(false)}
+              >
+                Close
+              </button>
             </div>
           </div>
         )}

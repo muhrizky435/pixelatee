@@ -157,7 +157,7 @@ export default function DashboardAdmin() {
 
   return (
     <NavBarCMS>
-      <main className="bg-gray-50 min-h-screen pt-2 pb-8 px-8 space-y-8">
+      <main className="bg-gray-50 min-h-screen pt-2 pb-8 px-2 md:px-8 space-y-8">
         {/* Header */}
         <header className="mb-6">
           <h1 className="text-3xl font-bold text-blue-500">Dashboard</h1>

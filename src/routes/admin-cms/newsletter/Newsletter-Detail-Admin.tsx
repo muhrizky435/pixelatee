@@ -1,20 +1,12 @@
 import { FiX, FiEdit } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { useRef } from "react";
+import { useEffect, useState } from "react";
+import type { NewsletterResponse } from "../../../api/newsletter.api";
+import DOMPurify from "dompurify";
+import { getAdminNewsletterDetail } from "../../../api/newsletter.api";
 
 interface NewsletterDetailModalProps {
-  newsletter: {
-    id: number;
-    title: string;
-    type: string;
-    date: string;
-    time: string;
-    desc: string;
-    img: string;
-    gallery?: string[];
-    author?: string;
-    publishTime?: string;
-  } | null;
+  newsletter: NewsletterResponse | null;
   onClose: () => void;
 }
 
@@ -23,85 +15,102 @@ export default function NewsletterDetailModal({
   onClose,
 }: NewsletterDetailModalProps) {
   const navigate = useNavigate();
-  const galleryRef = useRef<HTMLDivElement>(null);
+  // const galleryRef = useRef<HTMLDivElement>(null);
+
+  const [detail, setDetail] = useState<NewsletterResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!newsletter) return;
+    const fetchDetail = async () => {
+      try {
+        setLoading(true);
+        const res = await getAdminNewsletterDetail(newsletter.id);
+        setDetail(res.data.data);
+      } catch (err) {
+        console.error("Failed fetch newsletter detail:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDetail();
+  }, [newsletter]);
 
   if (!newsletter) return null;
 
   return (
-    <div className="fixed inset-0 bg-blue-100/60 flex items-center justify-center z-40">
-      {/* Wrapper Modal */}
-      <div className="w-full max-w-6xl bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-300 animate-scaleIn min-h-screen mt-22 flex flex-col">
-        {/* Gambar Header */}
-        <div className="relative w-full p-6">
-          <img
-            src={newsletter.img}
-            alt={newsletter.title}
-            className="w-full h-56 md:h-72 object-cover rounded-xl shadow"
-          />
-          {/* Tombol Edit + Close */}
-          <div className="absolute top-6 right-6 flex gap-3">
-            <button
-              onClick={() =>
-                navigate(`/panels-admins/newsletter/edit/${newsletter.id}`)
-              }
-              className="m-1 p-2 bg-white/80 text-gray-700 hover:bg-white rounded-full shadow"
-            >
-              <FiEdit size={18} />
-            </button>
-            <button
-              onClick={onClose}
-              className="m-1 p-2 bg-white/80 text-gray-700 hover:bg-white rounded-full shadow"
-            >
-              <FiX size={18} />
-            </button>
+    <div className="fixed inset-0 bg-blue-100/60 flex items-center justify-center z-40 p-1">
+      <div
+        className="w-full max-w-6xl bg-white rounded-2xl shadow-2xl overflow-y-auto transform transition-all duration-300 animate-scaleIn
+                  flex flex-col max-h-[95vh]"
+      >
+        {/* Loading state */}
+        {loading && (
+          <div className="flex items-center justify-center flex-1 p-6">
+            <p className="text-gray-500">Loading...</p>
           </div>
-        </div>
+        )}
 
-        {/* Konten scrollable */}
-        <div className="px-6 pb-6 overflow-y-auto flex-1">
-          {/* Info Newsletter */}
-          <div>
-            <p className="text-sm text-gray-500 mb-2">
-              {newsletter.time}, {newsletter.date}
-            </p>
-            <span className="inline-block bg-gray-900 text-white text-xs px-2 py-1 rounded">
-              {newsletter.type}
-            </span>
-            <h2 className="text-2xl font-bold text-gray-800 mt-3 mb-4">
-              {newsletter.title}
-            </h2>
-            <p className="text-gray-700 leading-relaxed">{newsletter.desc}</p>
-          </div>
+        {!loading && detail && (
+          <>
+            {/* Gambar Header */}
+            <div className="relative w-full flex justify-center">
+              {detail.photo && (
+                <img
+                  src={`${
+                    import.meta.env.VITE_API_URL || "http://localhost:3000"
+                  }/newsletter/${detail.photo}`}
+                  alt={detail.title}
+                  className="w-full mx-6 md:mx-10 my-8 h-45 md:h-65 object-cover rounded-xl shadow"
+                />
+              )}
 
-          {/* Gallery */}
-          {newsletter.gallery && newsletter.gallery.length > 0 && (
-            <>
-              <h3 className="mt-8 mb-3 font-semibold">Gallery</h3>
-              <div
-                ref={galleryRef}
-                className="flex gap-3 overflow-x-auto pb-3 scrollbar-hide"
-              >
-                {newsletter.gallery.map((img, i) => (
-                  <img
-                    key={i}
-                    src={img}
-                    alt="gallery"
-                    className="w-40 h-24 rounded-lg object-cover flex-shrink-0"
-                  />
-                ))}
+              <div className="absolute top-4 right-4 flex gap-2">
+                <button
+                  onClick={() =>
+                    navigate(`/panels-admins/newsletter/edit/${detail.id}`)
+                  }
+                  className="p-2 bg-blue-100 text-gray-700 hover:bg-blue-300 rounded-full border-gray-200 shadow-xl"
+                >
+                  <FiEdit size={18} />
+                </button>
+                <button
+                  onClick={onClose}
+                  className="p-2 bg-blue-100 text-gray-700 hover:bg-blue-300 rounded-full shadow-xl"
+                >
+                  <FiX size={18} />
+                </button>
               </div>
-            </>
-          )}
+            </div>
 
-          {/* Footer */}
-          {newsletter.author && newsletter.publishTime && (
-            <p className="text-sm text-gray-400 mt-6">
-              Published by{" "}
-              <span className="font-medium">{newsletter.author}</span> at{" "}
-              {newsletter.publishTime}
-            </p>
-          )}
-        </div>
+            {/* Konten scrollable */}
+            <div className="px-6 md:px-8 py-6">
+              <p className="text-sm text-gray-500 mb-2">
+                {new Date(detail.createdAt).toLocaleString()}
+              </p>
+              <span className="inline-block bg-gray-900 text-white text-xs px-2 py-1 rounded">
+                {detail.type}
+              </span>
+              <h2 className="text-2xl font-bold text-gray-800 mt-3 mb-4">
+                {detail.title}
+              </h2>
+
+              <div
+                className="text-gray-700 leading-relaxed text-justify"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(detail.content),
+                }}
+              />
+
+              {detail.author && (
+                <p className="text-sm text-gray-400 mt-6">
+                  Published by{" "}
+                  <span className="font-medium">{detail.author + " at " + new Date(detail.createdAt).toLocaleString()}</span>
+                </p>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

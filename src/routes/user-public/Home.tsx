@@ -1,13 +1,13 @@
 import { Link } from "react-router";
-import { NavBar } from "../components/NavBar";
-import { Footer } from "../components/Footer";
+import { NavBar } from "../../components/NavBar";
+import { Footer } from "../../components/Footer";
 import { FaQuoteLeft } from "react-icons/fa";
-import ClientSlider from "../components/ClientSlider";
+import ClientSlider from "../../components/ClientSlider";
 import { HiArrowRight } from "react-icons/hi";
 import { useState } from "react";
 import { HiOutlineChevronDown, HiOutlineChevronUp } from "react-icons/hi";
-import { joinNewsletter } from "../api/newsletter.api";
-import Reveal from "../components/Animate-Home-Reveal";
+import { joinNewsletter } from "../../api/newsletter.api";
+import Reveal from "../../components/Animate-Home-Reveal";
 
 // faq
 const faqs = [

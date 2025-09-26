@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { NavBar } from "../components/NavBar";
-import { Footer } from "../components/Footer";
+import { NavBar } from "../../components/NavBar";
+import { Footer } from "../../components/Footer";
 import {
   FaMapMarkerAlt,
   FaEnvelope,
@@ -11,12 +11,13 @@ import {
   FaFacebookSquare,
 } from "react-icons/fa";
 import { FaInstagram, FaXTwitter, FaLinkedin } from "react-icons/fa6";
-import { sendContactAxios } from "../api/contact.api";
+import { sendContactAxios } from "../../api/contact.api";
 
 export default function Contact() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
+  const [type, setType] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -32,13 +33,29 @@ export default function Contact() {
     setLoading(true);
     setFeedback(null);
 
+      // ✅ validasi service type
+    if (!type) {
+      setToastType("error");
+      setToastMessage("Please select a service type.");
+      setToastOpen(true);
+      setLoading(false);
+      return;
+    }
+
     // fetch api kirim pesan (contact.api.ts)
     try {
-      const res = await sendContactAxios({ name, email, subject, message });
+      const res = await sendContactAxios({
+        name,
+        email,
+        subject,
+        type,
+        message,
+      });
       setFeedback(res.message || "Message sent successfully!");
       setName("");
       setEmail("");
       setSubject("");
+      setType("");
       setMessage("");
 
       // tampilkan toast success
@@ -79,8 +96,7 @@ export default function Contact() {
         {/* Heading */}
         <div className="mb-10 md:mb-14">
           <h2 className="text-4xl md:text-5xl font-semibold mb-4">
-            Tell Us{" "}
-            <span className="text-blue-600 font-bold">your Idea!</span>
+            Tell Us <span className="text-blue-600 font-bold">your Idea!</span>
           </h2>
           <p className="text-gray-400 max-w-2xl">
             We’d love to hear from you and explore how we can turn your thoughts
@@ -207,6 +223,35 @@ export default function Contact() {
                 />
               </div>
 
+              {/* Service Type */}
+              <div>
+                <p className="flex items-center gap-2 mb-2 text-gray-700 font-medium">
+                  <FaRegCommentDots className="text-blue-500" /> What type of
+                  Service you were looking for?
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { label: "Customer Service", value: "CUSTOMER_SERVICE" },
+                    { label: "IT Consultation", value: "IT_CONSULTATION" },
+                    { label: "UI/UX Development", value: "UIUX_DEVELOPMENT" },
+                    { label: "Mobile Development", value: "MOBILE_DEVELOPMENT" },
+                    { label: "Web Development", value: "WEB_DEVELOPMENT" },
+                  ].map((service) => (
+                    <button
+                      key={service.value}
+                      type="button"
+                      onClick={() => setType(service.value)}
+                      className={`px-4 py-2 rounded-lg border transition ${
+                        type === service.value
+                          ? "bg-gray-200 border-gray-400"
+                          : "bg-white border-gray-300 hover:bg-gray-100"
+                      }`}
+                    >
+                      {service.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
               {/* Message */}
               <div>
                 <label className="flex items-center gap-2 mb-2 text-gray-700 font-medium">

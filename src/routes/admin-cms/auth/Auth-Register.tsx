@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginApi } from "../../../api/auth.api";
+import { registerApi } from "../../../api/auth.api";
 import { NavBar } from "../../../components/NavBar";
 import { Footer } from "../../../components/Footer";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ email: "", password: "" });
@@ -20,9 +20,9 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await loginApi(form);
+      await registerApi(form);
 
-      toast.success("Login berhasil! Mengarahkan ke dashboard...", {
+      toast.success("Registrasi berhasil! Silakan login...", {
         position: "top-right",
         style: {
           background: "#2563eb",
@@ -34,10 +34,10 @@ export default function LoginPage() {
         },
       });
 
-      setTimeout(() => navigate("/panels-admins/dashboard"), 1500);
+      setTimeout(() => navigate("/login"), 1500);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        toast.error(err.response?.data?.message || "Login gagal", {
+        toast.error(err.response?.data?.message || "Registrasi gagal", {
           position: "top-right",
           style: { background: "#2563eb", color: "#fff" },
         });
@@ -62,7 +62,7 @@ export default function LoginPage() {
           <div className="p-12 flex flex-col justify-center">
             <div className="mb-8 text-center">
               <h1 className="text-4xl font-bold text-gray-800 mb-2">
-                Admin Login
+                Register
               </h1>
               <div className="w-20 h-1 mx-auto bg-blue-600 rounded"></div>
             </div>
@@ -96,14 +96,6 @@ export default function LoginPage() {
                   className="w-full px-4 py-3 mt-1 bg-gray-50 text-gray-900 border border-gray-300 placeholder-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
                   placeholder="••••••••"
                 />
-                <div className="text-right mt-2">
-                  <a
-                    href="/forgot-password"
-                    className="text-sm text-blue-600 hover:underline"
-                  >
-                    Forgot password?
-                  </a>
-                </div>
               </div>
 
               <button
@@ -133,16 +125,26 @@ export default function LoginPage() {
                     ></path>
                   </svg>
                 )}
-                {loading ? "Logging in..." : "Login"}
+                {loading ? "Registering..." : "Register"}
               </button>
             </form>
+
+            <p className="mt-4 text-sm text-gray-600 text-center">
+              Sudah punya akun?{" "}
+              <a
+                href="/panels-admins/auth-login"
+                className="text-blue-600 hover:underline font-medium"
+              >
+                Login
+              </a>
+            </p>
           </div>
 
           {/* Right side: full image with overlay */}
           <div className="hidden md:block relative">
             <img
-              src="/img/photo1.jpeg"
-              alt="Login Illustration"
+              src="/img/photo2.jpeg"
+              alt="Register Illustration"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-blue-600/20 mix-blend-multiply"></div>
