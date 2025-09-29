@@ -1,7 +1,6 @@
 type Admin = {
   id: number;
-  firstName: string;
-  lastName?: string;
+  name: string;
   email: string;
   phone: string;
   role: string;
@@ -29,22 +28,12 @@ export default function EditAdminModal({ selectedAdmin, onClose }: Props) {
         </button>
 
         <form className="space-y-4">
-          {/* First Name */}
+          {/* Name */}
           <div>
-            <label className="text-sm font-medium text-gray-700">First Name</label>
+            <label className="text-sm font-medium text-gray-700">Name</label>
             <input
               type="text"
-              defaultValue={selectedAdmin.firstName}
-              className="mt-1 w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-            />
-          </div>
-
-          {/* Last Name */}
-          <div>
-            <label className="text-sm font-medium text-gray-700">Last Name</label>
-            <input
-              type="text"
-              defaultValue={selectedAdmin.lastName}
+              defaultValue={selectedAdmin.name}
               className="mt-1 w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
             />
           </div>
@@ -72,13 +61,12 @@ export default function EditAdminModal({ selectedAdmin, onClose }: Props) {
           {/* Role */}
           <div>
             <label className="text-sm font-medium text-gray-700">Role</label>
-            <select
-              defaultValue={selectedAdmin.role}
-              className="mt-1 w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-            >
-              <option value="Admin">Admin</option>
-              <option value="Super Admin">Super Admin</option>
-            </select>
+            <input
+              type="text"
+              value={selectedAdmin.role}
+              readOnly
+              className="mt-1 w-full px-3 py-2 border rounded-lg text-sm bg-gray-100 text-gray-500 outline-none cursor-not-allowed"
+            />
           </div>
 
           {/* Date of Birth */}

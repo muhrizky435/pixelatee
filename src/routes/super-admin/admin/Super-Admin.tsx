@@ -8,8 +8,7 @@ import EditAdminModal from "./Admin-Edit-Super-Admin";
 const admin = [
   {
     id: 1,
-    firstName: "Ahmad",
-    lastName: "Syaerodji",
+    name: "Ahmad Syaerodji",
     email: "asyaredodji@pixelatee.com",
     phone: "08123456789",
     role: "Admin",
@@ -18,8 +17,7 @@ const admin = [
   },
   {
     id: 2,
-    firstName: "Windini",
-    lastName: "Sari",
+    name: "Windini Sari",
     email: "windini@pixelatee.com",
     phone: "08129876543",
     dob: "1992-05-15",
@@ -28,8 +26,7 @@ const admin = [
   },
   {
     id: 3,
-    firstName: "Janpiter",
-    lastName: "Purba",
+    name: "Janpiter Purba",
     email: "jan@pixelatee.com",
     phone: "08137654321",
     dob: "1988-11-30",
@@ -38,8 +35,7 @@ const admin = [
   },
   {
     id: 4,
-    firstName: "Alex",
-    lastName: "Johnson",
+    name: "Alex Johnson",
     email: "alex@pixelatee.com",
     phone: "08134567890",
     dob: "1991-07-20",
@@ -60,7 +56,7 @@ export default function SuperAdminDashboard() {
 
   // filter admin
   const filteredAdmin = admin.filter((a) => {
-  const fullName = `${a.firstName} ${a.lastName || ""}`.trim();
+  const fullName = `${a.name || ""}`.trim();
 
   const matchesType = filterType ? a.role === filterType : true;
   const matchesSearch = search
@@ -179,7 +175,7 @@ export default function SuperAdminDashboard() {
                   >
                     <td className="flex items-center gap-3 py-3 px-4">
                      <span className="font-medium text-gray-600">
-                        {`${item.firstName} ${item.lastName || ""}`.trim()}
+                        {`${item.name || ""}`.trim()}
                       </span>
                     </td>
                     <td className="py-3 px-4 text-gray-600">{item.email}</td>

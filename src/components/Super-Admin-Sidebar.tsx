@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { FaBars, FaSignOutAlt, FaUser } from "react-icons/fa";
+import { FaBars, FaSignOutAlt, FaUser, FaCogs } from "react-icons/fa";
 import { FaUserPlus } from "react-icons/fa6";
+import { MdOutlineContactMail } from "react-icons/md";
+import { BsBox2 } from "react-icons/bs";
+import { IoHomeOutline, IoNewspaperOutline } from "react-icons/io5";
 
 export function SidebarSuperAdmin() {
   const location = useLocation();
@@ -19,7 +22,11 @@ export function SidebarSuperAdmin() {
 
   // Menu utama
   const menus = [
-    { path: "/panels-super-admins/dashboard", icon: <FaUserPlus />, label: "Admin" },
+    { path: "/panels-admins/dashboard", icon: <IoHomeOutline />, label: "Dashboard" },
+    { path: "/panels-admins/newsletter", icon: <IoNewspaperOutline />, label: "Newsletter" },
+    { path: "/panels-admins/portfolios", icon: <BsBox2 />, label: "Portfolio" },
+    { path: "/panels-admins/contacts", icon: <MdOutlineContactMail />, label: "Contact" },
+    { path: "/panels-admins/settings", icon: <FaCogs />, label: "Setting" },
   ];
 
   // Menu footer
@@ -97,32 +104,8 @@ export function SidebarSuperAdmin() {
           </div>
         )}
 
-        {/* Profile Menu */}
-        <div className="px-6">
-          <button
-            onClick={() => navigate(profileMenu.path)}
-            className={`flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-all
-              ${
-                location.pathname === profileMenu.path
-                  ? "bg-blue-400 text-white shadow-md"
-                  : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
-              }
-              ${isCollapsed ? "justify-center" : "gap-3"}`}
-          >
-            <span className="text-lg">{profileMenu.icon}</span>
-            {!isCollapsed && <span className="truncate">{profileMenu.label}</span>}
-          </button>
-        </div>
-
-        {/* Menu */}
-        <nav className="flex-1 overflow-y-auto p-6 space-y-4">
-          <span
-            className={`block font-bold ${
-              isCollapsed ? "hidden" : "truncate max-w-[160px]"
-            }`}
-          >
-            Manajemen Admin
-          </span>
+        {/* Main Menus */}
+        <nav className="flex-1 overflow-y-auto px-6 space-y-2">
           {menus.map((menu) => {
             const active = location.pathname === menu.path;
             return (
@@ -142,7 +125,43 @@ export function SidebarSuperAdmin() {
               </button>
             );
           })}
+
+          {/* My Details ditempatkan di bawah menu utama */}
+          <button
+            onClick={() => navigate(profileMenu.path)}
+            className={`flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-all
+              ${
+                location.pathname === profileMenu.path
+                  ? "bg-blue-400 text-white shadow-md"
+                  : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
+              }
+              ${isCollapsed ? "justify-center" : "gap-3"}`}
+          >
+            <span className="text-lg">{profileMenu.icon}</span>
+            {!isCollapsed && <span className="truncate">{profileMenu.label}</span>}
+          </button>
+
+          {/* Section Admin */}
+          {!isCollapsed && (
+            <span className="block font-bold mt-4 mb-1 text-gray-600">
+              Manajemen Admin
+            </span>
+          )}
+          <button
+            onClick={() => navigate("/panels-super-admins/dashboard")}
+            className={`flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-all
+              ${
+                location.pathname === "/panels-super-admins/dashboard"
+                  ? "bg-blue-400 text-white shadow-md"
+                  : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
+              }
+              ${isCollapsed ? "justify-center" : "gap-3"}`}
+          >
+            <span className="text-lg"><FaUserPlus /></span>
+            {!isCollapsed && <span className="truncate">Admin</span>}
+          </button>
         </nav>
+
 
         {/* Footer Menu (Sign Out) */}
         <div className="p-6">
