@@ -80,7 +80,7 @@ export default function PortfolioEdit() {
           <h1 className="text-3xl font-bold text-blue-500">Edit Portfolio</h1>
         </header>
 
-        {/* Title Input dan button Draft */}
+        {/* Title Input */}
         <p className="flex items-center text-gray-400 mb-1">
           <MdOutlineSubtitles size={18} className="mr-2" />
           Title

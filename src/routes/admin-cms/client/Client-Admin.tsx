@@ -242,7 +242,7 @@ export default function AdminClient() {
 
       {/* Modal Berhasil Tambah Client */}
       {modal.open && (
-        <div className="fixed inset-0 bg-blue-100/60 flex items-center justify-center z-40">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
           <div className="bg-white rounded-lg shadow-xl p-6 w-130 text-center">
             <h2
               className={`text-xl font-bold mb-4 ${

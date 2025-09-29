@@ -13,6 +13,8 @@ export default function EditNewsletter() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
+  const [showUpdateSuccessModal, setShowUpdateSuccessModal] = useState(false);
+
   // State
   const [title, setTitle] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -32,7 +34,10 @@ export default function EditNewsletter() {
         setContent(data.content || "");
         setType((data.type as typeof type) || "TECH");
         setIsScheduled(data.isScheduled ?? false);
-        if (data.photo) setPreview(data.photo as string);
+
+        if (data.photo) {
+          setPreview(`/newsletter/${data.photo}`);
+        }
       } catch (err) {
         console.error("Failed to fetch newsletter:", err);
       }
@@ -57,7 +62,8 @@ export default function EditNewsletter() {
         file,
       });
 
-      navigate("/panels-admins/newsletter");
+      setShowUpdateSuccessModal(true);
+      navigate("/panels-admins/newsletter")
     } catch (err) {
       console.error(err);
       alert("Error updating newsletter");
@@ -235,6 +241,24 @@ export default function EditNewsletter() {
             </button>
           </div>
         </section>
+
+        {/* Modal Success Create Newsletter */}
+        {showUpdateSuccessModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+            <div className="bg-white rounded-2xl w-full max-w-md p-6 text-center shadow-xl">
+              <h2 className="text-lg font-semibold mb-4">Success!</h2>
+              <p className="mb-6">Newsletter successfully Updated.</p>
+              <button
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                onClick={() => 
+                  // navigate("/panels-admins/newsletter")
+                  setShowUpdateSuccessModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
       </main>
     </NavBarCMS>
   );

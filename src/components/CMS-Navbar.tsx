@@ -107,7 +107,7 @@ export default function NavBarCMS({
               {dropdownOpen && (
                 <div className="absolute top-12 right-0 w-44 bg-white border rounded-lg shadow-lg py-2 z-50">
                   <Link
-                    to="/panels-admins/profile"
+                    to="panels-admins/profiles"
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                   >
                     Profile

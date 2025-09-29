@@ -61,17 +61,16 @@ export const createPortfolioAdmin = async (
     title: string;
     description?: string;
     status: string;
-    clientId?: string;
+    client: string;
   },
   files?: File[]
 ): Promise<Portfolio> => {
   const formData = new FormData();
   formData.append("title", data.title);
   formData.append("status", data.status);
+  formData.append("client", data.client);
   if (data.description) formData.append("description", data.description);
-  if (data.clientId) formData.append("clientId", data.clientId);
 
-  // sesuai backend: field name = photos
   if (files && files.length > 0) {
     files.forEach((file) => {
       formData.append("photos", file);
@@ -92,6 +91,39 @@ export const getPortfolioDetailAdmin = async (
   const res = await axiosInstance.get(`/admin/portfolios/${portfolioId}`);
   return res.data.data;
 };
+
+// Update admin portfolio
+export const updatePortfolioAdmin = async (
+  portfolioId: string,
+  data: {
+    title: string;
+    description?: string;
+    status: string;
+    client: string;
+  },
+  files?: File[]
+): Promise<Portfolio> => {
+  const formData = new FormData();
+  formData.append("title", data.title);
+  formData.append("status", data.status);
+  formData.append("client", data.client);
+  if (data.description) formData.append("description", data.description);
+
+  if (files && files.length > 0) {
+    files.forEach((file) => {
+      formData.append("photos", file);
+    });
+  }
+
+  const res = await axiosInstance.patch(`/admin/portfolios/${portfolioId}`, formData,
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+    }
+  );
+
+  return res.data.data;
+};
+
 
 // Delete portfolio
 export const deletePortfolioAdmin = async (

@@ -1,16 +1,22 @@
 import React, { useState, useRef, useEffect } from "react";
 import NavBarCMS from "../../../components/CMS-Navbar";
 import PortfolioModal from "./Portfolio-Detail-Admin";
-import { FiImage, FiFilter, FiUser } from "react-icons/fi";
+import { FiImage, FiFilter } from "react-icons/fi";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useNavigate } from "react-router";
 import JoditEditor from "jodit-react";
 import { MdOutlineSubtitles } from "react-icons/md";
 import {
   createPortfolioAdmin,
+  deletePortfolioAdmin,
   getAllPortfoliosAdmin,
 } from "../../../api/portfolio.api";
 import type { Portfolio } from "../../../api/portfolio.api";
+import {
+  getClientsForPortfolioForm,
+  type Client,
+} from "../../../api/client.api";
+import { AxiosError } from "axios";
 
 // Extend Portfolio API dengan tambahan untuk UI
 interface PortfolioUI extends Portfolio {
@@ -26,6 +32,20 @@ export default function PortfolioAdmin() {
   const galleryRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
+  // state modal
+  const [modalMessage, setModalMessage] = useState<string>("");
+  const [modalType, setModalType] = useState<"success" | "error" | "">("");
+  const [showModal, setShowModal] = useState(false);
+
+  const closeModal = () => {
+    setShowModal(false);
+    setModalMessage("");
+    setModalType("");
+  };
+
+  // state client
+  const [clients, setClients] = useState<Client[]>([]);
+
   // state portfolios dari API
   const [loading, setLoading] = useState<boolean>(true);
   const [portfolios, setPortfolios] = useState<PortfolioUI[]>([]);
@@ -35,7 +55,7 @@ export default function PortfolioAdmin() {
   // use state form
   const [title, setTitle] = useState("");
   const [client, setClient] = useState("");
-  const [content, setContent] = useState("");
+  const [description, setDescription] = useState("");
   const [file, setFile] = useState<File | null>(null);
 
   // state filter & search
@@ -69,6 +89,20 @@ export default function PortfolioAdmin() {
     return (matchTitle || matchClient) && matchStatus;
   });
 
+  // get client
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const res = await getClientsForPortfolioForm();
+        console.log("Data clients untuk portfolio form:", res);
+        setClients(res);
+      } catch (err) {
+        console.error("Gagal fetch clients:", err);
+      }
+    };
+    fetchClients();
+  }, []);
+
   // fetch portfolios dari backend (get data portfolio)
   useEffect(() => {
     const fetchPortfolios = async () => {
@@ -76,7 +110,7 @@ export default function PortfolioAdmin() {
         setLoading(true);
         const res = await getAllPortfoliosAdmin({ page: pagination.page });
 
-        console.log("API portfolios response:", res);
+        console.log("API portfolio response:", res);
 
         if (!res || !res.portfolios) {
           console.error("API tidak mengembalikan portfolios:", res);
@@ -84,21 +118,27 @@ export default function PortfolioAdmin() {
           return;
         }
 
-        const mapped: PortfolioUI[] = res.portfolios.map((item: Portfolio) => ({
-          ...item,
-          date: new Date(item.createdAt!).toLocaleDateString("id-ID", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          }),
-          time: new Date(item.createdAt!).toLocaleTimeString("id-ID", {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          img: item.mainImage || "/img/Logo.png",
-          status: item.status?.toUpperCase() || "DRAFT",
-          author: "Admin",
-        }));
+        const mapped: PortfolioUI[] = res.portfolios.map((item: Portfolio) => {
+          const imgSrc = item.mainImage
+            ? `http://localhost:3000/portfolio/${encodeURIComponent(item.mainImage)}`
+            : "/img/Logo.png";
+
+          return {
+            ...item,
+            date: new Date(item.createdAt!).toLocaleDateString("id-ID", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            }),
+            time: new Date(item.createdAt!).toLocaleTimeString("id-ID", {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+            img: imgSrc,
+            status: item.status?.toUpperCase() || "PUBLISHED",
+            author: "Admin",
+          };
+        });
 
         setPortfolios(mapped);
         setPagination(res.pagination);
@@ -113,24 +153,25 @@ export default function PortfolioAdmin() {
     fetchPortfolios();
   }, [pagination.page]);
 
-  // Send button (post data ke backend)
+  // Kirim data ke Backend
   const handleSend = async () => {
     if (!isInputFilled) return;
 
     try {
-      const status = sendAfter24 ? "DRAFT" : "PUBLISHED";
+      const payload = {
+        title,
+        description,
+        status: "PUBLISHED",
+        client,
+      };
 
-      await createPortfolioAdmin(
-        {
-          title,
-          description: content,
-          status,
-          clientId: client || undefined,
-        },
-        file ? [file] : undefined
-      );
+      const files: File[] = file ? [file] : [];
 
-      // refresh portfolios list
+      console.log("Files:", files);
+      console.log("Payload portfolio:", payload);
+
+      await createPortfolioAdmin(payload, files);
+
       const res = await getAllPortfoliosAdmin({ page: pagination.page });
       if (res && res.portfolios) {
         const mapped: PortfolioUI[] = res.portfolios.map((item: Portfolio) => ({
@@ -151,18 +192,27 @@ export default function PortfolioAdmin() {
         setPagination(res.pagination);
       }
 
-      // reset form
-      setTitle("");
-      setClient("");
-      setContent("");
-      setFile(null);
-      setPreview(null);
-      setSendAfter24(true);
+      handleCancel();
 
-      alert("Portfolio berhasil ditambahkan!");
-    } catch (err) {
-      console.error("Gagal menambahkan portfolio:", err);
-      alert("Gagal menambahkan portfolio!");
+      // tampilkan modal sukses
+      setModalType("success");
+      setModalMessage("Portfolio berhasil ditambahkan!");
+      setShowModal(true);
+    } catch (err: unknown) {
+      console.error("❌ Error:", err);
+
+      let message = "Gagal menambahkan portfolio!";
+
+      // cek kalau error dari axios
+      if (err instanceof AxiosError) {
+        if (err.response && typeof err.response.data?.message === "string") {
+          message = err.response.data.message;
+        }
+      }
+
+      setModalType("error");
+      setModalMessage(message);
+      setShowModal(true);
     }
   };
 
@@ -211,7 +261,7 @@ export default function PortfolioAdmin() {
   // Tambahkan fungsi reset form ( handle Cancel)
   const handleCancel = () => {
     setTitle("");
-    setContent("");
+    setDescription("");
     setFile(null);
     setPreview(null);
     setSendAfter24(true);
@@ -246,22 +296,22 @@ export default function PortfolioAdmin() {
         </div>
 
         {/* Client Input */}
-        <p className="flex items-center text-gray-400 mb-1">
-          <FiUser size={18} className="mr-2" />
-          Client
-        </p>
-
-        <div className="relative w-full">
-          <input
-            type="text"
-            placeholder="Client"
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Client
+          </label>
+          <select
             value={client}
             onChange={(e) => setClient(e.target.value)}
-            className="flex-1 py-2 px-3 w-full text-lg border border-gray-300 rounded-lg 
-               placeholder-gray-400 
-               focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 
-               focus:shadow-md focus:shadow-blue-200 transition"
-          />
+            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+          >
+            <option value="" disabled>-- Pilih Client --</option>
+            {clients.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Upload Area */}
@@ -302,19 +352,19 @@ export default function PortfolioAdmin() {
         </div>
 
         {/* Buttons Add More File */}
-        <div className="flex justify-end">
+        {/* <div className="flex justify-end">
           <button
             className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md"
             onClick={handleSend}
           >
             Add More File
           </button>
-        </div>
+        </div> */}
 
         {/* Rich Text Editor */}
         <div className="border rounded-lg bg-white overflow-hidden">
           <JoditEditor
-            value={content}
+            value={description}
             config={{
               readonly: false,
               height: 300,
@@ -333,7 +383,7 @@ export default function PortfolioAdmin() {
                 "paragraph",
               ],
             }}
-            onBlur={(newContent) => setContent(newContent)}
+            onBlur={(newDescription) => setDescription(newDescription)}
           />
         </div>
 
@@ -349,7 +399,7 @@ export default function PortfolioAdmin() {
                 onChange={() => setSendAfter24(!sendAfter24)}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-green-600 transition-colors"></div>
+              <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-600 transition-colors"></div>
               <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-all peer-checked:translate-x-5"></div>
             </div>
             <span className="text-gray-700 text-sm">
@@ -525,6 +575,7 @@ export default function PortfolioAdmin() {
                         {portfolio.title}
                       </span>
                     </td>
+
                     <td className="py-3 px-4 text-gray-600">
                       {portfolio.client}
                     </td>
@@ -574,7 +625,26 @@ export default function PortfolioAdmin() {
                             Edit
                           </button>
                           <div className="border-t border-gray-100"></div>
-                          <button className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-b-xl transition">
+                          <button
+                            onClick={async () => {
+                              if (
+                                confirm(
+                                  `Yakin mau hapus portfolio "${portfolio.title}"?`
+                                )
+                              ) {
+                                try {
+                                  await deletePortfolioAdmin(portfolio.id);
+                                  setPortfolios((prev) =>
+                                    prev.filter((p) => p.id !== portfolio.id)
+                                  );
+                                } catch (err) {
+                                  console.error("Gagal hapus portfolio:", err);
+                                  alert("Gagal hapus portfolio!");
+                                }
+                              }
+                            }}
+                            className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-b-xl transition"
+                          >
                             Hapus
                           </button>
                         </div>
@@ -609,6 +679,28 @@ export default function PortfolioAdmin() {
             </div>
           )}
         </div>
+
+        {/* Modal Berhasil Tambah Portfolio  */}
+        {showModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+            <div className="bg-white rounded-lg p-6 max-w-sm w-full text-center shadow-lg">
+              <h2
+                className={`text-lg font-semibold mb-2 ${
+                  modalType === "success" ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {modalType === "success" ? "Sukses!" : "Gagal!"}
+              </h2>
+              <p className="mb-4">{modalMessage}</p>
+              <button
+                onClick={closeModal}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Modal Detail Portfolio */}
         <PortfolioModal

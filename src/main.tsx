@@ -11,6 +11,7 @@ import PortoFolioDetail from "./routes/user-public/Portfolio-Detail";
 import Contact from "./routes/user-public/Contact";
 import NewsletterThankYou from "./routes/user-public/NewsletterThankYou";
 
+{/* --------- */}
 // ---Admin Cms Route
 // Admin Auth
 import Login from "./routes/admin-cms/auth/Auth-Login";
@@ -38,6 +39,7 @@ import Profile from "./routes/admin-cms/profile-setting/Profile-Admin";
 // import Setting from "./routes/admin-cms/profile-setting/Setting-Admin";
 
 
+{/* --------- */}
 // --- Super Admin Route
 // Super Admin Dashboard
 import SuperAdminDashboard from "./routes/super-admin/admin/Super-Admin";
@@ -88,7 +90,7 @@ createRoot(document.getElementById("root")!).render(
 
 
         {/* --------- */}
-        
+
         {/* Super Admin Route */}
         <Route path="panels-super-admins/dashboard" element={<SuperAdminDashboard />} />
 

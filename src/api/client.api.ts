@@ -62,3 +62,10 @@ export const updateClientAdmin = async (
 
   return res.data.data;
 };
+
+// Get clients khusus untuk portfolio form
+export const getClientsForPortfolioForm = async (): Promise<Client[]> => {
+  const res = await axiosInstance.get("/admin/clients/form");
+  return res.data.data;
+};
+
