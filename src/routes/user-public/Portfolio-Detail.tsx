@@ -3,6 +3,7 @@ import { NavBar } from "../../components/NavBar";
 import { Footer } from "../../components/Footer";
 import { Link, useParams } from "react-router";
 import { HiArrowLeft } from "react-icons/hi";
+import DOMPurify from "dompurify";
 import { getPortfolioDetail } from "../../api/portfolio.api";
 import type { Portfolio } from "../../api/portfolio.api";
 
@@ -84,13 +85,17 @@ export default function PortfolioDetail() {
             </h1>
             <p className="text-sm text-gray-500 mt-1">
               Implemented for{" "}
-              <span className="font-semibold">{project.type}</span>
+              {/* <span className="font-semibold">{project.type}</span> */}
             </p>
-            <p className="text-gray-600 mt-4 max-w-lg text-justify">{project.description}</p>
+            <p className="text-gray-600 mt-4 max-w-lg text-justify"
+               dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(project.description),}}></p>
           </div>
           <div className="rounded-xl overflow-hidden shadow-lg">
             <img
-              src={project.mainImage}
+              src={project.mainImage
+                ? `http://localhost:3000/portfolio/${project.mainImage}`
+                : "/img/Logo.png"
+              }
               alt={project.title}
               loading="lazy"
               className="w-full h-60 md:h-72 object-cover"

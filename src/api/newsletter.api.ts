@@ -68,10 +68,6 @@ export async function createAdminNewsletter(data: NewsletterPayload) {
   formData.append("status", data.status || "PUBLISHED");
   if (data.file) formData.append("photo", data.file);
 
-  // // DEBUG: cek isi formData
-  // for (const [key, value] of formData.entries()) {
-  //   console.log(`${key}:`, value);
-  // }
 
   return axiosInstance.post("/admin/newsletters", formData, {
     headers: { "Content-Type": "multipart/form-data" },

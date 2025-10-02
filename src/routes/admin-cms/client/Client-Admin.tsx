@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FiImage } from "react-icons/fi";
 import NavBarCMS from "../../../components/CMS-Navbar";
 import { MdOutlineSubtitles } from "react-icons/md";
@@ -8,7 +8,6 @@ import {
   deleteClientAdmin,
   createClientAdmin,
 } from "../../../api/client.api";
-
 
 export default function AdminClient() {
   const [title, setTitle] = useState("");
@@ -30,6 +29,25 @@ export default function AdminClient() {
     type: "success" | "error";
     message: string;
   }>({ open: false, type: "success", message: "" });
+
+  // state untuk titik tiga
+  const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
+
+  // ref untuk menu dropdown
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // auto close kalau klik di luar
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpenId(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Drag & drop
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -57,7 +75,6 @@ export default function AdminClient() {
     setPreview(null);
   };
 
-
   // Ambil data client dari backend
   useEffect(() => {
     const fetchClients = async () => {
@@ -76,16 +93,18 @@ export default function AdminClient() {
     if (!title || !file) return;
     try {
       setLoading(true);
-      const res = await createClientAdmin(title, file);
+      await createClientAdmin(title, file);
 
-      setClients((prev) => [...prev, res]);
+      // Fetch ulang list
+      const updatedClients = await getAllClientsAdmin();
+      setClients(updatedClients);
 
       setModal({
         open: true,
         type: "success",
-        message: "Client berhasil ditambahkan!",
+        message: "Client successfully created and added!",
       });
-      console.log("Response:", res);
+
       handleCancel();
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -94,7 +113,7 @@ export default function AdminClient() {
         setModal({
           open: true,
           type: "error",
-          message: "Gagal menambahkan client",
+          message: "Failed created Client",
         });
       }
     } finally {
@@ -225,6 +244,45 @@ export default function AdminClient() {
                 key={client.id || index}
                 className="bg-white border border-gray-300 rounded-lg shadow-xl relative p-6 flex flex-col items-center justify-center"
               >
+                {/* titik tiga */}
+                <div className="absolute top-3 right-3" ref={menuRef}>
+                  <div className="relative">
+                    <button
+                      onClick={() =>
+                        setMenuOpenId(
+                          menuOpenId === client.id ? null : client.id
+                        )
+                      }
+                      className="p-1 rounded-full hover:bg-gray-100"
+                    >
+                      ⋮
+                    </button>
+
+                    {menuOpenId === client.id && (
+                      <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                        <button
+                          className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                          onClick={() => {
+                            console.log("Edit client:", client.id);
+                            setMenuOpenId(null);
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
+                          onClick={() => {
+                            setConfirmDelete({ open: true, id: client.id });
+                            setMenuOpenId(null);
+                          }}
+                        >
+                          Hapus
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 {/* logo */}
                 <img
                   src={`${BASE_URL}/client/${client.logo}`}
@@ -232,7 +290,7 @@ export default function AdminClient() {
                   className="w-35 h-35 object-contain mb-4"
                 />
 
-                {/* Nama */}
+                {/* nama */}
                 <p className="text-sm font-medium">{client.name}</p>
               </div>
             ))}

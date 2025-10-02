@@ -42,10 +42,8 @@ import Profile from "./routes/admin-cms/profile-setting/Profile-Admin";
 {/* --------- */}
 // --- Super Admin Route
 // Super Admin Dashboard
-import SuperAdminDashboard from "./routes/super-admin/admin/Super-Admin";
-import AdminSuperAdmin from "./routes/super-admin/admin/Admin-Super-Admin";
-import ProfileSuperAdmin from "./routes/super-admin/profile/Profile-Super-Admin";
-
+import SuperAdminDashboard from "./routes/super-admin/Admin-List-SuperAdmin";
+import AdminSuperAdmin from "./routes/super-admin/Admin-Add-SuperAdmin";
 
 
 createRoot(document.getElementById("root")!).render(
@@ -65,7 +63,6 @@ createRoot(document.getElementById("root")!).render(
         {/* Admin Cms Route */}
         {/* Auth Admin */}
         <Route path="panels-admins/auth-login" element={<Login />} />
-        <Route path="panels-superadmins/auth-register" element={<Register />} />
 
         {/* Dashboard Admin */}
         <Route path="panels-admins/dashboard" element={<Dashboard />} />
@@ -92,13 +89,13 @@ createRoot(document.getElementById("root")!).render(
         {/* --------- */}
 
         {/* Super Admin Route */}
-        <Route path="panels-super-admins/dashboard" element={<SuperAdminDashboard />} />
+        <Route path="panels-superadmins/list-admins" element={<SuperAdminDashboard />} />
 
         {/* Tambah Admin */}
-        <Route path="panels-super-admins/admin" element={<AdminSuperAdmin />} />
+        <Route path="panels-superadmins/add-admin" element={<AdminSuperAdmin />} />
 
-        {/*Profile Super Admin */}
-        <Route path="panels-super-admins/profile" element={<ProfileSuperAdmin />} />
+        {/* Register */}
+        <Route path="panels-superadmins/auth-register" element={<Register />} />
 
       </Routes>
     </BrowserRouter>

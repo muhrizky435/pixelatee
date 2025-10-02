@@ -60,7 +60,6 @@ export default function Newsletter() {
   const [showFilter, setShowFilter] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<string | null>(null);
-
   const filterRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const [openMenu, setOpenMenu] = useState<number | null>(null);

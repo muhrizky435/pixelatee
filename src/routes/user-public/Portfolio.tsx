@@ -13,6 +13,12 @@ export default function PortfolioPage() {
   const [error, setError] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
 
+  const stripHtml = (html) => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent || div.innerText || "";
+  };
+
   useEffect(() => {
     const fetchPortfolios = async () => {
       try {
@@ -92,17 +98,20 @@ export default function PortfolioPage() {
         {mainProject && (
           <div className="rounded-2xl border border-gray-200 shadow-lg overflow-hidden bg-gray-100 relative z-10">
             <img
-              src={mainProject.mainImage || "/images/dummy-mainProject.jpg"}
+              src={
+                mainProject.mainImage
+                  ? `http://localhost:3000/portfolio/${mainProject.mainImage}`
+                  : "/img/Logo.png"
+              }
               alt={mainProject.title}
               className="w-full h-80 object-cover"
             />
             <div className="p-8">
-              <p className="text-sm text-gray-600 mb-1">{mainProject.type}</p>
               <h3 className="text-2xl font-bold mb-2 text-blue-500">
                 {mainProject.title}
               </h3>
               <p className="text-sm text-gray-600">
-                {truncate(mainProject.description, 120)}
+                {truncate(stripHtml(mainProject.description), 120)}
               </p>
               <Link
                 to={`/portfolio/${mainProject.id}`}
@@ -123,17 +132,19 @@ export default function PortfolioPage() {
               className="rounded-2xl border border-gray-200 shadow-sm overflow-hidden bg-gray-100 hover:shadow-lg transition"
             >
               <img
-                src={p.mainImage}
+                src={p.mainImage
+                  ? `http://localhost:3000/portfolio/${p.mainImage}`
+                  : "/img/Logo.png"
+                }
                 alt={p.title}
                 className="w-full h-48 object-cover"
               />
               <div className="p-6">
-                <p className="text-sm text-gray-600 mb-1">{p.type}</p>
                 <h3 className="text-lg font-bold mb-2 text-blue-500">
                   {p.title}
                 </h3>
                 <p className="text-sm text-gray-600">
-                  {truncate(p.description, 80)}
+                  {truncate(stripHtml(p.description), 80)}
                 </p>
                 <Link
                   to={`/portfolio/${p.id}`}

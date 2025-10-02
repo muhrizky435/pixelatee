@@ -12,14 +12,14 @@ export interface ContactPayload {
 }
 
 export interface Contact {
-  id: string;        // UUID
+  id: string;        
   name: string;
   email: string;
   subject: string;
   type: string;
   message: string;
   status?: "NEW" | "READ";
-  createdAt?: string; // backend biasanya pakai createdAt
+  createdAt?: string;
   updatedAt?: string;
   // opsional tambahan
   date?: string;     

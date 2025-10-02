@@ -3,7 +3,7 @@ import axiosInstance from "./axios";
 export interface Portfolio {
   id: string;
   title: string;
-  description?: string;
+  description: string;
   status?: string;
   mainImage?: string;
   gallery?: string[];
@@ -22,9 +22,7 @@ export interface PortfolioResponse {
   };
 }
 
-/* =====================
-   PUBLIC API
-===================== */
+/* -- API PUBLIC -- */
 
 // Get all public portfolios
 export const getAllPortfolios = async (): Promise<Portfolio[]> => {
@@ -40,9 +38,8 @@ export const getPortfolioDetail = async (
   return res.data.data;
 };
 
-/* =====================
-   ADMIN API
-===================== */
+
+/* -- API ADMIN -- */
 
 // Get all admin portfolios (with filter query)
 export const getAllPortfoliosAdmin = async (params?: {
@@ -84,6 +81,7 @@ export const createPortfolioAdmin = async (
   return res.data.data;
 };
 
+
 // Get admin portfolio detail
 export const getPortfolioDetailAdmin = async (
   portfolioId: string
@@ -91,6 +89,16 @@ export const getPortfolioDetailAdmin = async (
   const res = await axiosInstance.get(`/admin/portfolios/${portfolioId}`);
   return res.data.data;
 };
+
+
+// get preview edit admin portfolio
+export async function getAdminPortfolioPreview(portfolioId: string) {
+  const res = await axiosInstance.get<{ data: Portfolio }>(
+    `/admin/portfolios/${portfolioId}/preview`
+  );
+  return res.data.data;
+}
+
 
 // Update admin portfolio
 export const updatePortfolioAdmin = async (

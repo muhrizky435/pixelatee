@@ -1,8 +1,15 @@
 import { useState, useEffect, useRef } from "react";
-import Cookies from "js-cookie";
 import { FaBell, FaChevronDown } from "react-icons/fa";
 import { SidebarCMS } from "./CMS-Sidebar";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
+import { logoutUser, getUserProfile } from "../api/user.api";
+
+interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  photo?: string | null;
+}
 
 export default function NavBarCMS({
   children,
@@ -13,14 +20,31 @@ export default function NavBarCMS({
   const [dateTime, setDateTime] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  const handleLogout = () => {
-    // Hapus cookie session (frontend only)
-    Cookies.remove("session");
+  const [user, setUser] = useState<UserProfile | null>(null);
 
-    // Redirect ke login
-    navigate("/panels-admins/auth-login");
+  // Get user profile
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await getUserProfile();
+        setUser(res);
+      } catch (err) {
+        console.error("Gagal mengambil profile:", err);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  // Logout
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      window.location.href = "/panels-admins/auth-login";
+    } catch (err) {
+      console.error("Gagal logout:", err);
+    }
   };
 
   useEffect(() => {
@@ -89,13 +113,18 @@ export default function NavBarCMS({
               onClick={() => setDropdownOpen(!dropdownOpen)}
             >
               <span className="hidden md:block font-medium text-gray-700">
-                Natasha
+                {user?.name || "Loading..."}
               </span>
               <img
-                src="https://i.pravatar.cc/40?img=5"
+                src={
+                  user?.photo
+                    ? `http://localhost:3000/user/${user.photo}`
+                    : "/img/Logo.png"
+                }
                 alt="avatar"
-                className="w-8 h-8 rounded-full object-cover border border-gray-200"
+                className="w-11 h-11 rounded-full object-cover border border-gray-200"
               />
+
               <FaChevronDown
                 className={`text-gray-600 transition-transform duration-200 ${
                   dropdownOpen ? "rotate-180" : ""
@@ -107,24 +136,46 @@ export default function NavBarCMS({
               {dropdownOpen && (
                 <div className="absolute top-12 right-0 w-44 bg-white border rounded-lg shadow-lg py-2 z-50">
                   <Link
-                    to="panels-admins/profiles"
+                    to="/panels-admins/profiles"
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                   >
                     Profile
                   </Link>
-                  {/* <Link
-                    to="/panels-admins/setting"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  >
-                    Settings
-                  </Link> */}
                   <Link
-                    onClick={handleLogout}
+                    onClick={() => setShowLogoutModal(true)}
                     to="/panels-admins/auth-login"
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                   >
                     Sign Out
                   </Link>
+
+                  {/* Modal Konfirmasi Logout */}
+                  {showLogoutModal && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+                      <div className="bg-white p-6 rounded-xl shadow-lg w-96 text-center">
+                        <h2 className="text-lg font-semibold mb-4">
+                          Logout Confirmation
+                        </h2>
+                        <p className="text-gray-600 mb-6">
+                          Are you sure you want to log out from this account?
+                        </p>
+                        <div className="flex justify-center gap-4">
+                          <button
+                            onClick={handleLogout}
+                            className="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold"
+                          >
+                            Yes, Logout
+                          </button>
+                          <button
+                            onClick={() => setShowLogoutModal(false)}
+                            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg font-semibold"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

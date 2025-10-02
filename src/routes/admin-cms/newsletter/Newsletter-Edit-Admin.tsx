@@ -12,13 +12,13 @@ import {
 export default function EditNewsletter() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-
   const [showUpdateSuccessModal, setShowUpdateSuccessModal] = useState(false);
 
   // State
   const [title, setTitle] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [existingImage, setExistingImage] = useState<string | null>(null);
   const [content, setContent] = useState("");
   const [type, setType] = useState<"TECH" | "BUSINESS" | "INTERNAL" | "OTHER">("TECH");
   const [isScheduled, setIsScheduled] = useState(false);
@@ -36,7 +36,7 @@ export default function EditNewsletter() {
         setIsScheduled(data.isScheduled ?? false);
 
         if (data.photo) {
-          setPreview(`/newsletter/${data.photo}`);
+          setExistingImage(`http://localhost:3000/newsletter/${encodeURIComponent(data.photo)}`);
         }
       } catch (err) {
         console.error("Failed to fetch newsletter:", err);
@@ -109,7 +109,7 @@ export default function EditNewsletter() {
             <span className="transform transition-transform group-hover:-translate-x-1">
               &larr;
             </span>
-            Kembali
+            Back
           </button>
 
           <h1 className="text-3xl font-bold text-blue-500">Edit Newsletter</h1>
@@ -145,13 +145,23 @@ export default function EditNewsletter() {
           </select>
 
           {/* Scheduled */}
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={isScheduled}
-              onChange={(e) => setIsScheduled(e.target.checked)}
-            />
-            <span>Schedule after 24h</span>
+          {/* Toggle Schedule */}
+          <label className="flex items-center gap-3 cursor-pointer">
+            <div className="relative">
+              <input
+                type="checkbox"
+                checked={isScheduled}
+                onChange={(e) => setIsScheduled(e.target.checked)}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-600 transition-colors"></div>
+              <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-all peer-checked:translate-x-5"></div>
+            </div>
+            <span className="text-gray-700 text-sm">
+              {isScheduled
+                ? "Scheduled (Send after 24 hours)"
+                : "Send Immediately"}
+            </span>
           </label>
 
           {/* Upload */}
@@ -161,12 +171,12 @@ export default function EditNewsletter() {
             onDrop={handleDrop}
             onDragOver={handleDragOver}
           >
-            {preview ? (
+            {preview || existingImage ? (
               <div className="flex flex-col items-center">
                 <img
-                  src={preview}
+                  src={preview || existingImage!}
                   alt="preview"
-                  className="h-24 mb-2 rounded"
+                  className="h-42 mb-2 rounded"
                 />
                 <button
                   type="button"
@@ -174,6 +184,7 @@ export default function EditNewsletter() {
                   onClick={() => {
                     setFile(null);
                     setPreview(null);
+                    setExistingImage(null);
                   }}
                 >
                   Remove

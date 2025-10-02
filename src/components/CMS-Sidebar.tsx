@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from "react";
-import Cookies from "js-cookie";
 import { useLocation, useNavigate } from "react-router";
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaUserPlus } from "react-icons/fa";
 import { MdOutlineContactMail } from "react-icons/md";
 import { BsBox2, BsPerson } from "react-icons/bs";
 import { IoHomeOutline, IoNewspaperOutline } from "react-icons/io5";
 import { FiLogOut } from "react-icons/fi";
+import { logoutUser, getUserProfile, type UserProfile } from "../api/user.api";
 
 export function SidebarCMS() {
   const location = useLocation();
@@ -13,15 +13,35 @@ export function SidebarCMS() {
   const [width, setWidth] = useState(240);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const isResizing = useRef(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  const handleLogout = () => {
-    // Hapus cookie session (frontend only)
-    Cookies.remove("session");
+  // simpan data user
+  const [user, setUser] = useState<UserProfile | null>(null);
 
-    // Redirect ke login
-    navigate("/panels-admins/auth-login");
+  // ambil profile user
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await getUserProfile();
+
+        setUser(res);
+      } catch (err) {
+        console.error("Gagal ambil profile user:", err);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  // Logout
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      window.location.href = "/panels-admins/auth-login";
+    } catch (err) {
+      console.error("Gagal logout:", err);
+    }
   };
- 
+
   const menus = [
     {
       path: "/panels-admins/dashboard",
@@ -34,17 +54,12 @@ export function SidebarCMS() {
       label: "Newsletter",
     },
     { path: "/panels-admins/portfolios", icon: <BsBox2 />, label: "Portfolio" },
-    {
-      path: "/panels-admins/clients",
-      icon: <BsPerson />,
-      label: "Clients",
-    },
+    { path: "/panels-admins/clients", icon: <BsPerson />, label: "Clients" },
     {
       path: "/panels-admins/contacts",
       icon: <MdOutlineContactMail />,
       label: "Contact",
     },
-    // { path: "/panels-admins/settings", icon: <FaCogs />, label: "Setting" },
   ];
 
   // --- Auto collapse on resize ---
@@ -56,12 +71,10 @@ export function SidebarCMS() {
         setIsCollapsed(false);
       }
     };
-
-    handleResize(); // run sekali saat load
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
 
   // Drag Resize
   const handleMouseDown = () => {
@@ -144,12 +157,37 @@ export function SidebarCMS() {
               </button>
             );
           })}
+
+          {/* Section menu khusus Super Admin */}
+          {user?.userRole?.toUpperCase() === "SUPER_ADMIN" && (
+            <>
+              {!isCollapsed && (
+                <span className="block font-bold mt-6 mb-6 text-gray-600">
+                  Management Admin
+                </span>
+              )}
+              <button
+                onClick={() => navigate("/panels-superadmins/list-admins")}
+                className={`flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-all
+                  ${ location.pathname === "/panels-superadmins/list-admins"
+                  ? "bg-blue-400 text-white shadow-md"
+                  : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
+                  }
+                  ${isCollapsed ? "justify-center" : "gap-3"}`}
+              >
+                <span className="text-lg">
+                  <FaUserPlus />
+                </span>
+                {!isCollapsed && <span className="truncate">List Admin</span>}
+              </button>
+            </>
+          )}
         </nav>
 
         {/* Logout button */}
         <div className="p-6 border-t border-gray-100">
           <button
-            onClick={handleLogout}
+            onClick={() => setShowLogoutModal(true)}
             className={`flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-all
               ${isCollapsed ? "justify-center" : "gap-3"}
                text-red-600 hover:bg-red-200`}
@@ -159,6 +197,34 @@ export function SidebarCMS() {
             </span>
             {!isCollapsed && <span className="truncate">SignOut</span>}
           </button>
+
+          {/* Modal Konfirmasi Logout */}
+          {showLogoutModal && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+              <div className="bg-white p-6 rounded-xl shadow-lg w-96 text-center">
+                <h2 className="text-lg font-semibold mb-4">
+                  Logout Confirmation
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Are you sure you want to log out from this account?
+                </p>
+                <div className="flex justify-center gap-4">
+                  <button
+                    onClick={handleLogout}
+                    className="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold"
+                  >
+                    Yes, Logout
+                  </button>
+                  <button
+                    onClick={() => setShowLogoutModal(false)}
+                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg font-semibold"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer */}
