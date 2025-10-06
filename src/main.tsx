@@ -30,13 +30,13 @@ import PortfolioEdit from "./routes/admin-cms/portfolio/Portfolio-Edit-Admin";
 
 // Admin Clients
 import ClientsAdmin from "./routes/admin-cms/client/Client-Admin";
+import ClientEdit from "./routes/admin-cms/client/Client-Edit-Admin";
 
 // Admin Contact
 import ContactAdmin from "./routes/admin-cms/contact/Contact-Admin";
 
 // Admin Profile-Setting
 import Profile from "./routes/admin-cms/profile-setting/Profile-Admin";
-// import Setting from "./routes/admin-cms/profile-setting/Setting-Admin";
 
 
 {/* --------- */}
@@ -44,6 +44,7 @@ import Profile from "./routes/admin-cms/profile-setting/Profile-Admin";
 // Super Admin Dashboard
 import SuperAdminDashboard from "./routes/super-admin/Admin-List-SuperAdmin";
 import AdminSuperAdmin from "./routes/super-admin/Admin-Add-SuperAdmin";
+import AdminEditSuperAdmin from "./routes/super-admin/Admin-Edit-SuperAdmin";
 
 
 createRoot(document.getElementById("root")!).render(
@@ -78,6 +79,7 @@ createRoot(document.getElementById("root")!).render(
 
         {/* Client Admin */}
         <Route path="panels-admins/clients" element={<ClientsAdmin />} />
+        <Route path="panels-admins/client/edit/:id" element={<ClientEdit />} />
 
         {/* Contact Admin */}
         <Route path="panels-admins/contacts" element={<ContactAdmin />} />
@@ -93,6 +95,9 @@ createRoot(document.getElementById("root")!).render(
 
         {/* Tambah Admin */}
         <Route path="panels-superadmins/add-admin" element={<AdminSuperAdmin />} />
+
+        {/* Edit Admin Permission */}
+        <Route path="/panels-superadmins/admins/:adminId/edit" element={<AdminEditSuperAdmin />} />
 
         {/* Register */}
         <Route path="panels-superadmins/auth-register" element={<Register />} />

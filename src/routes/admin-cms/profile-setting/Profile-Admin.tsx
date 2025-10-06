@@ -504,7 +504,7 @@ export default function AdminProfile() {
               <p className="text-gray-700 mb-6">Successfully Update.</p>
               <button
                 onClick={() => setShowSuccessModal(false)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-green-700 transition"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
               >
                 Close
               </button>

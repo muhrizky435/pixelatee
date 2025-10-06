@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import NavBarCMS from "../../../components/CMS-Navbar";
 import { FiImage, FiFilter } from "react-icons/fi";
 import { Link } from "react-router";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import JoditEditor from "jodit-react";
 import NewsletterDetailModal from "./Newsletter-Detail-Admin";
 import { MdOutlineSubtitles } from "react-icons/md";
@@ -11,6 +10,7 @@ import {
   getAdminNewsletters,
   createAdminNewsletter,
   deleteNewsletter,
+  getAdminScheduledNewsletters,
 } from "../../../api/newsletter.api";
 import type {
   NewsletterResponse,
@@ -18,30 +18,18 @@ import type {
 } from "../../../api/newsletter.api";
 import type { AxiosError } from "axios";
 
-const schedule = [
-  {
-    id: 1,
-    title: "NovaLink Shortener",
-    createdAt: "2024-08-01 10:00",
-    sendAt: "2024-08-02 10:00",
-  },
-  {
-    id: 2,
-    title: "NovaLink Shortener",
-    createdAt: "2024-08-01 10:00",
-    sendAt: "2024-08-02 10:00",
-  },
-];
-
 export default function Newsletter() {
   const [newsletters, setNewsletters] = useState<NewsletterResponse[]>([]);
+  const [schedule, setSchedule] = useState<NewsletterResponse[]>([]);
   const [, setLoading] = useState(false);
   const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
   // state modal
-  const [selectedNewsletter, setSelectedNewsletter] = useState<NewsletterResponse | null>(null);
+  const [selectedNewsletter, setSelectedNewsletter] =
+    useState<NewsletterResponse | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedNewsletterForDelete, setSelectedNewsletterForDelete] = useState<NewsletterResponse | null>(null);
+  const [selectedNewsletterForDelete, setSelectedNewsletterForDelete] =
+    useState<NewsletterResponse | null>(null);
   const [showDeleteSuccessModal, setShowDeleteSuccessModal] = useState(false);
   const [showCreateSuccessModal, setShowCreateSuccessModal] = useState(false);
   const [showCreateErrorModal, setShowCreateErrorModal] = useState(false);
@@ -50,7 +38,9 @@ export default function Newsletter() {
   // state form
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [type, setType] = useState<"TECH" | "BUSINESS" | "INTERNAL" | "OTHER">("TECH");
+  const [type, setType] = useState<"TECH" | "BUSINESS" | "INTERNAL" | "OTHER">(
+    "TECH"
+  );
   const [file, setFile] = useState<File | null>(null);
   const [sendAfter24, setSendAfter24] = useState(false);
 
@@ -61,8 +51,23 @@ export default function Newsletter() {
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<string | null>(null);
   const filterRef = useRef<HTMLDivElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const [openMenu, setOpenMenu] = useState<number | null>(null);
+  // const menuRef = useRef<HTMLDivElement>(null);
+  // const [openMenu, setOpenMenu] = useState<number | null>(null);
+
+  // Get Data Scheduled
+  useEffect(() => {
+    const fetchScheduled = async () => {
+      try {
+        const data = await getAdminScheduledNewsletters();
+        setSchedule(data);
+      } catch (err) {
+        console.error("Failed to fetch scheduled newsletters:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchScheduled();
+  }, []);
 
   // Get Data Newsletter
   const fetchNewsletters = useCallback(async () => {
@@ -498,7 +503,7 @@ export default function Newsletter() {
                   <th className="py-3 px-4">Title</th>
                   <th className="py-3 px-4">Created At</th>
                   <th className="py-3 px-4">Send At</th>
-                  <th className="py-3 px-4 text-right">Action</th>
+                  {/* <th className="py-3 px-4 text-right">Action</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -513,10 +518,14 @@ export default function Newsletter() {
                       </span>
                     </td>
                     <td className="py-3 px-4 text-gray-600">
-                      {item.createdAt}
+                      {new Date(item.createdAt).toLocaleString()}
                     </td>
-                    <td className="py-3 px-4 text-gray-600">{item.sendAt}</td>
-                    <td className="py-3 px-4 text-right relative">
+                    <td className="py-3 px-4 text-gray-600">
+                      {item.sendAt
+                        ? new Date(item.sendAt).toLocaleString()
+                        : "—"}
+                    </td>
+                    {/* <td className="py-3 px-4 text-right relative">
                       <button
                         onClick={() =>
                           setOpenMenu(openMenu === item.id ? null : item.id)
@@ -540,9 +549,19 @@ export default function Newsletter() {
                           </button>
                         </div>
                       )}
-                    </td>
+                    </td> */}
                   </tr>
                 ))}
+                {schedule.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="text-center py-6 text-gray-400 italic"
+                    >
+                      Belum ada newsletter yang dijadwalkan
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

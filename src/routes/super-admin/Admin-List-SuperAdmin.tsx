@@ -3,7 +3,6 @@ import NavBarCMS from "../../components/CMS-Navbar";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FiFilter } from "react-icons/fi";
 import { useNavigate } from "react-router";
-import EditAdminModal from "./Admin-Edit-SuperAdmin";
 import {
   deleteAdmin,
   getAdminList,
@@ -18,7 +17,6 @@ export default function SuperAdminDashboard() {
   const [showFilter, setShowFilter] = useState(false);
   const [filterType, setFilterType] = useState<string | null>(null);
   const navigate = useNavigate();
-  const [selectedAdmin, setSelectedAdmin] = useState<Admin | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Admin | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeleteSuccessModal, setShowDeleteSuccessModal] = useState(false);
@@ -204,7 +202,9 @@ export default function SuperAdminDashboard() {
                           >
                             <button
                               onClick={() => {
-                                setSelectedAdmin(item);
+                                navigate(
+                                  `/panels-superadmins/admins/${item.id}/edit`
+                                );
                                 setOpenMenu(null);
                               }}
                               className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 rounded-t-xl transition"
@@ -229,14 +229,6 @@ export default function SuperAdminDashboard() {
                 </tbody>
               </table>
             </div>
-          )}
-
-          {/* Modal Edit Admin */}
-          {selectedAdmin && (
-            <EditAdminModal
-              selectedAdmin={selectedAdmin}
-              onClose={() => setSelectedAdmin(null)}
-            />
           )}
 
           {/* Modal Confirm Delete */}
@@ -273,20 +265,20 @@ export default function SuperAdminDashboard() {
           )}
 
           {/* Modal Success Delete */}
-        {showDeleteSuccessModal && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-            <div className="bg-white rounded-2xl w-full max-w-md p-6 text-center shadow-xl">
-              <h2 className="text-lg font-semibold mb-4">Success!</h2>
-              <p className="mb-6">Delete admin successfully.</p>
-              <button
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                onClick={() => setShowDeleteSuccessModal(false)}
-              >
-                Close
-              </button>
+          {showDeleteSuccessModal && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+              <div className="bg-white rounded-2xl w-full max-w-md p-6 text-center shadow-xl">
+                <h2 className="text-lg font-semibold mb-4">Success!</h2>
+                <p className="mb-6">Delete admin successfully.</p>
+                <button
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  onClick={() => setShowDeleteSuccessModal(false)}
+                >
+                  Close
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
         </section>
       </main>
     </NavBarCMS>

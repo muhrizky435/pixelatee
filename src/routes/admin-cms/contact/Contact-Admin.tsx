@@ -10,9 +10,7 @@ import {
 import type { Contact } from "../../../api/contact.api";
 import { FaSearch } from "react-icons/fa";
 
-/* =========================
-   Mapping TYPE → Label
-========================= */
+// Mapping Type Labels
 const TYPE_LABELS: Record<string, string> = {
   CUSTOMER_SERVICE: "Customer Service",
   IT_CONSULTATION: "IT Consultation",
@@ -40,6 +38,7 @@ export default function ContactAdmin() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
+  // Fetch Contact (Get Data Contact)
   useEffect(() => {
     const fetchContacts = async () => {
       try {
@@ -301,6 +300,7 @@ export default function ContactAdmin() {
           </div>
         </section>
 
+        {/* Modal Detail Contact */}
         <ContactDetailModal
           onClose={() => setSelectedContactId(null)}
           contactId={selectedContactId}

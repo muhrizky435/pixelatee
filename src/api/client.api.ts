@@ -2,6 +2,8 @@ import axiosInstance from "./axios";
 
 export interface Client {
   id: string;
+  // realId: string;
+  localKey: string;
   name: string;
   logo: string;
   createdAt?: string;
@@ -42,12 +44,15 @@ export const createClientAdmin = async (
   return res.data.data;
 };
 
-// Delete client
-export const deleteClientAdmin = async (clientId: string): Promise<void> => {
+
+// Delete portfolio
+export const deleteClientAdmin = async (
+  clientId: string
+): Promise<void> => {
   await axiosInstance.delete(`/admin/clients/${clientId}`);
 };
 
-// Update client (optional, kalau backend punya route PUT/PATCH)
+// Update client
 export const updateClientAdmin = async (
   clientId: string,
   data: { name?: string; logo?: File }

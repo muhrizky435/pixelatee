@@ -21,6 +21,7 @@ export interface NewsletterResponse {
   type: string;
   status?: "PUBLISHED";
   isScheduled: boolean;
+  sendAt: string;
   createdAt: string;
   photo?: string;
   author: string;
@@ -105,4 +106,12 @@ export const deleteNewsletter = async (newsletterId: string) => {
   const response = await axiosInstance.delete(`/admin/newsletters/${newsletterId}`);
   return response.data;
 };
+
+// Get Admin Scheduled Newsletters
+export async function getAdminScheduledNewsletters() {
+  const res = await axiosInstance.get<{ data: NewsletterResponse[] }>(
+    "/admin/newsletters/scheduled"
+  );
+  return res.data.data;
+}
 

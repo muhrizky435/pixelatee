@@ -4,6 +4,7 @@ export interface Admin {
   id: string;
   name: string;
   email: string;
+  img: string;
   phoneNumber?: string;
   role: string;
   dateOfBirth?: string;
@@ -36,6 +37,49 @@ export interface AdminRegisterRequest {
     country?: string | null;
     zipCode?: string | null;
   };
+}
+
+export interface AdminPermission {
+  canReadAdmin: boolean;
+  canWriteAdmin: boolean;
+  canUpdateAdmin: boolean;
+  canDeleteAdmin: boolean;
+
+  canReadClient: boolean;
+  canWriteClient: boolean;
+  canUpdateClient: boolean;
+  canDeleteClient: boolean;
+
+  canReadContact: boolean;
+  canWriteContact: boolean;
+  canUpdateContact: boolean;
+  canDeleteContact: boolean;
+
+  canReadNewsletter: boolean;
+  canWriteNewsletter: boolean;
+  canUpdateNewsletter: boolean;
+  canDeleteNewsletter: boolean;
+
+  canReadPortfolio: boolean;
+  canWritePortfolio: boolean;
+  canUpdatePortfolio: boolean;
+  canDeletePortfolio: boolean;
+}
+
+export interface AdminDetail {
+  id: string;
+  name: string;
+  email: string;
+  img: string;
+  phoneNumber?: string;
+  role: string;
+  dateOfBirth?: string;
+  address?: {
+    city?: string | null;
+    country?: string | null;
+    zipCode?: string | null;
+  };
+  permissions: AdminPermission;
 }
 
 
@@ -75,3 +119,22 @@ export const deleteAdmin = async (adminId: number | string) => {
   const res = await axiosInstance.delete(`/super-admin/admins/${adminId}`);
   return res.data;
 };
+
+// Get Detail Admin
+export const getAdminDetail = async (adminId: string): Promise<AdminDetail> => {
+  const res = await axiosInstance.get(`/super-admin/admins/${adminId}`);
+  return res.data;
+};
+
+// Update Permissions
+export const updateAdminPermissions = async (
+  adminId: string,
+  permissions: AdminPermission
+): Promise<AdminDetail> => {
+  const res = await axiosInstance.patch(
+    `/super-admin/admins/${adminId}/permissions`,
+    permissions
+  );
+  return res.data.data;
+};
+

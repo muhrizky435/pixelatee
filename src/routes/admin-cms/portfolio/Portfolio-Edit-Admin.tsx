@@ -72,7 +72,7 @@ export default function EditPortfolio() {
     if (portfolio && clients.length > 0) {
       const matchedClient = clients.find((c) => c.name === portfolio.client);
       if (matchedClient) {
-        setClient(matchedClient.id); // simpan UUID client
+        setClient(matchedClient.id);
       }
     }
   }, [portfolio, clients]);
