@@ -16,7 +16,7 @@ export default function ClientEdit() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch client data
+  // Fetch client data (Get Data Client)
   useEffect(() => {
     const fetchClient = async () => {
       try {
@@ -54,7 +54,6 @@ export default function ClientEdit() {
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -62,11 +61,14 @@ export default function ClientEdit() {
       setPreview(URL.createObjectURL(file));
     }
   };
+  // -------
 
+  // Handle Cancel
   const handleCancel = () => {
     navigate("/panels-admins/clients");
   };
 
+  // Handle Submit Update
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!clientId) return;
@@ -87,6 +89,7 @@ export default function ClientEdit() {
     }
   };
 
+  // Loading
   if (loading) {
     return (
       <NavBarCMS>

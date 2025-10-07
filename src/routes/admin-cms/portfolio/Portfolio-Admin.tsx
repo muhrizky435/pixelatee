@@ -101,7 +101,7 @@ export default function PortfolioAdmin() {
     };
   }, [openAction]);
 
-  // Fetch clients
+  // Fetch clients (Get Clients)
   useEffect(() => {
     const fetchClients = async () => {
       try {
@@ -114,7 +114,7 @@ export default function PortfolioAdmin() {
     fetchClients();
   }, []);
 
-  // Fetch portfolios
+  // Fetch portfolios (Get Data Portfolios)
   const fetchPortfolios = useCallback(async () => {
     try {
       setLoading(true);
