@@ -24,7 +24,7 @@ export default function PortfolioPage() {
     const fetchPortfolios = async () => {
       try {
         const data = await getAllPortfolios();
-        console.log("data:", data);
+        
         setPortfolios(data);
       } catch {
         setError("Failed to load portfolios");
