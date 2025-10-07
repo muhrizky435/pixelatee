@@ -10,7 +10,7 @@ const ClientSlider = () => {
   ];
 
   return (
-    <div className="w-full bg-white pt-12">
+    <div className="w-full bg-blue-100">
       <Marquee
         gradient={false}
         speed={50}

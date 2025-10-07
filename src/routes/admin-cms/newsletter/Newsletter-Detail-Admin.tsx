@@ -60,7 +60,7 @@ export default function NewsletterDetailModal({
                     import.meta.env.VITE_API_URL || "http://localhost:3000"
                   }/newsletter/${detail.photo}`}
                   alt={detail.title}
-                  className="w-full mx-6 md:mx-10 my-8 h-45 md:h-65 object-cover rounded-xl shadow"
+                  className="w-full mx-6 md:mx-10 my-8 h-45 md:h-65 object-cover rounded-md shadow"
                 />
               )}
 

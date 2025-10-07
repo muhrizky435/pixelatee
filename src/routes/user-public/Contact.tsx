@@ -33,7 +33,7 @@ export default function Contact() {
     setLoading(true);
     setFeedback(null);
 
-      // ✅ validasi service type
+      // validasi service type
     if (!type) {
       setToastType("error");
       setToastMessage("Please select a service type.");
@@ -243,8 +243,8 @@ export default function Contact() {
                       onClick={() => setType(service.value)}
                       className={`px-4 py-2 rounded-lg border transition ${
                         type === service.value
-                          ? "bg-gray-200 border-gray-400"
-                          : "bg-white border-gray-300 hover:bg-gray-100"
+                          ? "bg-blue-200 border-gray-400"
+                          : "bg-white border-gray-300 hover:bg-blue-200"
                       }`}
                     >
                       {service.label}

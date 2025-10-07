@@ -4,10 +4,12 @@ import { Footer } from "../../components/Footer";
 import { FaQuoteLeft } from "react-icons/fa";
 import ClientSlider from "../../components/ClientSlider";
 import { HiArrowRight } from "react-icons/hi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HiOutlineChevronDown, HiOutlineChevronUp } from "react-icons/hi";
 import { joinNewsletter } from "../../api/newsletter.api";
 import Reveal from "../../components/Animate-Home-Reveal";
+import { getAllPortfolios, type Portfolio } from "../../api/portfolio.api";
+import DOMPurify from "dompurify";
 
 // faq
 const faqs = [
@@ -50,7 +52,7 @@ const testimonials = [
     id: 2,
     quote:
       "Working with Pixelatee was effortless. They understood our vision and delivered a mobile app that our customers love.",
-    name: "James Lee",
+    name: "James Lee.",
     role: "Product Manager at UrbanMart",
   },
   {
@@ -83,28 +85,6 @@ const testimonials = [
   },
 ];
 
-// projects
-const projects = [
-  {
-    id: 1,
-    company: "BrightWave Media",
-    title: "NovaLink Shortener",
-    image: "https://picsum.photos/seed/project1/600/400",
-  },
-  {
-    id: 2,
-    company: "Horizon Tech",
-    title: "SkyHost Cloud",
-    image: "https://picsum.photos/seed/project2/600/400",
-  },
-  {
-    id: 3,
-    company: "Urban Mart",
-    title: "CoreCMS",
-    image: "https://picsum.photos/seed/project3/600/400",
-  },
-];
-
 export default function Home() {
   const [openId, setOpenId] = useState<number | null>(null);
 
@@ -116,6 +96,26 @@ export default function Home() {
   // Tambahan state untuk newsletter
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterLoading, setNewsletterLoading] = useState(false);
+
+  // State Portfolios
+  const [projects, setProjects] = useState<Portfolio[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fech Portfolio (Get data Portfolio)
+  useEffect(() => {
+    const fetchPortfolios = async () => {
+      try {
+        const data = await getAllPortfolios();
+        setProjects(data);
+      } catch (error) {
+        console.error("Failed to load portfolios:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPortfolios();
+  }, []);
 
   // handle kirim email join newsletter
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
@@ -170,7 +170,7 @@ export default function Home() {
                 <h1 className="text-4xl md:text-5xl font-bold leading-snug mb-4">
                   Transforming Ideas Into <br /> Digital Impact
                 </h1>
-                <p className="text-lg md:text-base text-gray-300">
+                <p className="text-lg md:text-xl text-gray-200">
                   We craft meaningful experiences that help brands grow and
                   connect with people.
                 </p>
@@ -345,16 +345,16 @@ export default function Home() {
         </section>
 
         {/* Clients Section */}
-        <section className="text-center py-10 pt-19 px-12 md:px-6">
+        <section className="text-center py-10 pt-19">
           <Reveal>
-            <h2 className="text-4xl md:text-5xl font-bold text-blue-600">
+            <h2 className="text-4xl md:text-5xl font-bold text-blue-600 pb-6">
               Clients{" "}
               <span className="text-gray-700 font-semibold">We Work With</span>
             </h2>
           </Reveal>
           <Reveal delay={0.3}>
-            <div className="bg-white py-6">
-              <div className="flex flex-wrap justify-start items-center gap-8">
+            <div className="bg-blue-100 py-8">
+              <div className="flex flex-wrap justify-center items-center gap-8">
                 <ClientSlider />
               </div>
             </div>
@@ -364,43 +364,72 @@ export default function Home() {
         {/* section Project */}
         <section className="px-12 md:px-26 bg-white">
           <Reveal>
-            <div className="mb-10 text-justify md:text-left">
-              <h2 className="text-3xl md:text-5xl font-semibold text-gray-900 leading-snug">
+            <div className="mb-10 pt-6 text-justify md:text-left">
+              <h2 className="text-4xl md:text-5xl font-semibold text-gray-900 leading-snug">
                 Transforming{" "}
-                <span className="text-blue-500 font-bold">Creative Ideas</span>
-                <br />
-                Into Impactful{" "}
+                <span className="text-blue-500 font-bold">Creative Ideas </span>
+                Into <br /> Impactful{" "}
                 <span className="text-blue-700 font-bold">Projects</span>
               </h2>
             </div>
           </Reveal>
+
           <div className="max-w-6xl mx-auto flex flex-col gap-5">
-            {projects.map((project, i) => (
-              <Reveal key={project.id} delay={i * 0.2}>
-                <div className="flex flex-col md:flex-row overflow-hidden rounded-lg shadow bg-blue-500 text-white">
-                  <div className="md:w-1/3">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="h-40 md:h-full w-full object-cover"
-                    />
-                  </div>
-                  <div className="md:w-2/3 flex flex-col justify-center p-5">
-                    <p className="text-lg opacity-80 mb-1">{project.company}</p>
-                    <h3 className="text-2xl md:text-4xl font-semibold mb-3">
-                      {project.title}
-                    </h3>
-                    <Link
-                      to={`/portfolio/${project.id}`}
-                      className="inline-flex items-center gap-2 mt-4 text-white hover:text-yellow-400 font-medium text-sm group"
-                    >
-                      <span>Get a Direction</span>
-                      <HiArrowRight className="text-lg transform group-hover:translate-x-1 transition-transform duration-200" />
-                    </Link>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
+            {loading ? (
+              <p className="text-gray-500 text-center py-10">
+                Loading portfolios...
+              </p>
+            ) : projects.length === 0 ? (
+              <p className="text-gray-500 text-center py-10">
+                No projects found.
+              </p>
+            ) : (
+              projects
+                .slice(0, 3)
+                .map((project, i) => (
+                  <Reveal key={project.id} delay={i * 0.2}>
+                    <div className="flex flex-col md:flex-row overflow-hidden rounded-lg shadow bg-blue-400 text-gray-800">
+                      <div className="md:w-1/3">
+                        <img
+                          src={
+                            project.mainImage
+                              ? `${"http://localhost:3000"}/portfolio/${
+                                  project.mainImage
+                                }`
+                              : "/img/Logo.png"
+                          }
+                          alt={project.title}
+                          className="h-40 md:h-48 w-full object-cover"
+                        />
+                      </div>
+                      <div className="md:w-2/3 flex flex-col justify-center p-5">
+                        {/* <p className="text-lg opacity-80 mb-1">
+                        {project.clientName}
+                      </p> */}
+
+                        <h3 className="text-2xl md:text-2xl font-semibold mb-3">
+                          {project.title}
+                        </h3>
+
+                        <p
+                          className="text-sm text-white mt-1 line-clamp-3"
+                          dangerouslySetInnerHTML={{
+                            __html: DOMPurify.sanitize(project.description),
+                          }}
+                        ></p>
+
+                        <Link
+                          to={`/portfolio/${project.id}`}
+                          className="inline-flex items-center gap-2 mt-4 text-blue-900 hover:text-blue-700 font-medium text-sm group"
+                        >
+                          <span>Get a Direction</span>
+                          <HiArrowRight className="text-lg transform group-hover:translate-x-1 transition-transform duration-200" />
+                        </Link>
+                      </div>
+                    </div>
+                  </Reveal>
+                ))
+            )}
           </div>
         </section>
         {/* end section project */}
@@ -424,25 +453,14 @@ export default function Home() {
           </Reveal>
 
           {/* Testimonials */}
-          {/* <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 max-w-6xl mx-auto">
-            {testimonials.map((t) => (
-              <div
-                key={t.id}
-                className="bg-white border rounded-lg shadow-lg p-6 hover:shadow-md transition"
-              >
-                <p className="text-gray-700 text-sm mb-4">“{t.quote}”</p>
-                <p className="text-sm font-medium text-gray-900">
-                  — <span className="text-blue-600">{t.name}</span>, {t.role}
-                </p>
-              </div>
-            ))}
-          </div> */}
           <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 max-w-6xl mx-auto">
             {testimonials.map((t, i) => (
               <Reveal key={t.id} delay={i * 0.2}>
-                <div className="bg-white border rounded-lg shadow-lg p-6 hover:shadow-md transition">
-                  <p className="text-gray-700 text-sm mb-4">“{t.quote}”</p>
-                  <p className="text-sm font-medium text-gray-900">
+                <div className="bg-white border rounded-lg shadow-lg p-6 hover:shadow-md transition flex flex-col justify-between h-60">
+                  <p className="text-gray-700 text-sm mb-4 line-clamp-5">
+                    “{t.quote}”
+                  </p>
+                  <p className="text-sm font-medium text-gray-900 mt-auto">
                     — <span className="text-blue-600">{t.name}</span>, {t.role}
                   </p>
                 </div>
@@ -554,7 +572,7 @@ export default function Home() {
 
           {/* CTA */}
           <Reveal>
-            <div className="mt-16 text-center relative z-10">
+            <div className="mt-16 mb-10 text-center relative z-10">
               <h2 className="text-3xl md:text-4xl font-semibold">
                 Designed to grow with you. <br /> Get in Touch{" "}
                 <Link to="/contact" className="text-blue-600 font-bold">

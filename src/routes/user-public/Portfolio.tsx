@@ -19,10 +19,12 @@ export default function PortfolioPage() {
     return div.textContent || div.innerText || "";
   };
 
+  // Get Data Portfolio
   useEffect(() => {
     const fetchPortfolios = async () => {
       try {
         const data = await getAllPortfolios();
+        console.log("data:", data);
         setPortfolios(data);
       } catch {
         setError("Failed to load portfolios");

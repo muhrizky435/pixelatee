@@ -10,14 +10,13 @@ import type { Portfolio } from "../../api/portfolio.api";
 // Dummy gallery data
 const dummyGallery = {
   gallery: [
-    "/img/photo1.jpeg",
-    "/img/photo2.jpeg",
+    "/img/photo1.png",
+    "/img/photo2.png",
     "/img/photo3.jpg",
-    "/img/photo3.jpg",
+    "/img/photo5.png",
     "/img/photo3.jpg",
   ],
 };
-
 
 export default function PortfolioDetail() {
   const { id } = useParams<{ id: string }>();
@@ -87,18 +86,23 @@ export default function PortfolioDetail() {
               Implemented for{" "}
               {/* <span className="font-semibold">{project.type}</span> */}
             </p>
-            <p className="text-gray-600 mt-4 max-w-lg text-justify"
-               dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(project.description),}}></p>
+            <p
+              className="text-gray-600 mt-4 max-w-lg text-justify"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(project.description),
+              }}
+            ></p>
           </div>
-          <div className="rounded-xl overflow-hidden shadow-lg">
+          <div className="rounded-lg overflow-hidden shadow-lg flex justify-center items-center bg-gray-50 h-72 md:h-96">
             <img
-              src={project.mainImage
-                ? `http://localhost:3000/portfolio/${project.mainImage}`
-                : "/img/Logo.png"
+              src={
+                project.mainImage
+                  ? `http://localhost:3000/portfolio/${project.mainImage}`
+                  : "/img/Logo.png"
               }
               alt={project.title}
               loading="lazy"
-              className="w-full h-60 md:h-72 object-cover"
+              className="max-h-full max-w-full object-contain scale-110 transition-transform duration-300"
             />
           </div>
         </div>

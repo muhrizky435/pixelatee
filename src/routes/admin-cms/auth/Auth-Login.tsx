@@ -141,7 +141,7 @@ export default function LoginPage() {
           {/* Right side: full image with overlay */}
           <div className="hidden md:block relative">
             <img
-              src="/img/photo1.jpeg"
+              src="/img/photo1.png"
               alt="Login Illustration"
               className="w-full h-full object-cover"
             />

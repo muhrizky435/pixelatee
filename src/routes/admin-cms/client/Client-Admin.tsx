@@ -34,7 +34,6 @@ export default function ClientPage() {
     message: string;
   }>({ open: false, type: "success", message: "" });
 
-
   // Get Data Client
   const fetchClients = async (): Promise<void> => {
     try {

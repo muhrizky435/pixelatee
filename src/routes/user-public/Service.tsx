@@ -155,7 +155,7 @@ export default function ServisSection() {
               {/* Image kiri */}
               <div className="flex justify-center md:justify-start md:col-span-2">
                 <img
-                  src="/img/photo2.jpeg"
+                  src="/img/photo2.png"
                   alt="Services"
                   className="rounded-lg shadow-lg w-full md:h-120 max-w-sm object-cover"
                 />
