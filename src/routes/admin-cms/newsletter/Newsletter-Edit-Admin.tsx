@@ -253,7 +253,7 @@ export default function EditNewsletter() {
           </div>
         </section>
 
-        {/* Modal Success Create Newsletter */}
+        {/* Modal Success Update Newsletter */}
         {showUpdateSuccessModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
             <div className="bg-white rounded-2xl w-full max-w-md p-6 text-center shadow-xl">

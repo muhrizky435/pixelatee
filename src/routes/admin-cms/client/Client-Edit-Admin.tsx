@@ -3,15 +3,15 @@ import { useParams, useNavigate } from "react-router-dom";
 import NavBarCMS from "../../../components/CMS-Navbar";
 import { getAllClientsAdmin, updateClientAdmin } from "../../../api/client.api";
 import type { Client } from "../../../api/client.api";
-import { FiUpload } from "react-icons/fi";
+import { FiImage } from "react-icons/fi";
 
 export default function ClientEdit() {
   const { clientId } = useParams<{ clientId: string }>();
   const navigate = useNavigate();
   const [, setClient] = useState<Client | null>(null);
-  const [name, setName] = useState("");
-  const [logo, setLogo] = useState<File | null>(null);
-  const [previewLogo, setPreviewLogo] = useState<string | null>(null);
+  const [title, setTitle] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,17 +22,16 @@ export default function ClientEdit() {
       try {
         setLoading(true);
         const clients = await getAllClientsAdmin();
-
-        console.log("clients:", clients);
-
         const found = clients.find((c) => c.id === clientId);
         if (!found) {
           setError("Client not found");
           return;
         }
         setClient(found);
-        setName(found.name);
-        setPreviewLogo(`${import.meta.env.VITE_BASE_URL}/client/${found.logo}`);
+        setTitle(found.name);
+        setPreview(
+          `http://localhost:3000/client/${encodeURIComponent(found.logo)}`
+        );
       } catch (err) {
         console.error(err);
         setError("Failed to fetch client data");
@@ -43,16 +42,31 @@ export default function ClientEdit() {
     fetchClient();
   }, [clientId]);
 
-  // Handle logo change
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Drag & drop handlers
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      setFile(file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setLogo(file);
-      setPreviewLogo(URL.createObjectURL(file));
+      setFile(file);
+      setPreview(URL.createObjectURL(file));
     }
   };
 
-  // Handle form submit
+  const handleCancel = () => {
+    navigate("/panels-admins/clients");
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!clientId) return;
@@ -60,14 +74,17 @@ export default function ClientEdit() {
     setError(null);
 
     try {
-      await updateClientAdmin(clientId, { name, logo: logo ?? undefined });
+      await updateClientAdmin(clientId, {
+        name: title,
+        logo: file ?? undefined,
+      });
       navigate("/panels-admins/clients");
     } catch (err) {
-        console.error(err);
-        alert("Error updating Client");
-      } finally {
-        setSaving(false);
-      }
+      console.error(err);
+      alert("Error updating Client");
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (loading) {
@@ -92,63 +109,101 @@ export default function ClientEdit() {
 
   return (
     <NavBarCMS>
-      <main className="bg-gray-50 min-h-screen pt-10 pb-16 px-6 md:px-10">
-        <div className="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-          <h1 className="text-2xl font-semibold text-gray-800 mb-6">
-            Edit Client
-          </h1>
+      <main className="bg-gray-50 min-h-screen pt-2 pb-8 px-8 space-y-8">
+        {/* Header */}
+        <header className="mb-6 flex flex-col gap-3">
+          <button
+            onClick={() => navigate("/panels-admins/clients")}
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 
+               font-medium w-fit group transition"
+          >
+            <span className="transform transition-transform group-hover:-translate-x-1">
+              &larr;
+            </span>
+            Back
+          </button>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Nama */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Nama Client
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                required
-              />
-            </div>
+          <h1 className="text-3xl font-bold text-blue-500">Edit Client</h1>
+        </header>
 
-            {/* Logo */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Logo Client
-              </label>
-              {previewLogo && (
-                <img
-                  src={previewLogo}
-                  alt="Client Logo"
-                  className="w-32 h-32 object-contain mb-3 border border-gray-200 rounded-lg"
-                />
+        {/* Form */}
+        <section className="space-y-8">
+          <form
+            onSubmit={handleSubmit}
+            className="w-full max-w-5xl bg-white p-10 rounded-2xl shadow-sm border border-gray-200 space-y-6"
+          >
+            <h2 className="text-md font-semibold">Name Client</h2>
+
+            {/* Input Nama Client */}
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Title client"
+              className="border border-gray-300 rounded-md px-3 py-2 text-sm w-full"
+              required
+            />
+
+            {/* Upload Logo */}
+            <div
+              className="border-2 border-dashed border-gray-300 rounded-lg p-10 flex flex-col items-center justify-center text-gray-500 relative"
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+            >
+              {preview ? (
+                <div className="flex flex-col items-center">
+                  <img
+                    src={preview}
+                    alt="preview"
+                    className="h-32 mb-2 rounded"
+                  />
+                  <div className="flex gap-2">
+                    <label className="text-blue-500 text-sm cursor-pointer">
+                      Update Logo
+                      <input
+                        type="file"
+                        className="hidden"
+                        onChange={handleFileChange}
+                        accept="image/*"
+                      />
+                    </label>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <FiImage size={48} />
+                  <label className="mt-2 text-blue-500 cursor-pointer">
+                    Attach File
+                    <input
+                      type="file"
+                      className="hidden"
+                      onChange={handleFileChange}
+                      accept="image/*"
+                    />
+                  </label>
+                  <p className="text-sm text-gray-400">Or Drag &amp; Drop</p>
+                </>
               )}
-              <label className="flex items-center gap-2 cursor-pointer text-indigo-600 hover:text-indigo-700">
-                <FiUpload />
-                <span>Ganti Logo</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLogoChange}
-                  className="hidden"
-                />
-              </label>
             </div>
 
-            {/* Submit */}
-            <div className="pt-4">
+            {/* Buttons */}
+            <div className="flex justify-between items-center">
+              <button
+                type="button"
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md"
+                onClick={handleCancel}
+              >
+                Cancel
+              </button>
               <button
                 type="submit"
-                disabled={saving}
-                className="w-full bg-indigo-600 text-white py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50"
+                className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md"
               >
-                {saving ? "Menyimpan..." : "Simpan Perubahan"}
+                {saving ? "Updating..." : "Update Client"}
               </button>
             </div>
           </form>
-        </div>
+        </section>
       </main>
     </NavBarCMS>
   );

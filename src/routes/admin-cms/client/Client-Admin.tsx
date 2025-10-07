@@ -6,6 +6,7 @@ import {
   createClientAdmin,
   deleteClientAdmin,
   type Client,
+  getClientLogoUrl,
 } from "../../../api/client.api";
 import { useNavigate } from "react-router";
 
@@ -18,7 +19,7 @@ export default function ClientPage() {
   const [title, setTitle] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  // const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
   const menuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const [selectedClientForDelete, setSelectedClientForDelete] =
@@ -39,7 +40,7 @@ export default function ClientPage() {
       setLoading(true);
       const data = await getAllClientsAdmin();
 
-      //   console.log("data client:", data);
+      console.log("data client:", data);
 
       const arr = Array.isArray(data) ? data : data?.clients ?? [];
 
@@ -101,7 +102,7 @@ export default function ClientPage() {
       const normalized: Client[] = arr.map((c: any, idx: number) => ({
         ...c,
         id: (c.uuid ?? c.id ?? c.clientId ?? c._id)?.toString() || "",
-        localKey: idx.toString(), // 🔥 penting agar menu bekerja benar
+        localKey: idx.toString(),
       }));
 
       setClients(normalized);
@@ -300,15 +301,13 @@ export default function ClientPage() {
                   {openMenu === client.localKey && (
                     <div className="absolute top-8 right-2 bg-white shadow-lg rounded-md border border-gray-100 text-sm w-28 z-10">
                       <button
-                            onClick={() =>
-                              navigate(
-                                `/panels-admins/client/edit/${client.id}`
-                              )
-                            }
-                            className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition"
-                          >
-                            Edit
-                          </button>
+                        onClick={() =>
+                          navigate(`/panels-admins/client/edit/${client.id}`)
+                        }
+                        className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 transition"
+                      >
+                        Edit
+                      </button>
                       <button
                         onClick={() => {
                           setSelectedClientForDelete(client);
@@ -324,10 +323,12 @@ export default function ClientPage() {
 
                   {/* Isi Card */}
                   <img
-                    src={`${BASE_URL}/client/${client.logo}`}
+                    src={getClientLogoUrl(client.logo)}
                     alt={client.name}
-                    className="w-35 h-35 object-contain mb-4 mt-6"
+                    className="w-32 h-32 object-contain"
+                    onError={(e) => (e.currentTarget.src = "/img/Logo.png")}
                   />
+
                   <p className="text-sm font-medium text-gray-700 text-center">
                     {client.name}
                   </p>

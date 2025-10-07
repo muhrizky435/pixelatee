@@ -24,8 +24,17 @@ export interface ClientResponse {
 // Get all admin clients
 export const getAllClientsAdmin = async (): Promise<Client[]> => {
   const res = await axiosInstance.get("/admin/clients");
-  return res.data.data;
+
+  // Karena backend mengembalikan array of { clients: [...] }
+  const data = res.data.data;
+  if (Array.isArray(data) && data[0]?.clients) {
+    return data[0].clients; // ambil array clients dari objek pertama
+  }
+
+  // fallback kalau format berubah nanti
+  return Array.isArray(data) ? data : [];
 };
+
 
 
 // Create client (with logo upload)
@@ -61,16 +70,25 @@ export const updateClientAdmin = async (
   if (data.name) formData.append("name", data.name);
   if (data.logo) formData.append("logo", data.logo);
 
-  const res = await axiosInstance.put(`/admin/clients/${clientId}`, formData, {
+  const res = await axiosInstance.patch(`/admin/clients/${clientId}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 
   return res.data.data;
 };
 
+
 // Get clients khusus untuk portfolio form
 export const getClientsForPortfolioForm = async (): Promise<Client[]> => {
   const res = await axiosInstance.get("/admin/clients/form");
   return res.data.data;
 };
+
+// logo
+export const getClientLogoUrl = (logo?: string | null) => {
+  if (!logo) return "/img/Logo.png"; // fallback jika logo belum ada
+  const BASE_URL = "http://localhost:3000";
+  return `${BASE_URL}/client/${encodeURIComponent(logo)}`;
+};
+
 

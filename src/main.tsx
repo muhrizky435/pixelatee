@@ -29,7 +29,7 @@ import PortfolioAdmin from "./routes/admin-cms/portfolio/Portfolio-Admin";
 import PortfolioEdit from "./routes/admin-cms/portfolio/Portfolio-Edit-Admin";
 
 // Admin Clients
-import ClientsAdmin from "./routes/admin-cms/client/Client-Admin";
+import ClientsAdmin from "./routes/admin-cms/client/Client-admin";
 import ClientEdit from "./routes/admin-cms/client/Client-Edit-Admin";
 
 // Admin Contact
@@ -79,7 +79,7 @@ createRoot(document.getElementById("root")!).render(
 
         {/* Client Admin */}
         <Route path="panels-admins/clients" element={<ClientsAdmin />} />
-        <Route path="panels-admins/client/edit/:id" element={<ClientEdit />} />
+        <Route path="panels-admins/client/edit/:clientId" element={<ClientEdit />} />
 
         {/* Contact Admin */}
         <Route path="panels-admins/contacts" element={<ContactAdmin />} />
