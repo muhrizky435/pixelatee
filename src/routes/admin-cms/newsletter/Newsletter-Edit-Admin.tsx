@@ -20,7 +20,9 @@ export default function EditNewsletter() {
   const [preview, setPreview] = useState<string | null>(null);
   const [existingImage, setExistingImage] = useState<string | null>(null);
   const [content, setContent] = useState("");
-  const [type, setType] = useState<"TECH" | "BUSINESS" | "INTERNAL" | "OTHER">("TECH");
+  const [type, setType] = useState<"TECH" | "BUSINESS" | "INTERNAL" | "OTHER">(
+    "TECH"
+  );
   const [isScheduled, setIsScheduled] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -36,7 +38,9 @@ export default function EditNewsletter() {
         setIsScheduled(data.isScheduled ?? false);
 
         if (data.photo) {
-          setExistingImage(`http://localhost:3000/newsletter/${encodeURIComponent(data.photo)}`);
+          setExistingImage(
+            `http://localhost:3000/newsletter/${encodeURIComponent(data.photo)}`
+          );
         }
       } catch (err) {
         console.error("Failed to fetch newsletter:", err);
@@ -63,7 +67,6 @@ export default function EditNewsletter() {
       });
 
       setShowUpdateSuccessModal(true);
-      navigate("/panels-admins/newsletter")
     } catch (err) {
       console.error(err);
       alert("Error updating newsletter");
@@ -100,20 +103,20 @@ export default function EditNewsletter() {
     <NavBarCMS>
       <main className="bg-gray-50 min-h-screen pt-2 pb-8 px-8 space-y-8">
         {/* Header */}
-        <header className="mb-6 flex flex-col gap-3">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-semibold text-blue-500">
+            Edit Newsletter
+          </h1>
           <button
             onClick={() => navigate("/panels-admins/newsletter")}
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 
-               font-medium w-fit group transition"
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium w-fit group transition"
           >
             <span className="transform transition-transform group-hover:-translate-x-1">
               &larr;
             </span>
             Back
           </button>
-
-          <h1 className="text-3xl font-bold text-blue-500">Edit Newsletter</h1>
-        </header>
+        </div>
 
         <section className="space-y-8">
           {/* Title */}
@@ -178,17 +181,17 @@ export default function EditNewsletter() {
                   alt="preview"
                   className="h-42 mb-2 rounded"
                 />
-                <button
-                  type="button"
-                  className="text-red-500 text-sm hover:underline"
-                  onClick={() => {
-                    setFile(null);
-                    setPreview(null);
-                    setExistingImage(null);
-                  }}
-                >
-                  Remove
-                </button>
+                <div className="flex gap-2">
+                  <label className="text-blue-500 text-sm cursor-pointer">
+                    Update Logo
+                    <input
+                      type="file"
+                      className="hidden"
+                      onChange={handleFileChange}
+                      accept="image/*"
+                    />
+                  </label>
+                </div>
               </div>
             ) : (
               <>
@@ -258,12 +261,13 @@ export default function EditNewsletter() {
           <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
             <div className="bg-white rounded-2xl w-full max-w-md p-6 text-center shadow-xl">
               <h2 className="text-lg font-semibold mb-4">Success!</h2>
-              <p className="mb-6">Newsletter successfully Updated.</p>
+              <p className="mb-6">Newsletter successfully updated.</p>
               <button
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                onClick={() => 
-                  // navigate("/panels-admins/newsletter")
-                  setShowUpdateSuccessModal(false)}
+                onClick={() => {
+                  setShowUpdateSuccessModal(false);
+                  navigate("/panels-admins/newsletter");
+                }}
               >
                 Close
               </button>

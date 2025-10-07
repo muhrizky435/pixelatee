@@ -2,7 +2,6 @@ import axiosInstance from "./axios";
 
 export interface Client {
   id: string;
-  // realId: string;
   localKey: string;
   name: string;
   logo: string;

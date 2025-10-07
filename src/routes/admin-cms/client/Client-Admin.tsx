@@ -19,8 +19,8 @@ export default function ClientPage() {
   const [title, setTitle] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
   const menuRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [selectedClientForDelete, setSelectedClientForDelete] =
     useState<Client | null>(null);
@@ -34,19 +34,15 @@ export default function ClientPage() {
     message: string;
   }>({ open: false, type: "success", message: "" });
 
-  // Fetch ( get data Clients)
-  const fetchClients = async () => {
+
+  // Get Data Client
+  const fetchClients = async (): Promise<void> => {
     try {
       setLoading(true);
-      const data = await getAllClientsAdmin();
+      const data: Client[] = await getAllClientsAdmin();
 
-      console.log("data client:", data);
-
-      const arr = Array.isArray(data) ? data : data?.clients ?? [];
-
-      const normalized: Client[] = arr.map((c: any, idx: number) => ({
+      const normalized: Client[] = data.map((c, idx) => ({
         ...c,
-        id: (c.uuid ?? c.id ?? c.clientId ?? c._id)?.toString() || "",
         localKey: idx.toString(),
       }));
 
@@ -62,6 +58,16 @@ export default function ClientPage() {
   useEffect(() => {
     fetchClients();
   }, []);
+
+  // Filter client berdasarkan nama
+  const filteredClients = clients.filter((client) =>
+    client.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Handle input search
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
 
   // Handle File Upload Preview
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -90,18 +96,16 @@ export default function ClientPage() {
   };
 
   // Handle Create Client
-  const handleSend = async () => {
+  const handleSend = async (): Promise<void> => {
     if (!title || !file) return;
     try {
       setLoading(true);
       await createClientAdmin(title, file);
-      const data = await getAllClientsAdmin();
 
-      const arr = Array.isArray(data) ? data : data?.clients ?? [];
+      const data: Client[] = await getAllClientsAdmin();
 
-      const normalized: Client[] = arr.map((c: any, idx: number) => ({
+      const normalized: Client[] = data.map((c, idx) => ({
         ...c,
-        id: (c.uuid ?? c.id ?? c.clientId ?? c._id)?.toString() || "",
         localKey: idx.toString(),
       }));
 
@@ -112,16 +116,10 @@ export default function ClientPage() {
         message: "Client successfully created and added!",
       });
       handleCancel();
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setModal({ open: true, type: "error", message: error.message });
-      } else {
-        setModal({
-          open: true,
-          type: "error",
-          message: "Failed created Client",
-        });
-      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to create Client";
+      setModal({ open: true, type: "error", message });
     } finally {
       setLoading(false);
     }
@@ -138,7 +136,7 @@ export default function ClientPage() {
 
     try {
       await deleteClientAdmin(selectedClientForDelete.id);
-      console.log("✅ Deleted client:", selectedClientForDelete.name);
+      // console.log("Deleted client:", selectedClientForDelete.name);
 
       setClients((prev) =>
         prev.filter((client) => client.id !== selectedClientForDelete.id)
@@ -148,7 +146,7 @@ export default function ClientPage() {
       setSelectedClientForDelete(null);
       setShowDeleteSuccessModal(true);
     } catch (error) {
-      console.error("❌ Failed to delete Client:", error);
+      console.error("Failed to delete Client:", error);
       setErrorMessage("Failed to delete Client!");
     }
   };
@@ -170,8 +168,8 @@ export default function ClientPage() {
 
   return (
     <NavBarCMS>
-      <main className="bg-gray-50 min-h-screen pt-6 pb-10 px-4 md:px-10 space-y-8">
-        <h1 className="text-xl font-semibold text-blue-600">Client</h1>
+      <main className="bg-gray-50 min-h-screen pt-2 pb-8 md:px-8 px-2 space-y-8">
+        <h1 className="text-3xl font-bold text-blue-500">Client</h1>
 
         {/* New Client */}
         <section className="space-y-4">
@@ -262,6 +260,8 @@ export default function ClientPage() {
                 <input
                   type="text"
                   placeholder="Search by Name"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
                   className="border border-gray-300 rounded-md pl-8 pr-2 py-1.5 text-sm w-48"
                 />
                 <FiSearch className="absolute left-2 top-2.5 text-gray-400" />
@@ -276,12 +276,18 @@ export default function ClientPage() {
             <div className="text-center text-gray-500 py-10">Loading...</div>
           ) : error ? (
             <div className="text-center text-red-500 py-10">{error}</div>
+          ) : filteredClients.length === 0 ? (
+            <div className="text-center text-gray-500 py-10">
+              No clients found.
+            </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-3">
               {clients.map((client) => (
                 <div
                   key={client.localKey}
-                  ref={(el) => (menuRefs.current[client.localKey] = el)}
+                  ref={(el) => {
+                    menuRefs.current[client.localKey] = el;
+                  }}
                   className="relative bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col items-center"
                 >
                   {/* Tombol titik tiga di pojok kanan atas */}

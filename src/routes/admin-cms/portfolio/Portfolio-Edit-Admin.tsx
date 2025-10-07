@@ -58,7 +58,11 @@ export default function EditPortfolio() {
         setDescription(data.description || "");
 
         if (data.mainImage) {
-          setExistingImage(`http://localhost:3000/portfolio/${encodeURIComponent(data.mainImage)}`);
+          setExistingImage(
+            `http://localhost:3000/portfolio/${encodeURIComponent(
+              data.mainImage
+            )}`
+          );
         }
       } catch (err) {
         console.error("Failed to fetch portfolio:", err);
@@ -86,19 +90,20 @@ export default function EditPortfolio() {
 
     setLoading(true);
     try {
-      await updatePortfolioAdmin(
-        id,
-        {
-          title,
-          description,
-          status: "PUBLISHED",
-          client, 
-        },
-        file ? [file] : []
-      );
+      const payload = {
+        title,
+        description,
+        status: "PUBLISHED",
+        client,
+      };
+
+      if (file) {
+        await updatePortfolioAdmin(id, payload, [file]);
+      } else {
+        await updatePortfolioAdmin(id, payload);
+      }
 
       setShowUpdateSuccessModal(true);
-      
     } catch (err) {
       console.error(err);
       alert("Error updating portfolio");
@@ -135,7 +140,10 @@ export default function EditPortfolio() {
     <NavBarCMS>
       <main className="bg-gray-50 min-h-screen pt-2 pb-8 px-8 space-y-8">
         {/* Header */}
-        <header className="mb-6 flex flex-col gap-3">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-semibold text-blue-500">
+            Edit Portfolio
+          </h1>
           <button
             onClick={() => navigate("/panels-admins/portfolios")}
             className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium w-fit group transition"
@@ -145,9 +153,7 @@ export default function EditPortfolio() {
             </span>
             Back
           </button>
-
-          <h1 className="text-3xl font-bold text-blue-500">Edit Portfolio</h1>
-        </header>
+        </div>
 
         <section className="space-y-8">
           {/* Title */}
@@ -196,17 +202,17 @@ export default function EditPortfolio() {
                   alt="preview"
                   className="h-42 mb-2 rounded"
                 />
-                <button
-                  type="button"
-                  className="text-red-500 text-sm hover:underline"
-                  onClick={() => {
-                    setFile(null);
-                    setPreview(null);
-                    setExistingImage(null);
-                  }}
-                >
-                  Remove
-                </button>
+                <div className="flex gap-2">
+                  <label className="text-blue-500 text-sm cursor-pointer">
+                    Update Logo
+                    <input
+                      type="file"
+                      className="hidden"
+                      onChange={handleFileChange}
+                      accept="image/*"
+                    />
+                  </label>
+                </div>
               </div>
             ) : (
               <>

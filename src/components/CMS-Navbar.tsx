@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { FaBell, FaChevronDown } from "react-icons/fa";
+import { FaChevronDown } from "react-icons/fa";
 import { SidebarCMS } from "./CMS-Sidebar";
 import { Link } from "react-router";
 import { logoutUser, getUserProfile } from "../api/user.api";
@@ -106,7 +106,6 @@ export default function NavBarCMS({
 
           {/* Profile */}
           <div className="flex items-center gap-6">
-            <FaBell className="text-gray-600 cursor-pointer" size={18} />
             <div
               className="flex items-center gap-2 cursor-pointer relative"
               ref={dropdownRef}

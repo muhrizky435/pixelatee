@@ -1,5 +1,5 @@
 import { useState, useEffect, type ChangeEvent } from "react";
-import { FiEdit2, FiBell, FiCamera } from "react-icons/fi";
+import { FiEdit2, FiCamera } from "react-icons/fi";
 import NavBarCMS from "../../../components/CMS-Navbar";
 import {
   getUserProfile,
@@ -190,7 +190,6 @@ export default function AdminProfile() {
             </div>
           </div>
           <div className="flex gap-4 items-center">
-            <FiBell className="text-xl text-gray-600" />
             <button
               onClick={() => setShowLogoutModal(true)}
               className="px-3 py-1 bg-red-500 text-white rounded text-sm font-semibold"

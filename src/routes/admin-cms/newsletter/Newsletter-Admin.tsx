@@ -51,8 +51,6 @@ export default function Newsletter() {
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<string | null>(null);
   const filterRef = useRef<HTMLDivElement>(null);
-  // const menuRef = useRef<HTMLDivElement>(null);
-  // const [openMenu, setOpenMenu] = useState<number | null>(null);
 
   // Get Data Scheduled
   useEffect(() => {
@@ -224,7 +222,7 @@ export default function Newsletter() {
               <img
                 src={preview}
                 alt="preview"
-                className="w-full mb-2 rounded"
+                className="w-35 mb-2 rounded"
               />
               <button
                 type="button"
@@ -296,7 +294,7 @@ export default function Newsletter() {
             </div>
             <span className="text-gray-700 text-sm">
               {sendAfter24
-                ? "Scheduled (Send after 24 hours)"
+                ? "Scheduled (Send after)"
                 : "Send Immediately"}
             </span>
           </label>
@@ -503,7 +501,6 @@ export default function Newsletter() {
                   <th className="py-3 px-4">Title</th>
                   <th className="py-3 px-4">Created At</th>
                   <th className="py-3 px-4">Send At</th>
-                  {/* <th className="py-3 px-4 text-right">Action</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -525,31 +522,6 @@ export default function Newsletter() {
                         ? new Date(item.sendAt).toLocaleString()
                         : "—"}
                     </td>
-                    {/* <td className="py-3 px-4 text-right relative">
-                      <button
-                        onClick={() =>
-                          setOpenMenu(openMenu === item.id ? null : item.id)
-                        }
-                        className="p-2 rounded-full hover:bg-gray-100"
-                      >
-                        <BsThreeDotsVertical className="text-gray-500" />
-                      </button>
-
-                      {openMenu === item.id && (
-                        <div
-                          ref={menuRef}
-                          className="absolute top-1/2 right-10 -translate-y-1/2 w-40 bg-white border border-gray-100 rounded-xl shadow-lg z-20 animate-fadeIn"
-                        >
-                          <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 rounded-t-xl transition">
-                            Lihat Detail
-                          </button>
-                          <div className="border-t border-gray-100"></div>
-                          <button className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-b-xl transition">
-                            Hapus
-                          </button>
-                        </div>
-                      )}
-                    </td> */}
                   </tr>
                 ))}
                 {schedule.length === 0 && (
@@ -636,6 +608,7 @@ export default function Newsletter() {
             </div>
           </div>
         )}
+
         {/* Modal Error Create Newsletter */}
         {showCreateErrorModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">

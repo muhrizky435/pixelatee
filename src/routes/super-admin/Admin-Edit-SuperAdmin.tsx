@@ -244,7 +244,10 @@ export default function AdminEditPage() {
               </h3>
               <p className="text-gray-600 mb-6">{modal.message}</p>
               <button
-                onClick={() => setModal({ type: null, message: "" })}
+                onClick={() => {
+                  setModal({ type: null, message: "" });
+                  navigate("/panels-superadmins/list-admins");
+                }}
                 className={`px-5 py-2 rounded-lg text-white transition ${
                   modal.type === "success"
                     ? "bg-blue-600 hover:bg-blue-700"

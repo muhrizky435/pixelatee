@@ -2,8 +2,8 @@ import { FiX, FiEdit } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { NewsletterResponse } from "../../../api/newsletter.api";
-import DOMPurify from "dompurify";
 import { getAdminNewsletterDetail } from "../../../api/newsletter.api";
+import DOMPurify from "dompurify";
 
 interface NewsletterDetailModalProps {
   newsletter: NewsletterResponse | null;
@@ -15,7 +15,6 @@ export default function NewsletterDetailModal({
   onClose,
 }: NewsletterDetailModalProps) {
   const navigate = useNavigate();
-  // const galleryRef = useRef<HTMLDivElement>(null);
 
   const [detail, setDetail] = useState<NewsletterResponse | null>(null);
   const [loading, setLoading] = useState(false);
@@ -68,7 +67,7 @@ export default function NewsletterDetailModal({
               <div className="absolute top-4 right-4 flex gap-2">
                 <button
                   onClick={() =>
-                    navigate(`/panels-admins/newsletter/edit/${detail.id}`)
+                    navigate(`/panels-admins/newsletter/edit/${newsletter.id}`)
                   }
                   className="p-2 bg-blue-100 text-gray-700 hover:bg-blue-300 rounded-full border-gray-200 shadow-xl"
                 >
@@ -105,7 +104,11 @@ export default function NewsletterDetailModal({
               {detail.author && (
                 <p className="text-sm text-gray-400 mt-6">
                   Published by{" "}
-                  <span className="font-medium">{detail.author + " at " + new Date(detail.createdAt).toLocaleString()}</span>
+                  <span className="font-medium">
+                    {detail.author +
+                      " at " +
+                      new Date(detail.createdAt).toLocaleString()}
+                  </span>
                 </p>
               )}
             </div>

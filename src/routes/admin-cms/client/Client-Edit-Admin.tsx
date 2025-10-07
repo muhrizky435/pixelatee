@@ -111,20 +111,20 @@ export default function ClientEdit() {
     <NavBarCMS>
       <main className="bg-gray-50 min-h-screen pt-2 pb-8 px-8 space-y-8">
         {/* Header */}
-        <header className="mb-6 flex flex-col gap-3">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-semibold text-blue-500">
+            Edit Client
+          </h1>
           <button
             onClick={() => navigate("/panels-admins/clients")}
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 
-               font-medium w-fit group transition"
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium w-fit group transition"
           >
             <span className="transform transition-transform group-hover:-translate-x-1">
               &larr;
             </span>
             Back
           </button>
-
-          <h1 className="text-3xl font-bold text-blue-500">Edit Client</h1>
-        </header>
+        </div>
 
         {/* Form */}
         <section className="space-y-8">
