@@ -1,5 +1,4 @@
-// Admin-Edit.tsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import {
   getAdminDetail,
   updateAdminPermissions,
@@ -11,17 +10,79 @@ import NavBarCMS from "../../components/CMS-Navbar";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminEditPage() {
-  const { adminId } = useParams<{ adminId: string }>();
-  const navigate = useNavigate();
+  const permissionGroups = useMemo(
+    () => [
+      {
+        title: "Admin",
+        keys: [
+          "canReadAdmin",
+          "canWriteAdmin",
+          "canUpdateAdmin",
+          "canDeleteAdmin",
+        ],
+      },
+      {
+        title: "Client",
+        keys: [
+          "canReadClient",
+          "canWriteClient",
+          "canUpdateClient",
+          "canDeleteClient",
+        ],
+      },
+      {
+        title: "Contact",
+        keys: [
+          "canReadContact",
+          "canWriteContact",
+          "canUpdateContact",
+          "canDeleteContact",
+        ],
+      },
+      {
+        title: "Newsletter",
+        keys: [
+          "canReadNewsletter",
+          "canWriteNewsletter",
+          "canUpdateNewsletter",
+          "canDeleteNewsletter",
+        ],
+      },
+      {
+        title: "Portfolio",
+        keys: [
+          "canReadPortfolio",
+          "canWritePortfolio",
+          "canUpdatePortfolio",
+          "canDeletePortfolio",
+        ],
+      },
+    ],
+    []
+  );
 
+  const navigate = useNavigate();
+  const { adminId } = useParams<{ adminId: string }>();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [admin, setAdmin] = useState<AdminDetail | null>(null);
   const [permissions, setPermissions] = useState<AdminPermission | null>(null);
+
   const [modal, setModal] = useState<{
     type: "success" | "error" | null;
     message: string;
   }>({ type: null, message: "" });
+
+  // getDefaultPermissions
+  const getDefaultPermissions = useCallback((): AdminPermission => {
+    const base = {} as Record<keyof AdminPermission, boolean>;
+    permissionGroups.forEach((group) => {
+      group.keys.forEach((key) => {
+        base[key as keyof AdminPermission] = false;
+      });
+    });
+    return base as AdminPermission;
+  }, [permissionGroups]);
 
   // Fetch admin detail
   useEffect(() => {
@@ -33,18 +94,33 @@ export default function AdminEditPage() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const data = await getAdminDetail(adminId);
-        setAdmin(data);
-        setPermissions(data.permissions || {});
+
+        const resp = await getAdminDetail(adminId);
+
+        const adminData: AdminDetail =
+          (resp && typeof resp === "object" && "data" in resp
+            ? (resp as { data: AdminDetail }).data
+            : (resp as AdminDetail)) ?? ({} as AdminDetail);
+
+        setAdmin(adminData);
+
+        const mergedPermissions: AdminPermission = {
+          ...getDefaultPermissions(),
+          ...(adminData.permissions || {}),
+        };
+
+        setPermissions(mergedPermissions);
       } catch (err) {
         console.error("Failed to fetch admin detail:", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
-  }, [adminId]);
 
+    fetchData();
+  }, [adminId, getDefaultPermissions]);
+
+  // Handle checkbox change
   const handlePermissionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     setPermissions((prev) =>
@@ -52,6 +128,7 @@ export default function AdminEditPage() {
     );
   };
 
+  // Submit update
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!adminId || !permissions) return;
@@ -74,70 +151,22 @@ export default function AdminEditPage() {
     }
   };
 
-  if (loading) {
+  // UI Loading & Not Found
+  if (loading)
     return (
       <div className="p-6 flex justify-center items-center h-[60vh] text-gray-500 text-lg animate-pulse">
         Loading admin data...
       </div>
     );
-  }
 
-  if (!admin) {
+  if (!admin)
     return (
       <div className="p-6 text-center text-red-500 font-medium">
         Admin not found
       </div>
     );
-  }
 
-  const permissionGroups = [
-    {
-      title: "Admin",
-      keys: [
-        "canReadAdmin",
-        "canWriteAdmin",
-        "canUpdateAdmin",
-        "canDeleteAdmin",
-      ],
-    },
-    {
-      title: "Client",
-      keys: [
-        "canReadClient",
-        "canWriteClient",
-        "canUpdateClient",
-        "canDeleteClient",
-      ],
-    },
-    {
-      title: "Contact",
-      keys: [
-        "canReadContact",
-        "canWriteContact",
-        "canUpdateContact",
-        "canDeleteContact",
-      ],
-    },
-    {
-      title: "Newsletter",
-      keys: [
-        "canReadNewsletter",
-        "canWriteNewsletter",
-        "canUpdateNewsletter",
-        "canDeleteNewsletter",
-      ],
-    },
-    {
-      title: "Portfolio",
-      keys: [
-        "canReadPortfolio",
-        "canWritePortfolio",
-        "canUpdatePortfolio",
-        "canDeletePortfolio",
-      ],
-    },
-  ];
-
+  // UI Main Form
   return (
     <NavBarCMS>
       <div className="max-w-6xl mx-auto p-8">
@@ -161,7 +190,7 @@ export default function AdminEditPage() {
           className="bg-white shadow-md rounded-2xl p-8 border border-gray-100"
         >
           <h2 className="text-xl font-semibold text-gray-700 mb-6">
-            Manage Permissions
+            Manage Permissions for {admin.name}
           </h2>
 
           {permissions && (
@@ -175,26 +204,31 @@ export default function AdminEditPage() {
                     {group.title}
                   </h3>
                   <div className="flex flex-col gap-2">
-                    {group.keys.map((perm) => (
-                      <label
-                        key={perm}
-                        className="flex items-center gap-2 cursor-pointer"
-                      >
-                        <input
-                          type="checkbox"
-                          name={perm}
-                          checked={
-                            permissions?.[perm as keyof AdminPermission] ??
-                            false
-                          }
-                          onChange={handlePermissionChange}
-                          className="rounded accent-blue-600 w-4 h-4"
-                        />
-                        <span className="text-sm text-gray-600">
-                          {perm.replace(/^can/, "").replace(/([A-Z])/g, " $1")}
-                        </span>
-                      </label>
-                    ))}
+                    {group.keys.map((perm) => {
+                      const isChecked =
+                        permissions?.[perm as keyof AdminPermission] ?? false;
+                      return (
+                        <label
+                          key={perm}
+                          className={`flex items-center gap-2 cursor-pointer ${
+                            isChecked ? "text-blue-600" : "text-gray-600"
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            name={perm}
+                            checked={isChecked}
+                            onChange={handlePermissionChange}
+                            className="rounded w-4 h-4 accent-blue-600 transition duration-150"
+                          />
+                          <span className="text-sm">
+                            {perm
+                              .replace(/^can/, "")
+                              .replace(/([A-Z])/g, " $1")}
+                          </span>
+                        </label>
+                      );
+                    })}
                   </div>
                 </div>
               ))}
@@ -220,7 +254,7 @@ export default function AdminEditPage() {
         </form>
       </div>
 
-      {/* Modal */}
+      {/* Modal Success Update Permission */}
       <AnimatePresence>
         {modal.type && (
           <motion.div

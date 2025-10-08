@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import NavBarCMS from "../../../components/CMS-Navbar";
-import { FiImage, FiFilter } from "react-icons/fi";
+import { FiImage, FiFilter, FiChevronDown } from "react-icons/fi";
 import { Link } from "react-router";
 import JoditEditor from "jodit-react";
 import NewsletterDetailModal from "./Newsletter-Detail-Admin";
@@ -23,6 +23,8 @@ export default function Newsletter() {
   const [schedule, setSchedule] = useState<NewsletterResponse[]>([]);
   const [, setLoading] = useState(false);
   const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const TYPES = ["TECH", "BUSINESS", "INTERNAL", "OTHER"] as const;
+  const [open, setOpen] = useState(false);
 
   // state modal
   const [selectedNewsletter, setSelectedNewsletter] =
@@ -34,15 +36,15 @@ export default function Newsletter() {
   const [showCreateSuccessModal, setShowCreateSuccessModal] = useState(false);
   const [showCreateErrorModal, setShowCreateErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
 
   // state form
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [type, setType] = useState<"TECH" | "BUSINESS" | "INTERNAL" | "OTHER">(
-    "TECH"
-  );
+  const [type, setType] = useState<(typeof TYPES)[number]>("TECH");
+
   const [file, setFile] = useState<File | null>(null);
-  const [sendAfter24, setSendAfter24] = useState(false);
+  const [sendAfter24, setSendAfter24] = useState(true);
 
   // filter & search
   const [preview, setPreview] = useState<string | null>(null);
@@ -91,6 +93,8 @@ export default function Newsletter() {
   // Handle Tambah Newsletter
   const handleSend = async () => {
     if (!title && !file) return;
+    setIsCreating(true);
+
     try {
       const payload: NewsletterPayload = {
         title,
@@ -100,10 +104,21 @@ export default function Newsletter() {
         isScheduled: sendAfter24,
         file,
       };
-      await createAdminNewsletter(payload);
-      handleCancel();
-      fetchNewsletters();
+
+      const res = await createAdminNewsletter(payload);
+      const newNewsletter = res?.data?.data || res?.data;
+
+      // langsung update data
+      if (sendAfter24 && newNewsletter) {
+        setSchedule((prev) => [newNewsletter, ...prev]);
+      } else {
+        setNewsletters((prev) => [newNewsletter, ...prev]);
+      }
+      
       setShowCreateSuccessModal(true);
+      handleCancel();
+
+      void fetchNewsletters();
     } catch (error) {
       const err = error as AxiosError<{ message?: string; errors?: string[] }>;
       console.error("Failed create newsletter:", err);
@@ -117,6 +132,8 @@ export default function Newsletter() {
       }
 
       setShowCreateErrorModal(true);
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -192,26 +209,45 @@ export default function Newsletter() {
           />
         </div>
 
-        {/* Type Field */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-500">Type</label>
-          <select
-            value={type}
-            onChange={(e) =>
-              setType(
-                e.target.value as "TECH" | "BUSINESS" | "INTERNAL" | "OTHER"
-              )
-            }
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+        {/* Type Field (Dropdown Select) */}
+        <div className="flex flex-col gap-2 relative">
+          <label className="block text-gray-500 mb-2">Type</label>
+          <div
+            onClick={() => setOpen(!open)}
+            className={`w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white flex justify-between items-center cursor-pointer shadow-sm transition ${
+              open
+                ? "ring-2 ring-blue-400 border-blue-400"
+                : "hover:border-gray-400"
+            }`}
           >
-            <option value="TECH">TECH</option>
-            <option value="BUSINESS">BUSINESS</option>
-            <option value="INTERNAL">INTERNAL</option>
-            <option value="OTHER">OTHER</option>
-          </select>
+            <span>{type}</span>
+            <FiChevronDown
+              className={`text-gray-500 transition-transform ${
+                open ? "rotate-180" : ""
+              }`}
+            />
+          </div>
+          {open && (
+            <div className="absolute mt-21 w-full bg-white border border-gray-200 rounded-lg shadow-md z-10 max-h-48 overflow-auto">
+              {TYPES.map((t) => (
+                <div
+                  key={t}
+                  onClick={() => {
+                    setType(t);
+                    setOpen(false);
+                  }}
+                  className={`px-4 py-2 text-sm hover:bg-blue-50 hover:text-blue-600 cursor-pointer ${
+                    type === t ? "bg-blue-50 text-blue-600 font-medium" : ""
+                  }`}
+                >
+                  {t}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Upload Area */}
+        {/* Upload Image Area */}
         <div
           className="border-2 border-dashed border-gray-300 rounded-lg p-10 flex flex-col items-center justify-center text-gray-500 relative"
           onDrop={handleDrop}
@@ -219,14 +255,10 @@ export default function Newsletter() {
         >
           {preview ? (
             <div className="flex flex-col items-center">
-              <img
-                src={preview}
-                alt="preview"
-                className="w-35 mb-2 rounded"
-              />
+              <img src={preview} alt="preview" className="w-35 mb-2 rounded" />
               <button
                 type="button"
-                className="text-red-500 text-md"
+                className="text-red-500 text-md hover:text-red-800 cursor-pointer"
                 onClick={() => {
                   setFile(null);
                   setPreview(null);
@@ -293,9 +325,7 @@ export default function Newsletter() {
               <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-all peer-checked:translate-x-5"></div>
             </div>
             <span className="text-gray-700 text-sm">
-              {sendAfter24
-                ? "Scheduled (Send after)"
-                : "Send Immediately"}
+              {sendAfter24 ? "Scheduled (Send after)" : "Send Immediately"}
             </span>
           </label>
 
@@ -310,13 +340,41 @@ export default function Newsletter() {
               Cancel
             </button>
             <button
-              className={`px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md ${
-                !isInputFilled ? "opacity-50 cursor-not-allowed" : ""
+              className={`px-6 py-2 rounded-md text-white flex items-center justify-center gap-2 transition ${
+                isCreating
+                  ? "bg-blue-400 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600"
               }`}
               onClick={handleSend}
-              disabled={!isInputFilled}
+              disabled={!isInputFilled || isCreating}
             >
-              Create Newsletter
+              {isCreating ? (
+                <>
+                  <svg
+                    className="animate-spin h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    ></path>
+                  </svg>
+                  Creating...
+                </>
+              ) : (
+                "Create Newsletter"
+              )}
             </button>
           </div>
         </div>

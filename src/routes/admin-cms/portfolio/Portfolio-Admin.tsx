@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router";
-import { FiImage, FiFilter } from "react-icons/fi";
+import { FiImage, FiFilter, FiChevronDown } from "react-icons/fi";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { MdOutlineSubtitles } from "react-icons/md";
 import JoditEditor from "jodit-react";
@@ -54,6 +54,15 @@ export default function PortfolioAdmin() {
   const [preview, setPreview] = useState<string | null>(null);
   const [sendAfter24, setSendAfter24] = useState(false);
 
+  // State Dropdown Client
+  const [open, setOpen] = useState(false);
+  // selectedClient and handleSelect must be defined AFTER client & clients states
+  const selectedClient = clients.find((c) => c.id === client);
+  const handleSelect = (value: string) => {
+    setClient(value);
+    setOpen(false);
+  };
+
   // UI state (modal, filter, pagination)
   const [openAction, setOpenAction] = useState<string | null>(null);
 
@@ -62,6 +71,7 @@ export default function PortfolioAdmin() {
   const [showCreateSuccessModal, setShowCreateSuccessModal] = useState(false);
   const [showCreateErrorModal, setShowCreateErrorModal] = useState(false);
 
+  // State Filter & Search
   const [search, setSearch] = useState("");
   const [showFilter, setShowFilter] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
@@ -108,7 +118,7 @@ export default function PortfolioAdmin() {
         const res = await getClientsForPortfolioForm();
         setClients(res);
       } catch (err) {
-        console.error("Gagal fetch clients:", err);
+        console.error("Failed to fetch clients:", err);
       }
     };
     fetchClients();
@@ -121,7 +131,7 @@ export default function PortfolioAdmin() {
       const res = await getAllPortfoliosAdmin({ page: pagination.page });
 
       if (!res || !res.portfolios) {
-        console.error("API tidak mengembalikan portfolios:", res);
+        console.error("API Failed to fetch Portfolios:", res);
         setPortfolios([]);
         return;
       }
@@ -271,27 +281,52 @@ export default function PortfolioAdmin() {
         </div>
 
         {/* Client Input */}
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-1">
+        <div className="relative w-full">
+          <label className="block text-sm font-medium text-gray-600 mb-1">
             Client
           </label>
-          <select
-            value={client}
-            onChange={(e) => setClient(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+
+          {/* Selected box */}
+          <button
+            type="button"
+            onClick={() => setOpen((prev) => !prev)}
+            className={`w-full flex justify-between items-center px-4 py-2.5 text-sm rounded-lg border shadow-sm transition-all duration-150 ${
+              open ? "border-blue-400 ring-2 ring-blue-400" : "border-gray-300"
+            } bg-white text-gray-800 hover:border-blue-400`}
           >
-            <option value="" disabled className="text-gray-300">
-              -- Pilih Client --
-            </option>
-            {clients.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+            <span>
+              {selectedClient ? selectedClient.name : "-- Pilih Client --"}
+            </span>
+            <FiChevronDown
+              className={`text-gray-400 transform transition-transform duration-200 justify-end ${
+                open ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          {/* Dropdown Client list */}
+          {open && (
+            <div className="absolute z-20 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden animate-fadeIn">
+              <ul className="max-h-56 overflow-y-auto">
+                {clients.map((c) => (
+                  <li
+                    key={c.id}
+                    onClick={() => handleSelect(c.id)}
+                    className={`px-4 py-2.5 text-sm cursor-pointer transition-colors ${
+                      c.id === client
+                        ? "bg-blue-50 text-blue-600 font-medium"
+                        : "hover:bg-blue-50 text-gray-700"
+                    }`}
+                  >
+                    {c.name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
-        {/* Upload Area */}
+        {/* Upload Image Area */}
         <div
           className="border-2 border-dashed border-gray-300 rounded-lg p-10 flex flex-col items-center justify-center text-gray-500 relative"
           onDrop={handleDrop}
@@ -302,7 +337,7 @@ export default function PortfolioAdmin() {
               <img src={preview} alt="preview" className="h-24 mb-2 rounded" />
               <button
                 type="button"
-                className="text-red-500 text-sm"
+                className="text-red-500 text-md hover:text-red-800 cursor-pointer"
                 onClick={() => {
                   setFile(null);
                   setPreview(null);

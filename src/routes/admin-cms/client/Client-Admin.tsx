@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { FiImage, FiMoreVertical, FiSearch, FiFilter } from "react-icons/fi";
+import { FiImage, FiMoreVertical, FiSearch } from "react-icons/fi";
 import NavBarCMS from "../../../components/CMS-Navbar";
 import {
   getAllClientsAdmin,
@@ -12,22 +12,23 @@ import { useNavigate } from "react-router";
 
 export default function ClientPage() {
   const navigate = useNavigate();
-  const [openMenu, setOpenMenu] = useState<string | null>(null);
-  const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const menuRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+
+  // State Clients
+  const [clients, setClients] = useState<Client[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const menuRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const [selectedClientForDelete, setSelectedClientForDelete] =
-    useState<Client | null>(null);
+  
+  // State Modal
+  const [selectedClientForDelete, setSelectedClientForDelete] = useState<Client | null>(null);
   const [, setErrorMessage] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeleteSuccessModal, setShowDeleteSuccessModal] = useState(false);
-
+  const [error, setError] = useState<string | null>(null);
   const [modal, setModal] = useState<{
     open: boolean;
     type: "success" | "error";
@@ -60,12 +61,12 @@ export default function ClientPage() {
 
   // Filter client berdasarkan nama
   const filteredClients = clients.filter((client) =>
-    client.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    client.name?.toLowerCase().includes(search.toLowerCase())
   );
 
   // Handle input search
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+    setSearch(e.target.value);
   };
 
   // Handle File Upload Preview
@@ -131,8 +132,6 @@ export default function ClientPage() {
       return;
     }
 
-    console.log("Deleting client ID:", selectedClientForDelete.id);
-
     try {
       await deleteClientAdmin(selectedClientForDelete.id);
       // console.log("Deleted client:", selectedClientForDelete.name);
@@ -174,7 +173,7 @@ export default function ClientPage() {
         <section className="space-y-4">
           <h2 className="text-lg font-semibold">New Client</h2>
 
-          {/* Input Nama Client */}
+          {/* Input Name Client */}
           <input
             type="text"
             value={title}
@@ -183,8 +182,7 @@ export default function ClientPage() {
             className="border border-gray-300 rounded-md px-3 py-2 text-sm w-full"
           />
 
-          {/* Upload Gambar */}
-          {/* --- Upload Area --- */}
+          {/* Upload Logo */}
           <div
             className="border-2 border-dashed border-gray-300 rounded-lg p-10 flex flex-col items-center justify-center text-gray-500 relative"
             onDrop={handleDrop}
@@ -199,7 +197,7 @@ export default function ClientPage() {
                 />
                 <button
                   type="button"
-                  className="text-red-500 text-sm"
+                  className="text-red-500 text-md hover:text-red-800 cursor-pointer"
                   onClick={() => {
                     setFile(null);
                     setPreview(null);
@@ -259,15 +257,12 @@ export default function ClientPage() {
                 <input
                   type="text"
                   placeholder="Search by Name"
-                  value={searchTerm}
+                  value={search}
                   onChange={handleSearchChange}
-                  className="border border-gray-300 rounded-md pl-8 pr-2 py-1.5 text-sm w-48"
+                  className="border border-gray-300 rounded-md pl-8 pr-2 py-1.5 text-sm w-100"
                 />
                 <FiSearch className="absolute left-2 top-2.5 text-gray-400" />
               </div>
-              <button className="border border-gray-300 rounded-md p-1.5 hover:bg-gray-100">
-                <FiFilter className="text-gray-500" />
-              </button>
             </div>
           </div>
 
@@ -281,7 +276,7 @@ export default function ClientPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-3">
-              {clients.map((client) => (
+              {filteredClients.map((client) => (
                 <div
                   key={client.localKey}
                   ref={(el) => {
@@ -289,7 +284,7 @@ export default function ClientPage() {
                   }}
                   className="relative bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col items-center"
                 >
-                  {/* Tombol titik tiga di pojok kanan atas */}
+                  {/* Button Menu Titik Tiga */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();

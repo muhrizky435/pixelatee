@@ -161,7 +161,7 @@ export default function ClientEdit() {
                     className="h-32 mb-2 rounded"
                   />
                   <div className="flex gap-2">
-                    <label className="text-blue-500 text-sm cursor-pointer">
+                    <label className="text-blue-500 text-md hover:text-blue-800 cursor-pointer">
                       Update Logo
                       <input
                         type="file"

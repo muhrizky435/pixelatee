@@ -188,7 +188,7 @@ export default function EditPortfolio() {
             </select>
           </div>
 
-          {/* Upload */}
+          {/* Upload Image Area*/}
           <div
             className="border-2 border-dashed border-gray-300 rounded-lg p-10 
              flex flex-col items-center justify-center text-gray-500"
@@ -203,7 +203,7 @@ export default function EditPortfolio() {
                   className="h-42 mb-2 rounded"
                 />
                 <div className="flex gap-2">
-                  <label className="text-blue-500 text-sm cursor-pointer">
+                  <label className="text-blue-500 text-md hover:text-blue-800 cursor-pointer">
                     Update Logo
                     <input
                       type="file"

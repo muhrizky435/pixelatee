@@ -17,7 +17,7 @@ export function Footer() {
           <Link to="/">
             <img className="w-44" src="/img/LogoWhite.png" alt="Pixelatee Logo" />
           </Link>
-          <p className="leading-7 max-w-sm">
+          <p className="leading-7 max-w-sm text-justify">
             We design, build, and transform digital experiences with creativity
             and precision.
           </p>
@@ -39,7 +39,7 @@ export function Footer() {
         <div className="flex flex-col gap-3 ">
           <h3 className="text-white font-semibold text-lg mb-2">About Us</h3>
           <Link to="#about" className="hover:text-white transition-colors">About</Link>
-          <Link to="#about" className="hover:text-white transition-colors">Goals</Link>
+          <Link to="#goals" className="hover:text-white transition-colors">Goals</Link>
           <Link to="#faq" className="hover:text-white transition-colors">FAQ</Link>
         </div>
 
@@ -62,7 +62,7 @@ export function Footer() {
             <HiOutlineMail size={20} /> <span>support@pixelatee.com</span>
           </div>
           <div className="flex items-center gap-3 hover:text-white transition-colors">
-            <HiOutlineLocationMarker size={20} /> <span>24, Us Street, Washington DC</span>
+            <HiOutlineLocationMarker size={20} /> <span>00, Yogyakarta, Indonesia</span>
           </div>
         </div>
       </div>

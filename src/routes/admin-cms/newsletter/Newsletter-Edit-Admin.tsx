@@ -182,8 +182,8 @@ export default function EditNewsletter() {
                   className="h-42 mb-2 rounded"
                 />
                 <div className="flex gap-2">
-                  <label className="text-blue-500 text-sm cursor-pointer">
-                    Update Logo
+                  <label className="text-blue-500 text-md hover:text-blue-800 cursor-pointer">
+                    Update Image
                     <input
                       type="file"
                       className="hidden"
