@@ -347,7 +347,7 @@ export default function Home() {
         {/* Clients Section */}
         <section className="text-center py-10 pt-19">
           <Reveal>
-            <h2 className="text-4xl md:text-5xl font-bold text-blue-600 pb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-blue-600 pb-10">
               Clients{" "}
               <span className="text-gray-700 font-semibold">We Work With</span>
             </h2>
