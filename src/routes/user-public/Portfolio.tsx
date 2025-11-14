@@ -13,7 +13,7 @@ export default function PortfolioPage() {
   const [error, setError] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
 
-  const stripHtml = (html: string) => { {
+  const stripHtml = (html: string) => {
     const div = document.createElement("div");
     div.innerHTML = html;
     return div.textContent || div.innerText || "";
