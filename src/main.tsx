@@ -29,7 +29,7 @@ import PortfolioAdmin from "./routes/admin-cms/portfolio/Portfolio-Admin";
 import PortfolioEdit from "./routes/admin-cms/portfolio/Portfolio-Edit-Admin";
 
 // Admin Clients
-import ClientsAdmin from "./routes/admin-cms/client/Client-admin";
+import ClientsAdmin from "./routes/admin-cms/client/Client-Admin";
 import ClientEdit from "./routes/admin-cms/client/Client-Edit-Admin";
 
 // Admin Contact
