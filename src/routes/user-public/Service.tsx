@@ -138,10 +138,10 @@ export default function ServisSection() {
 
           <div className="max-w-7xl mx-auto flex flex-col">
             {/* Heading atas */}
-            <div className="text-center md:text-left md:ml-auto mb-12">
+            <div className="text-center md:text-left md:ml-110 mb-12">
               <h2 className="text-4xl md:text-5xl leading-snug font-bold">
                 We <span className="text-blue-400">Build.</span> We{" "}
-                <span className="text-blue-500">Design.</span> We < br/>
+                <span className="text-blue-500">Design.</span> We {" "}
                 <span className="text-blue-600">Innovate.</span>
               </h2>
               <p className="text-gray-400 mt-3 text-base max-w-2xl md:ml-auto md:text-left">
